@@ -6,7 +6,7 @@ export default function Navbar() {
       <div className="text-2xl font-bold text-[#97FBE4] tracking-tight">HYPE</div>
       <div className="flex gap-8">
 
-        <a href="/" className="text-white font-medium hover:text-[#97FBE4] transition">GlueX</a>
+        <a href="/gluex" className="text-white font-medium hover:text-[#97FBE4] transition">GlueX</a>
         <a href="/liquidlabs" className="text-[#97FBE4] font-semibold hover:text-white transition">Liquid Labs</a>
       </div>
     </nav>

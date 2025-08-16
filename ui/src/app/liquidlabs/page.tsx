@@ -202,7 +202,7 @@ export default function LiquidLabsRouteDemo() {
           </label>
           <button
             type="submit"
-            className="mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition"
+            className="mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] hover:text-black transition"
             disabled={tokensLoading}
           >
             {tokensLoading ? "Loading..." : "Get Tokens"}
