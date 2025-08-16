@@ -1,4 +1,6 @@
+"use client";
 import React, { useState } from "react";
+import { getRoute, findPools, getTokens, getBalances } from "./helper";
 
 export default function LiquidLabsRouteDemo() {
   // Route API state
@@ -36,10 +38,7 @@ export default function LiquidLabsRouteDemo() {
     setError("");
     setResponse(null);
     try {
-      const url = `https://api.liqd.ag/v2/route?tokenIn=${tokenIn}&tokenOut=${tokenOut}&amountIn=${amountIn}`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("API error");
-      const data = await res.json();
+      const data = await getRoute(tokenIn, tokenOut, amountIn);
       setResponse(data);
     } catch (err: any) {
       setError(err.message || "Unknown error");
@@ -55,10 +54,7 @@ export default function LiquidLabsRouteDemo() {
     setPoolsError("");
     setPoolsResponse(null);
     try {
-      const url = `https://api.liqd.ag/pools?tokenA=${poolTokenA}&tokenB=${poolTokenB}`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("API error");
-      const data = await res.json();
+      const data = await findPools(poolTokenA, poolTokenB);
       setPoolsResponse(data);
     } catch (err: any) {
       setPoolsError(err.message || "Unknown error");
@@ -74,13 +70,7 @@ export default function LiquidLabsRouteDemo() {
     setTokensError("");
     setTokensResponse(null);
     try {
-      let url = `https://api.liqd.ag/tokens?`;
-      if (tokenSearch) url += `search=${encodeURIComponent(tokenSearch)}&`;
-      if (tokenLimit) url += `limit=${tokenLimit}&`;
-      url = url.replace(/&$/, "");
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("API error");
-      const data = await res.json();
+      const data = await getTokens(tokenSearch, tokenLimit);
       setTokensResponse(data);
     } catch (err: any) {
       setTokensError(err.message || "Unknown error");
@@ -96,10 +86,7 @@ export default function LiquidLabsRouteDemo() {
     setBalancesError("");
     setBalancesResponse(null);
     try {
-      const url = `https://api.liqd.ag/tokens/balances?wallet=${wallet}`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("API error");
-      const data = await res.json();
+      const data = await getBalances(wallet);
       setBalancesResponse(data);
     } catch (err: any) {
       setBalancesError(err.message || "Unknown error");
@@ -143,7 +130,7 @@ export default function LiquidLabsRouteDemo() {
           </label>
           <button
             type="submit"
-            className="mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-[#00150E] font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition"
+            className="mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition"
             disabled={loading}
           >
             {loading ? "Loading..." : "Get Route"}
@@ -179,7 +166,7 @@ export default function LiquidLabsRouteDemo() {
           </label>
           <button
             type="submit"
-            className="mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-[#00150E] font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition"
+            className="mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition"
             disabled={poolsLoading}
           >
             {poolsLoading ? "Loading..." : "Find Pools"}
@@ -215,7 +202,7 @@ export default function LiquidLabsRouteDemo() {
           </label>
           <button
             type="submit"
-            className="mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-[#00150E] font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition"
+            className="mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition"
             disabled={tokensLoading}
           >
             {tokensLoading ? "Loading..." : "Get Tokens"}
@@ -243,7 +230,7 @@ export default function LiquidLabsRouteDemo() {
           </label>
           <button
             type="submit"
-            className="mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-[#00150E] font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition"
+            className="mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition"
             disabled={balancesLoading}
           >
             {balancesLoading ? "Loading..." : "Get Balances"}
