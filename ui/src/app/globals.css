@@ -31,6 +31,19 @@ h1, h2, h3, h4, h5, h6, p, span, a, li, label, input, button, div, section {
 .api-btn {
   color: #000 !important;
 }
+.pixel-font {
+  font-family: 'Press Start 2P', 'VT323', ui-monospace, monospace, 'Courier New', Courier, sans-serif;
+  font-size: inherit;
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.01em;
+}
+.live-stats-box {
+  background: #97FBE4 !important;
+  opacity: 1 !important;
+}
 .live-stats-box, .live-stats-box * {
   color: #000 !important;
+  opacity: 1 !important;
 }

@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { Compare } from "../components/ui/compare";
 
 const features = [
   {
@@ -18,10 +19,6 @@ const features = [
 ];
 
 function CompareDemo() {
-  // Import Compare at the top: import Compare from "../components/ui/compare";
-  // If not found, replace with a placeholder div or image.
-  // @ts-ignore
-  const Compare = require("../components/ui/compare").default;
   return (
     <div className="p-4 border rounded-3xl dark:bg-neutral-900 bg-neutral-100 border-neutral-200 dark:border-neutral-800 px-4">
       <Compare
@@ -67,11 +64,12 @@ export default function Home() {
         <section className="relative z-10 px-4 pb-20">
           <div className="max-w-5xl mx-auto">
             <div className="mb-16 pt-12">
-              <h1 className="text-5xl md:text-7xl font-light mb-6 tracking-tight">
-                DeFi, Unified.<br />
-                <span className="text-white">Trade. Bridge. Earn.</span>
+              <h1 className="text-4xl md:text-6xl font-light mb-4 tracking-tight">
+                <span className="block text-[#97FBE4]">Universal Hype.</span>
+                <span className="block text-[#5eead4]">For Everyone.</span>
+         
               </h1>
-              <p className="text-lg text-[#97FBE4]/80 max-w-2xl">
+              <p className="text-base md:text-lg text-[#97FBE4]/80 max-w-2xl pixel-font">
                 The fastest, smartest way to swap, stake, and farm—powered by LiquidSwap route-finding and GlueX DeFi intelligence.
               </p>
             </div>
@@ -83,7 +81,7 @@ export default function Home() {
                 <div className="relative z-10">
                   <p className="text-sm text-[#97FBE4]/60 mb-4">FEATURED</p>
                   <h3 className="text-3xl font-light mb-3">Optimal Swaps & Yield</h3>
-                  <p className="text-[#97FBE4]/80 max-w-lg">
+                  <p className="text-[#97FBE4]/80 max-w-lg pixel-font">
                     Swap, bridge, and earn yield in one seamless flow. No more juggling dApps.
                   </p>
                 </div>
@@ -105,23 +103,17 @@ export default function Home() {
                 <div className="absolute top-0 right-0 w-32 h-32 border border-black/10 -translate-y-1/2 translate-x-1/2" />
               </div>
               {/* Feature Cards */}
-              <div className="col-span-6 md:col-span-3 bg-[#00150E] bg-opacity-80 rounded-2xl p-6 border border-[#97FBE4]/30 shadow-md">
-                <div className="flex flex-col justify-between h-full">
-                  <p className="text-3xl font-light">⚡</p>
-                  <p className="text-sm mt-1">Optimal Swaps</p>
-                </div>
+              <div className="col-span-6 md:col-span-3 bg-[#00150E] bg-opacity-80 rounded-2xl p-6 border border-[#97FBE4]/30 shadow-md flex flex-col justify-center">
+                <h4 className="text-lg font-semibold mb-1 text-[#97FBE4]">Optimal Swaps</h4>
+                <p className="text-xs text-[#97FBE4]/80">Get the best rates and lowest slippage with LiquidSwap route-finding.</p>
               </div>
-              <div className="col-span-6 md:col-span-3 bg-[#00150E] bg-opacity-80 rounded-2xl p-6 border border-[#97FBE4]/30 shadow-md">
-                <div className="flex flex-col justify-between h-full">
-                  <p className="text-3xl font-light">🌉</p>
-                  <p className="text-sm mt-1">Cross-Chain</p>
-                </div>
+              <div className="col-span-6 md:col-span-3 bg-[#97FBE4] rounded-2xl p-6 border border-[#97FBE4]/30 shadow-md flex flex-col justify-center">
+                <h4 className="text-lg font-semibold mb-1 text-black">Cross-Chain</h4>
+                <p className="text-xs text-black font-light pixel-font">Bridge and swap across chains in one seamless flow.</p>
               </div>
-              <div className="col-span-12 md:col-span-6 bg-[#00150E] bg-opacity-80 rounded-2xl p-6 border border-[#97FBE4]/30 shadow-md">
-                <div className="flex flex-col justify-between h-full">
-                  <p className="text-3xl font-light">📈</p>
-                  <p className="text-sm mt-1">Integrated Yield</p>
-                </div>
+              <div className="col-span-12 md:col-span-6 bg-[#00150E] bg-opacity-80 rounded-2xl p-6 border border-[#97FBE4]/30 shadow-md flex flex-col justify-center">
+                <h4 className="text-lg font-semibold mb-1 text-[#22d3ee]">Integrated Yield</h4>
+                <p className="text-xs text-[#97FBE4]/80">Stake, lend, and farm directly from your wallet.</p>
               </div>
           
             </div>
