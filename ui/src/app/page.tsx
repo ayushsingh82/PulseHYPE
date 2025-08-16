@@ -14,11 +14,27 @@ const features = [
     title: "Integrated Yield",
     description: "Stake, lend, and farm directly from your wallet.",
   },
-  {
-    title: "Real-Time Analytics",
-    description: "Live APY, TVL, and liquidity analytics for smarter yield farming.",
-  },
+  
 ];
+
+function CompareDemo() {
+  // Import Compare at the top: import Compare from "../components/ui/compare";
+  // If not found, replace with a placeholder div or image.
+  // @ts-ignore
+  const Compare = require("../components/ui/compare").default;
+  return (
+    <div className="p-4 border rounded-3xl dark:bg-neutral-900 bg-neutral-100 border-neutral-200 dark:border-neutral-800 px-4">
+      <Compare
+        firstImage="https://assets.aceternity.com/code-problem.png"
+        secondImage="https://assets.aceternity.com/code-solution.png"
+        firstImageClassName="object-cover object-left-top"
+        secondImageClassname="object-cover object-left-top"
+        className="h-[250px] w-[200px] md:h-[500px] md:w-[500px]"
+        slideMode="hover"
+      />
+    </div>
+  );
+}
 
 const faqs = [
   {
@@ -74,16 +90,16 @@ export default function Home() {
                 <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-[#97FBE4] to-transparent w-full" />
               </div>
               {/* Live Stats */}
-              <div className="col-span-12 md:col-span-4 row-span-2 bg-[#97FBE4] text-black rounded-2xl p-8 relative overflow-hidden shadow-xl">
+              <div className="col-span-12 md:col-span-4 row-span-2 bg-[#97FBE4] rounded-2xl p-8 relative overflow-hidden shadow-xl live-stats-box">
                 <div className="flex flex-col justify-between h-full">
                   <div>
-                    <p className="text-black/60 text-sm mb-2">LIVE</p>
-                    <p className="text-5xl font-light text-black">$1.2M+</p>
-                    <p className="text-black/60 text-sm mt-1">TVL Secured</p>
+                    <p className="text-sm mb-2">LIVE</p>
+                    <p className="text-5xl font-light">$1.2M+</p>
+                    <p className="text-sm mt-1">TVL Secured</p>
                   </div>
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-black animate-pulse" />
-                    <span className="text-xs text-black/60">Real-time</span>
+                    <span className="text-xs">Real-time</span>
                   </div>
                 </div>
                 <div className="absolute top-0 right-0 w-32 h-32 border border-black/10 -translate-y-1/2 translate-x-1/2" />
@@ -107,12 +123,53 @@ export default function Home() {
                   <p className="text-sm mt-1">Integrated Yield</p>
                 </div>
               </div>
-              <div className="col-span-12 md:col-span-6 bg-[#00150E] bg-opacity-80 rounded-2xl p-6 border border-[#97FBE4]/30 shadow-md">
-                <div className="flex flex-col justify-between h-full">
-                  <p className="text-3xl font-light">📊</p>
-                  <p className="text-sm mt-1">Real-Time Analytics</p>
+          
+            </div>
+          </div>
+        </section>
+
+        {/* Built for Agents + CompareDemo Section */}
+        <section className="relative z-10 px-4 py-20">
+          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Left: Built for Agents */}
+            <div>
+              <h2 className="text-3xl font-light mb-4">Built for Agents</h2>
+              <p className="text-[#97FBE4]/80 mb-8">
+                Integrate payments in minutes, not months. Simple, powerful APIs that just work without KYC.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 border border-[#97FBE4]/30 flex items-center justify-center mt-1">
+                    <div className="w-2 h-2 bg-[#97FBE4]/50" />
+                  </div>
+                  <div>
+                    <p className="font-medium">Quick Setup</p>
+                    <p className="text-sm text-[#97FBE4]/80">No KYC, No AML, No ID</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 border border-[#97FBE4]/30 flex items-center justify-center mt-1">
+                    <div className="w-2 h-2 bg-[#97FBE4]/50" />
+                  </div>
+                  <div>
+                    <p className="font-medium">Compilant Privacy</p>
+                    <p className="text-sm text-[#97FBE4]/80">Hide your revenue from competitors</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 border border-[#97FBE4]/30 flex items-center justify-center mt-1">
+                    <div className="w-2 h-2 bg-[#97FBE4]/50" />
+                  </div>
+                  <div>
+                    <p className="font-medium">Instant Payments</p>
+                    <p className="text-sm text-[#97FBE4]/80">Receive payments in any token from any chain</p>
+                  </div>
                 </div>
               </div>
+            </div>
+            {/* Right: CompareDemo */}
+            <div className="flex justify-center items-center">
+              <CompareDemo />
             </div>
           </div>
         </section>
