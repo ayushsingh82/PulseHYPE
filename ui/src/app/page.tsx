@@ -1,102 +1,152 @@
-import Navbar from "../components/Navbar";
-import Image from "next/image";
+"use client";
+import React from "react";
+
+const features = [
+  {
+    title: "Optimal Swaps",
+    description: "Get the best rates and lowest slippage with LiquidSwap route-finding.",
+  },
+  {
+    title: "Cross-Chain Ready",
+    description: "Bridge and swap across chains in one seamless flow.",
+  },
+  {
+    title: "Integrated Yield",
+    description: "Stake, lend, and farm directly from your wallet.",
+  },
+  {
+    title: "Real-Time Analytics",
+    description: "Live APY, TVL, and liquidity analytics for smarter yield farming.",
+  },
+];
+
+const faqs = [
+  {
+    q: "Do I need a new wallet?",
+    a: "No, you can use your existing wallet. Just connect and start trading.",
+  },
+  {
+    q: "How do I earn yield?",
+    a: "Stake, lend, or farm directly from the app. Yield opportunities are integrated and easy to access.",
+  },
+  {
+    q: "Is it cross-chain?",
+    a: "Yes! Swap and bridge assets across supported chains in one transaction.",
+  },
+  {
+    q: "How do fees work?",
+    a: "You can set your own fee recipient and share in protocol revenue.",
+  },
+];
 
 export default function Home() {
+  const [activeFeature, setActiveFeature] = React.useState(0);
+  const [expandedFaq, setExpandedFaq] = React.useState<number | null>(null);
+
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center px-4 py-12 gap-12">
-      {/* Navbar (for demo, already in layout) */}
-      {/* <Navbar /> */}
+    <div className="min-h-screen bg-black text-[#97FBE4] overflow-hidden flex flex-col">
+      {/* Main Content */}
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="relative z-10 px-4 pb-20">
+          <div className="max-w-5xl mx-auto">
+            <div className="mb-16 pt-12">
+              <h1 className="text-5xl md:text-7xl font-light mb-6 tracking-tight">
+                DeFi, Unified.<br />
+                <span className="text-white">Trade. Bridge. Earn.</span>
+              </h1>
+              <p className="text-lg text-[#97FBE4]/80 max-w-2xl">
+                The fastest, smartest way to swap, stake, and farm—powered by LiquidSwap route-finding and GlueX DeFi intelligence.
+              </p>
+            </div>
 
-      {/* Headline - Big Box */}
-      <header className="w-full max-w-4xl text-center flex flex-col gap-4 py-12 bg-[#00150E] bg-opacity-80 rounded-3xl shadow-2xl border border-[#97FBE4]/30 mb-4">
-        <h1 className="text-5xl sm:text-6xl font-bold mb-2 text-white">Trade. Bridge. Earn. All in One Place.</h1>
-        <p className="text-2xl sm:text-3xl font-medium">The fastest, smartest way to swap, stake, and farm—powered by <span className="text-white font-bold">LiquidSwap</span> route-finding and <span className="text-white font-bold">GlueX</span> DeFi intelligence.</p>
-      </header>
-
-      {/* Hero Section (CTA) - Small Box */}
-      <section className="w-full max-w-xl flex flex-col items-center gap-6 py-8 bg-[#00150E] bg-opacity-70 rounded-2xl shadow-xl border border-[#97FBE4]/20">
-        <div className="text-xl sm:text-2xl font-semibold flex flex-col items-center gap-2 text-white drop-shadow-lg">
-          <span>⚡ Optimal Swaps • One-Click Yield • Cross-Chain Ready</span>
-        </div>
-        <p className="text-lg sm:text-xl text-center">Get the best rates, lowest slippage, and integrated yield opportunities without juggling multiple apps.</p>
-        <button className="mt-2 px-8 py-3 rounded-full bg-[#00150E] text-[#97FBE4] font-bold text-lg shadow-lg hover:bg-[#003d2a] transition border-2 border-[#97FBE4]">Start Now</button>
-      </section>
-
-      {/* Problem Statement - Big Box */}
-      <section className="w-full max-w-3xl flex flex-col gap-4 bg-[#00150E] bg-opacity-80 rounded-3xl p-10 shadow-2xl border border-[#97FBE4]/30">
-        <h2 className="text-3xl font-bold mb-2 text-white">DeFi is powerful, but messy:</h2>
-        <ul className="list-disc list-inside text-xl flex flex-col gap-1">
-          <li>You have to check multiple DEXs for the best swap route.</li>
-          <li>Bridging and staking take multiple transactions.</li>
-          <li>Yield opportunities are scattered across protocols.</li>
-        </ul>
-        <p className="mt-2 font-semibold">We fixed that.</p>
-      </section>
-
-      {/* How It Works (3 Steps) - Small Boxes */}
-      <section className="w-full max-w-4xl flex flex-col gap-6">
-        <h2 className="text-3xl font-bold mb-2 text-white">How It Works</h2>
-        <div className="grid sm:grid-cols-3 gap-6">
-          <div className="flex flex-col items-center bg-[#00150E] bg-opacity-70 rounded-2xl p-6 shadow-lg border border-[#97FBE4]/20">
-            <span className="text-3xl font-bold mb-2 text-white">1️⃣</span>
-            <h3 className="text-xl font-semibold mb-1 text-white">Find the Best Route</h3>
-            <p className="text-center">Enter the tokens you want to swap—our <span className="text-white font-bold">LiquidSwap</span> integration finds the most efficient multi-hop route across multiple liquidity sources.</p>
+            {/* Bento Grid */}
+            <div className="grid grid-cols-12 gap-4 auto-rows-[160px]">
+              {/* Main Feature */}
+              <div className="col-span-12 md:col-span-8 row-span-2 group relative bg-[#00150E] bg-opacity-80 rounded-2xl p-8 border border-[#97FBE4]/30 shadow-xl overflow-hidden">
+                <div className="relative z-10">
+                  <p className="text-sm text-[#97FBE4]/60 mb-4">FEATURED</p>
+                  <h3 className="text-3xl font-light mb-3">Optimal Swaps & Yield</h3>
+                  <p className="text-[#97FBE4]/80 max-w-lg">
+                    Swap, bridge, and earn yield in one seamless flow. No more juggling dApps.
+                  </p>
+                </div>
+                <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-[#97FBE4] to-transparent w-full" />
+              </div>
+              {/* Live Stats */}
+              <div className="col-span-12 md:col-span-4 row-span-2 bg-[#97FBE4] text-black rounded-2xl p-8 relative overflow-hidden shadow-xl">
+                <div className="flex flex-col justify-between h-full">
+                  <div>
+                    <p className="text-black/60 text-sm mb-2">LIVE</p>
+                    <p className="text-5xl font-light text-black">$1.2M+</p>
+                    <p className="text-black/60 text-sm mt-1">TVL Secured</p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-black animate-pulse" />
+                    <span className="text-xs text-black/60">Real-time</span>
+                  </div>
+                </div>
+                <div className="absolute top-0 right-0 w-32 h-32 border border-black/10 -translate-y-1/2 translate-x-1/2" />
+              </div>
+              {/* Feature Cards */}
+              <div className="col-span-6 md:col-span-3 bg-[#00150E] bg-opacity-80 rounded-2xl p-6 border border-[#97FBE4]/30 shadow-md">
+                <div className="flex flex-col justify-between h-full">
+                  <p className="text-3xl font-light">⚡</p>
+                  <p className="text-sm mt-1">Optimal Swaps</p>
+                </div>
+              </div>
+              <div className="col-span-6 md:col-span-3 bg-[#00150E] bg-opacity-80 rounded-2xl p-6 border border-[#97FBE4]/30 shadow-md">
+                <div className="flex flex-col justify-between h-full">
+                  <p className="text-3xl font-light">🌉</p>
+                  <p className="text-sm mt-1">Cross-Chain</p>
+                </div>
+              </div>
+              <div className="col-span-12 md:col-span-6 bg-[#00150E] bg-opacity-80 rounded-2xl p-6 border border-[#97FBE4]/30 shadow-md">
+                <div className="flex flex-col justify-between h-full">
+                  <p className="text-3xl font-light">📈</p>
+                  <p className="text-sm mt-1">Integrated Yield</p>
+                </div>
+              </div>
+              <div className="col-span-12 md:col-span-6 bg-[#00150E] bg-opacity-80 rounded-2xl p-6 border border-[#97FBE4]/30 shadow-md">
+                <div className="flex flex-col justify-between h-full">
+                  <p className="text-3xl font-light">📊</p>
+                  <p className="text-sm mt-1">Real-Time Analytics</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="flex flex-col items-center bg-[#00150E] bg-opacity-70 rounded-2xl p-6 shadow-lg border border-[#97FBE4]/20">
-            <span className="text-3xl font-bold mb-2 text-white">2️⃣</span>
-            <h3 className="text-xl font-semibold mb-1 text-white">Take Action</h3>
-            <p className="text-center">With <span className="text-white font-bold">GlueX Router</span>, perform swaps, bridges, and staking in one seamless flow—no manual juggling.</p>
-          </div>
-          <div className="flex flex-col items-center bg-[#00150E] bg-opacity-70 rounded-2xl p-6 shadow-lg border border-[#97FBE4]/20">
-            <span className="text-3xl font-bold mb-2 text-white">3️⃣</span>
-            <h3 className="text-xl font-semibold mb-1 text-white">Earn Smarter</h3>
-            <p className="text-center">Access real-time <span className="text-white font-bold">APY, TVL</span>, and liquidity analytics to make informed yield farming decisions.</p>
-          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="relative z-10 px-4 py-20 border-t border-[#97FBE4]/20">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl font-light mb-12 text-center">Frequently Asked Questions</h2>
+            <div className="space-y-4">
+              {faqs.map((faq, index) => (
+                <div key={index} className="border border-[#97FBE4]/30 rounded-2xl overflow-hidden">
+                  <button
+                    onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
+                    className="w-full p-6 text-left flex items-center justify-between hover:bg-[#00150E]/30 transition-all duration-300"
+                  >
+                    <span className="font-medium">{faq.q}</span>
+                    <span className="text-2xl">{expandedFaq === index ? "−" : "+"}</span>
+                  </button>
+                  {expandedFaq === index && (
+                    <div className="px-6 pb-6 text-[#97FBE4]/80">{faq.a}</div>
+                  )}
+                </div>
+              ))}
+            </div>
         </div>
-      </section>
-
-      {/* Features - Big Box */}
-      <section className="w-full max-w-4xl flex flex-col gap-4 bg-[#00150E] bg-opacity-80 rounded-3xl p-10 shadow-2xl border border-[#97FBE4]/30">
-        <h2 className="text-3xl font-bold mb-2 text-white">Features</h2>
-        <ul className="list-disc list-inside text-xl flex flex-col gap-1">
-          <li><b>Smart Route Finding</b> – Powered by LiquidSwap’s v2 API for optimal trade execution.</li>
-          <li><b>Cross-Chain Liquidity</b> – Swap and bridge across chains effortlessly.</li>
-          <li><b>Integrated Yield</b> – Stake, lend, and farm directly from your wallet.</li>
-          <li><b>Real-Time Data</b> – GlueX analytics show live rates, pool sizes, and historical yield.</li>
-          <li><b>Revenue Sharing</b> – Built-in fee collection for DAO, projects, or power users.</li>
-        </ul>
-      </section>
-
-      {/* Example User Flow - Small Box */}
-      <section className="w-full max-w-xl flex flex-col gap-4 bg-[#00150E] bg-opacity-70 rounded-2xl p-8 shadow-xl border border-[#97FBE4]/30">
-        <h2 className="text-2xl font-bold mb-2 text-white">Example User Flow</h2>
-        <p><b className="text-white">Sam swaps USDC → LINK using our app:</b></p>
-        <ul className="list-disc list-inside text-lg flex flex-col gap-1">
-          <li>LiquidSwap finds the cheapest, fastest route.</li>
-          <li>GlueX bundles the swap + staking in one transaction.</li>
-          <li>Sam is now earning yield on her LINK without touching another dApp.</li>
-        </ul>
-      </section>
-
-      {/* For Developers & Power Users - Big Box */}
-      <section className="w-full max-w-3xl flex flex-col gap-4 bg-[#00150E] bg-opacity-80 rounded-3xl p-10 shadow-2xl border border-[#97FBE4]/30">
-        <h2 className="text-3xl font-bold mb-2 text-white">For Developers & Power Users</h2>
-        <ul className="list-disc list-inside text-xl flex flex-col gap-1">
-          <li>Plug in your own fee recipient to monetize swaps.</li>
-          <li>Whitelabel the swap UI for your community.</li>
-          <li>Build automated strategies leveraging both APIs.</li>
-        </ul>
-      </section>
-
-      {/* Call To Action (Final) - Small Box */}
-      <section className="w-full max-w-xl flex flex-col items-center gap-6 mt-8 py-8 bg-[#00150E] bg-opacity-70 rounded-2xl shadow-xl border border-[#97FBE4]/20">
-        <h2 className="text-3xl font-bold text-center text-white">DeFi without friction.</h2>
-        <p className="text-lg text-center">Join traders, yield farmers, and DAOs already using our unified DeFi terminal.</p>
-        <div className="flex gap-4">
-          <button className="px-8 py-3 rounded-full bg-[#00150E] text-white font-bold text-lg shadow-lg hover:bg-[#003d2a] transition border-2 border-[#97FBE4]">Launch App</button>
-          <button className="px-8 py-3 rounded-full border-2 border-[#97FBE4] text-[#97FBE4] font-bold text-lg hover:bg-[#00150E] transition">Join Waitlist</button>
-        </div>
-      </section>
+        </section>
+      </main>
+      {/* Footer */}
+      <footer className="w-full border-t border-[#97FBE4]/20 py-6 flex items-center justify-between px-4 max-w-3xl mx-auto">
+        <span className="text-lg font-bold tracking-tight">HYPE</span>
+        <a href="https://github.com/" target="_blank" rel="noopener noreferrer" className="flex items-center">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#97FBE4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 4 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 21.13V25"/></svg>
+        </a>
+      </footer>
     </div>
   );
 }
