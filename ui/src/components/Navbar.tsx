@@ -1,13 +1,31 @@
 import React from "react";
+import Link from "next/link";
 
 export default function Navbar() {
   return (
     <nav className="w-full flex justify-center mt-4 mb-8">
-      <div className="w-full max-w-3xl flex items-center justify-between px-4 py-4 shadow-lg bg-[#00150E] bg-opacity-80 rounded-2xl border border-[#97FBE4]/20">
-        <div className="text-2xl font-bold text-[#97FBE4] tracking-tight"><a href="/">HYPE</a></div>
+      <div className="w-full max-w-3xl flex items-center justify-between px-6 py-4 shadow-lg glass-morphism rounded-2xl">
+        <div className="text-2xl font-bold text-[#97FBE4] tracking-tight">
+          <Link 
+            href="/"
+            className="hover:scale-110 transition-transform duration-300"
+          >
+            HYPE
+          </Link>
+        </div>
         <div className="flex gap-8">
-          <a href="/gluex" className="text-white font-medium hover:text-[#97FBE4] transition">GlueX</a>
-          <a href="/liquidlabs" className="text-[#97FBE4] font-semibold hover:text-white transition">Liquid Labs</a>
+          <Link 
+            href="/gluex" 
+            className="text-white font-medium hover:text-[#97FBE4] transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-[#97FBE4]/10 hover:scale-110"
+          >
+            GlueX
+          </Link>
+          <Link 
+            href="/liquidlabs" 
+            className="text-[#97FBE4] font-semibold hover:text-white transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-[#97FBE4]/10 hover:scale-110"
+          >
+            Liquid Labs
+          </Link>
         </div>
       </div>
     </nav>
