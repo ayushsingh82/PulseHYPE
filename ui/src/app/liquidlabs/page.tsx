@@ -130,7 +130,7 @@ export default function LiquidLabsRouteDemo() {
           </label>
           <button
             type="submit"
-            className="mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition"
+            className="api-btn mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition"
             disabled={loading}
           >
             {loading ? "Loading..." : "Get Route"}
@@ -166,7 +166,7 @@ export default function LiquidLabsRouteDemo() {
           </label>
           <button
             type="submit"
-            className="mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition"
+            className="api-btn mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition"
             disabled={poolsLoading}
           >
             {poolsLoading ? "Loading..." : "Find Pools"}
@@ -202,7 +202,7 @@ export default function LiquidLabsRouteDemo() {
           </label>
           <button
             type="submit"
-            className="mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] hover:text-black transition"
+            className="api-btn mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] hover:text-black transition"
             disabled={tokensLoading}
           >
             {tokensLoading ? "Loading..." : "Get Tokens"}
@@ -230,7 +230,7 @@ export default function LiquidLabsRouteDemo() {
           </label>
           <button
             type="submit"
-            className="mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition"
+            className="api-btn mt-2 px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition"
             disabled={balancesLoading}
           >
             {balancesLoading ? "Loading..." : "Get Balances"}

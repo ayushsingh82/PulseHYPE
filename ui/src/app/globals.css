@@ -28,3 +28,6 @@ body {
 h1, h2, h3, h4, h5, h6, p, span, a, li, label, input, button, div, section {
   color: #97FBE4 !important;
 }
+.api-btn {
+  color: #000 !important;
+}

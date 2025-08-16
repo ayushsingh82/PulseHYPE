@@ -80,7 +80,7 @@ export default function GluexDemo() {
       {/* Active Protocols */}
       <div className="w-full max-w-xl bg-[#00150E] bg-opacity-80 rounded-2xl shadow-2xl border border-[#97FBE4]/30 p-8 flex flex-col gap-6">
         <h1 className="text-3xl font-bold text-[#97FBE4] mb-2">Active Protocols</h1>
-        <button onClick={handleActiveProtocols} className="px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition" disabled={activeLoading}>
+        <button onClick={handleActiveProtocols} className="api-btn px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition" disabled={activeLoading}>
           {activeLoading ? "Loading..." : "Fetch Active Protocols"}
         </button>
         {activeError && <div className="text-red-400 font-bold">Error: {activeError}</div>}
@@ -105,7 +105,7 @@ export default function GluexDemo() {
           <label className="text-[#97FBE4] font-semibold">Input Token
             <input className="w-full mt-1 p-2 rounded bg-black text-white border border-[#97FBE4]/40 focus:outline-none focus:border-[#97FBE4]" value={histParams.input_token} onChange={e => setHistParams(p => ({ ...p, input_token: e.target.value }))} required />
           </label>
-          <button type="submit" className="px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition" disabled={histLoading}>
+          <button type="submit" className="api-btn px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition" disabled={histLoading}>
             {histLoading ? "Loading..." : "Get Historical APY"}
           </button>
         </form>
@@ -134,7 +134,7 @@ export default function GluexDemo() {
           <label className="text-[#97FBE4] font-semibold">Input Amount
             <input className="w-full mt-1 p-2 rounded bg-black text-white border border-[#97FBE4]/40 focus:outline-none focus:border-[#97FBE4]" value={diluteParams.input_amount} onChange={e => setDiluteParams(p => ({ ...p, input_amount: e.target.value }))} required />
           </label>
-          <button type="submit" className="px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition" disabled={diluteLoading}>
+          <button type="submit" className="api-btn px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition" disabled={diluteLoading}>
             {diluteLoading ? "Loading..." : "Get Diluted APY"}
           </button>
         </form>
@@ -160,7 +160,7 @@ export default function GluexDemo() {
           <label className="text-[#97FBE4] font-semibold">Foreign Token
             <input className="w-full mt-1 p-2 rounded bg-black text-white border border-[#97FBE4]/40 focus:outline-none focus:border-[#97FBE4]" value={exchangeParams[0].foreign_token} onChange={e => setExchangeParams(p => [{ ...p[0], foreign_token: e.target.value }])} required />
           </label>
-          <button type="submit" className="px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition" disabled={exchangeLoading}>
+          <button type="submit" className="api-btn px-6 py-2 rounded-full bg-[#97FBE4] text-black font-bold text-lg shadow-lg hover:bg-[#7be3c7] transition" disabled={exchangeLoading}>
             {exchangeLoading ? "Loading..." : "Get Exchange Rate"}
           </button>
         </form>
