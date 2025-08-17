@@ -44,17 +44,50 @@ export default function HyperEVMSimulatorPage() {
 
   // UI state
   const [activeTab, setActiveTab] = useState<'single' | 'bundle' | 'analysis'>('single');
+  
+  // Blockchain information state
+  const [blockchainInfo, setBlockchainInfo] = useState<any>(null);
+  const [gasInfo, setGasInfo] = useState<any>(null);
+  const [mempoolInfo, setMempoolInfo] = useState<any>(null);
+  const [blockchainLoading, setBlockchainLoading] = useState(false);
   const [shareableLink, setShareableLink] = useState("");
 
   // Initialize simulator when network changes
   useEffect(() => {
-    setSimulator(new HyperEVMSimulator(network));
+    const newSimulator = new HyperEVMSimulator(network);
+    setSimulator(newSimulator);
+    
+    // Fetch initial blockchain info
+    fetchBlockchainInfo(newSimulator);
   }, [network]);
+
+  // Fetch blockchain information
+  const fetchBlockchainInfo = async (sim?: HyperEVMSimulator) => {
+    const currentSimulator = sim || simulator;
+    if (!currentSimulator) return;
+    
+    setBlockchainLoading(true);
+    try {
+      const [blockchain, gas, mempool] = await Promise.all([
+        currentSimulator.getBlockchainInfo().catch(() => null),
+        currentSimulator.getGasInfo().catch(() => null),
+        currentSimulator.getMempoolInfo().catch(() => null)
+      ]);
+      
+      setBlockchainInfo(blockchain);
+      setGasInfo(gas);
+      setMempoolInfo(mempool);
+    } catch (error) {
+      console.error('Error fetching blockchain info:', error);
+    } finally {
+      setBlockchainLoading(false);
+    }
+  };
 
     // Predefined scenarios for testing
   const scenarios = [
     {
-      name: "Simple ETH Transfer",
+      name: "Simple HYPE Transfer",
       description: "Transfer 1 HYPE to another address",
       params: {
         to: "0x742D35Cc6634c0532925A3B8d7C9DD7fEAd9c027",
@@ -83,7 +116,7 @@ export default function HyperEVMSimulatorPage() {
     },
     {
       name: "High Value Transfer",
-      description: "Large ETH transfer (100 HYPE) - tests whale scenarios",
+      description: "Large HYPE transfer (100 HYPE) - tests whale scenarios",
       params: {
         to: "0x742D35Cc6634c0532925A3B8d7C9DD7fEAd9c027",
         value: "100.0",
@@ -141,7 +174,7 @@ export default function HyperEVMSimulatorPage() {
     {
       name: "Simple Transfer",
       icon: "💰",
-      description: "Basic ETH transfer between accounts",
+      description: "Basic HYPE transfer between accounts",
       fromAddress: "0x742d35Cc6C4BA3b8B68d3e9Ea9A7C0C1b3C5aBe1",
       toAddress: "0x742d35Cc6C4BA3b8B68d3e9Ea9A7C0C1b3C5aBe2",
       value: "1.0",
@@ -413,6 +446,142 @@ export default function HyperEVMSimulatorPage() {
           </div>
         </motion.div>
 
+        {/* Blockchain Information Dashboard */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="mb-8 bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-xl p-6"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-bold text-emerald-400">🔗 HyperEVM Network Status</h3>
+            <button
+              onClick={() => fetchBlockchainInfo()}
+              disabled={blockchainLoading}
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            >
+              {blockchainLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <span>Refreshing...</span>
+                </>
+              ) : (
+                <>
+                  <span>🔄</span>
+                  <span>Refresh</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          {blockchainInfo && (
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-600">
+                <div className="text-xs text-gray-400 mb-1">Block Number</div>
+                <div className="text-lg font-bold text-white">#{blockchainInfo.blockNumber}</div>
+              </div>
+              
+              <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-600">
+                <div className="text-xs text-gray-400 mb-1">Network Status</div>
+                <div className={`text-lg font-bold ${
+                  blockchainInfo.networkStatus === 'healthy' ? 'text-green-400' :
+                  blockchainInfo.networkStatus === 'degraded' ? 'text-yellow-400' : 'text-red-400'
+                }`}>
+                  {blockchainInfo.networkStatus === 'healthy' ? '🟢' : 
+                   blockchainInfo.networkStatus === 'degraded' ? '🟡' : '🔴'} 
+                  {blockchainInfo.networkStatus}
+                </div>
+              </div>
+
+              <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-600">
+                <div className="text-xs text-gray-400 mb-1">Gas Price</div>
+                <div className="text-lg font-bold text-emerald-400">{blockchainInfo.gasPrice}</div>
+              </div>
+
+              <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-600">
+                <div className="text-xs text-gray-400 mb-1">Block Time</div>
+                <div className="text-lg font-bold text-blue-400">{blockchainInfo.blockTime}s</div>
+              </div>
+
+              {mempoolInfo && (
+                <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-600">
+                  <div className="text-xs text-gray-400 mb-1">Pending TXs</div>
+                  <div className="text-lg font-bold text-purple-400">{mempoolInfo.pendingCount}</div>
+                </div>
+              )}
+
+              <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-600">
+                <div className="text-xs text-gray-400 mb-1">Chain ID</div>
+                <div className="text-lg font-bold text-yellow-400">{blockchainInfo.chainId}</div>
+              </div>
+            </div>
+          )}
+
+          {gasInfo && (
+            <div className="mt-4 bg-gray-800/30 p-4 rounded-lg border border-gray-600">
+              <h4 className="text-sm font-semibold text-emerald-400 mb-3">⛽ Gas Information</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <div className="text-xs text-gray-400 mb-2">Suggested Gas Prices</div>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">Slow:</span>
+                      <span className="text-green-400">{gasInfo.suggestedGasPrice.slow}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">Standard:</span>
+                      <span className="text-yellow-400">{gasInfo.suggestedGasPrice.standard}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">Fast:</span>
+                      <span className="text-red-400">{gasInfo.suggestedGasPrice.fast}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <div className="text-xs text-gray-400 mb-2">Gas Limits</div>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">Simple TX:</span>
+                      <span className="text-blue-400">{gasInfo.gasLimit.simple}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">Contract:</span>
+                      <span className="text-blue-400">{gasInfo.gasLimit.contract}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">Complex:</span>
+                      <span className="text-blue-400">{gasInfo.gasLimit.complex}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {mempoolInfo && (
+                  <div>
+                    <div className="text-xs text-gray-400 mb-2">Mempool Status</div>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-300">Congestion:</span>
+                        <span className={`font-medium ${
+                          mempoolInfo.congestionLevel === 'low' ? 'text-green-400' :
+                          mempoolInfo.congestionLevel === 'medium' ? 'text-yellow-400' : 'text-red-400'
+                        }`}>
+                          {mempoolInfo.congestionLevel}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-300">Avg Gas:</span>
+                        <span className="text-purple-400">{mempoolInfo.avgGasPrice}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </motion.div>
+
         {/* Tab Navigation */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -471,7 +640,7 @@ export default function HyperEVMSimulatorPage() {
                 <div>
                   <h5 className="font-semibold text-emerald-400 mb-1">Smart Balance Management</h5>
                   <p className="text-emerald-200 text-sm leading-relaxed">
-                    Our simulator automatically provides 10,000 ETH test balance when needed, eliminating "insufficient funds" errors. 
+                    Our simulator automatically provides 10,000 HYPE test balance when needed, eliminating "insufficient funds" errors. 
                     Perfect for testing whale transactions, DeFi interactions, and complex scenarios without requiring actual funds!
                   </p>
                 </div>
@@ -720,7 +889,7 @@ export default function HyperEVMSimulatorPage() {
                       </div>
                       <p className="text-xs text-gray-400 leading-relaxed">{scenario.description}</p>
                       <div className="mt-2 text-xs text-emerald-400 font-medium">
-                        Value: {scenario.value} ETH
+                        Value: {scenario.value} HYPE
                       </div>
                     </button>
                   ))}

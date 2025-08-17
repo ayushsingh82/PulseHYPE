@@ -555,7 +555,7 @@ export class HyperEVMSimulator {
       // For simulation purposes, we'll use state overrides to ensure sufficient balance
       const stateOverride = {
         [tx.from]: {
-          balance: '0x21e19e0c9bab2400000' // 10000 ETH in hex
+          balance: '0x21e19e0c9bab2400000' // 10000 HYPE in hex
         }
       };
       
@@ -796,6 +796,218 @@ export class HyperEVMSimulator {
         gasEfficiencyScore: 85
       }
     };
+  }
+
+  /**
+   * Get comprehensive blockchain information
+   */
+  async getBlockchainInfo(): Promise<{
+    blockNumber: number;
+    gasPrice: string;
+    gasLimit: string;
+    baseFeePerGas?: string;
+    pendingTransactions: number;
+    networkId: string;
+    chainId: string;
+    nodeInfo: string;
+    difficulty: string;
+    totalDifficulty: string;
+    hashRate?: string;
+    blockTime: number;
+    networkStatus: 'healthy' | 'degraded' | 'down';
+  }> {
+    try {
+      const provider = this.provider;
+      
+      // Get latest block with full transaction data
+      const [
+        latestBlock,
+        gasPrice,
+        networkInfo,
+        pendingBlock
+      ] = await Promise.all([
+        provider.getBlock('latest', true),
+        provider.send('eth_gasPrice', []),
+        provider.getNetwork(),
+        provider.getBlock('pending', true).catch(() => null)
+      ]);
+
+      if (!latestBlock) {
+        throw new Error('Unable to fetch latest block');
+      }
+
+      // Calculate pending transactions
+      const pendingTxCount = pendingBlock?.transactions?.length || 0;
+      
+      // Estimate block time (average time between blocks)
+      const blockTime = await this.estimateBlockTime();
+      
+      // Get network status
+      const networkStatus = await this.getNetworkStatus();
+
+      return {
+        blockNumber: latestBlock.number,
+        gasPrice: utils.formatUnits(BigInt(gasPrice), 'gwei') + ' gwei',
+        gasLimit: latestBlock.gasLimit.toString(),
+        baseFeePerGas: latestBlock.baseFeePerGas ? 
+          utils.formatUnits(latestBlock.baseFeePerGas, 'gwei') + ' gwei' : undefined,
+        pendingTransactions: pendingTxCount,
+        networkId: networkInfo.chainId.toString(),
+        chainId: networkInfo.chainId.toString(),
+        nodeInfo: `HyperEVM ${this.config.chainId === 998 ? 'Mainnet' : 'Testnet'}`,
+        difficulty: latestBlock.difficulty?.toString() || '0',
+        totalDifficulty: '0', // HyperEVM doesn't use PoW
+        blockTime: blockTime,
+        networkStatus
+      };
+    } catch (error) {
+      console.error('Error fetching blockchain info:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get detailed gas information
+   */
+  async getGasInfo(): Promise<{
+    currentGasPrice: string;
+    suggestedGasPrice: {
+      slow: string;
+      standard: string;
+      fast: string;
+    };
+    baseFeePerGas?: string;
+    maxPriorityFeePerGas?: string;
+    gasLimit: {
+      simple: string;
+      contract: string;
+      complex: string;
+    };
+  }> {
+    try {
+      const provider = this.provider;
+      const [gasPrice, latestBlock] = await Promise.all([
+        provider.send('eth_gasPrice', []),
+        provider.getBlock('latest')
+      ]);
+
+      const gasPriceGwei = utils.formatUnits(BigInt(gasPrice), 'gwei');
+      const baseFee = latestBlock?.baseFeePerGas ? 
+        utils.formatUnits(latestBlock.baseFeePerGas, 'gwei') : null;
+
+      return {
+        currentGasPrice: gasPriceGwei + ' gwei',
+        suggestedGasPrice: {
+          slow: (parseFloat(gasPriceGwei) * 0.8).toFixed(2) + ' gwei',
+          standard: gasPriceGwei + ' gwei',
+          fast: (parseFloat(gasPriceGwei) * 1.2).toFixed(2) + ' gwei'
+        },
+        baseFeePerGas: baseFee ? baseFee + ' gwei' : undefined,
+        maxPriorityFeePerGas: '2.0 gwei', // Standard for HyperEVM
+        gasLimit: {
+          simple: '21000', // Simple transfer
+          contract: '100000', // Contract interaction
+          complex: '500000' // Complex DeFi operations
+        }
+      };
+    } catch (error) {
+      console.error('Error fetching gas info:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get mempool information
+   */
+  async getMempoolInfo(): Promise<{
+    pendingCount: number;
+    queuedCount: number;
+    avgGasPrice: string;
+    avgGasLimit: string;
+    congestionLevel: 'low' | 'medium' | 'high';
+  }> {
+    try {
+      const provider = this.provider;
+      const pendingBlock = await provider.getBlock('pending', true).catch(() => null);
+      
+      const pendingTxs = pendingBlock?.transactions || [];
+      const pendingCount = pendingTxs.length;
+      
+      // Calculate average gas price and limit from pending transactions
+      let avgGasPrice = BigInt(0);
+      let avgGasLimit = BigInt(0);
+      
+      if (pendingTxs.length > 0) {
+        for (const tx of pendingTxs.slice(0, 100)) { // Sample first 100 transactions
+          if (typeof tx === 'object' && tx && 'gasPrice' in tx && 'gasLimit' in tx) {
+            avgGasPrice += BigInt((tx as any).gasPrice || 0);
+            avgGasLimit += BigInt((tx as any).gasLimit || 21000);
+          }
+        }
+        avgGasPrice = avgGasPrice / BigInt(pendingTxs.length);
+        avgGasLimit = avgGasLimit / BigInt(pendingTxs.length);
+      }
+
+      // Determine congestion level
+      let congestionLevel: 'low' | 'medium' | 'high' = 'low';
+      if (pendingCount > 1000) congestionLevel = 'high';
+      else if (pendingCount > 500) congestionLevel = 'medium';
+
+      return {
+        pendingCount,
+        queuedCount: 0, // HyperEVM doesn't have separate queue
+        avgGasPrice: avgGasPrice > 0 ? utils.formatUnits(avgGasPrice, 'gwei') + ' gwei' : '0 gwei',
+        avgGasLimit: avgGasLimit.toString(),
+        congestionLevel
+      };
+    } catch (error) {
+      console.error('Error fetching mempool info:', error);
+      return {
+        pendingCount: 0,
+        queuedCount: 0,
+        avgGasPrice: '0 gwei',
+        avgGasLimit: '21000',
+        congestionLevel: 'low'
+      };
+    }
+  }
+
+  /**
+   * Estimate average block time
+   */
+  private async estimateBlockTime(): Promise<number> {
+    try {
+      const provider = this.provider;
+      const latestBlock = await provider.getBlock('latest');
+      const prevBlock = await provider.getBlock(latestBlock!.number - 10);
+      
+      if (latestBlock && prevBlock) {
+        const timeDiff = latestBlock.timestamp - prevBlock.timestamp;
+        return timeDiff / 10; // Average time per block
+      }
+      
+      return 2; // Default 2 seconds for HyperEVM
+    } catch {
+      return 2; // Fallback
+    }
+  }
+
+  /**
+   * Get network health status
+   */
+  private async getNetworkStatus(): Promise<'healthy' | 'degraded' | 'down'> {
+    try {
+      const provider = this.provider;
+      const start = Date.now();
+      await provider.getBlockNumber();
+      const latency = Date.now() - start;
+      
+      if (latency < 1000) return 'healthy';
+      if (latency < 3000) return 'degraded';
+      return 'down';
+    } catch {
+      return 'down';
+    }
   }
 
   private calculateRiskLevel(vulnerabilities: Vulnerability[]): 'low' | 'medium' | 'high' | 'critical' {
@@ -1285,6 +1497,31 @@ export const utils = {
       return `${integerPart.toString()}.${decimalPart}`;
     } catch {
       return '0.000000';
+    }
+  },
+
+  // Format units helper similar to ethers formatUnits
+  formatUnits: (value: string | number | bigint, unit: string | number = 18): string => {
+    try {
+      const decimals = typeof unit === 'string' ? 
+        (unit === 'gwei' ? 9 : unit === 'ether' ? 18 : 18) : unit;
+      
+      const valueBI = typeof value === 'bigint' ? value : utils.safeBigInt(value);
+      const divisor = BigInt(10 ** decimals);
+      
+      const integerPart = valueBI / divisor;
+      const remainder = valueBI % divisor;
+      
+      if (remainder === BigInt(0)) {
+        return integerPart.toString();
+      }
+      
+      const decimalPart = remainder.toString().padStart(decimals, '0');
+      const trimmed = decimalPart.replace(/0+$/, '');
+      
+      return trimmed ? `${integerPart.toString()}.${trimmed}` : integerPart.toString();
+    } catch {
+      return '0';
     }
   }
 };
