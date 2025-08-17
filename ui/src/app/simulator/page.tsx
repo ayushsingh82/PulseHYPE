@@ -74,31 +74,124 @@ export default function HyperEVMSimulatorPage() {
     },
     {
       name: "Contract Deployment",
-      description: "Deploy a simple contract",
+      description: "Deploy a simple storage contract",
       params: {
         value: "0.0",
         data: "0x608060405234801561001057600080fd5b50610150806100206000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80636057361d1461003b578063b05784b814610057575b600080fd5b610055600480360381019061005091906100c3565b610075565b005b61005f61007f565b60405161006c91906100ff565b60405180910390f35b8060008190555050565b60008054905090565b600080fd5b6000819050919050565b6100a08161008d565b81146100ab57600080fd5b50565b6000813590506100bd81610097565b92915050565b6000602082840312156100d9576100d8610088565b5b60006100e7848285016100ae565b91505092915050565b6100f98161008d565b82525050565b600060208201905061011460008301846100f0565b9291505056fea2646970667358221220a2d45c0b77a5f6d3c8c4d4e7f8e9f2a5b6c9d0e1f264736f6c63430008120033",
         gasLimit: "200000"
       }
+    },
+    {
+      name: "High Value Transfer",
+      description: "Large ETH transfer (100 HYPE) - tests whale scenarios",
+      params: {
+        to: "0x742D35Cc6634c0532925A3B8d7C9DD7fEAd9c027",
+        value: "100.0",
+        gasLimit: "21000"
+      }
+    },
+    {
+      name: "Complex DeFi Interaction",
+      description: "ERC20 approve call - common DeFi pattern",
+      params: {
+        to: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+        value: "0.0",
+        data: "0x095ea7b3000000000000000000000000742D35Cc6634c0532925A3B8d7C9DD7fEAd9c027ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        gasLimit: "100000"
+      }
     }
   ];
 
-  // Load scenario data
-  const loadScenario = (scenarioIndex: number) => {
-    const scenario = scenarios[scenarioIndex];
-    if (scenario) {
-      setToAddress(scenario.params.to || "");
-      setValue(scenario.params.value || "");
-      setData(scenario.params.data || "");
-      setGasLimit(scenario.params.gasLimit || "");
-      
-      // Clear previous results
-      setSimulationResult(null);
-      setSimulationError("");
+  // Load scenario data - supports both old scenarios array and new enhanced scenarios
+  const loadScenario = (scenarioOrIndex: any) => {
+    let scenario;
+    
+    if (typeof scenarioOrIndex === 'number') {
+      // Old format - index into scenarios array
+      scenario = scenarios[scenarioOrIndex];
+      if (scenario) {
+        setToAddress(scenario.params.to || "");
+        setValue(scenario.params.value || "");
+        setData(scenario.params.data || "");
+        setGasLimit(scenario.params.gasLimit || "");
+      }
+    } else {
+      // New format - scenario object
+      scenario = scenarioOrIndex;
+      setFromAddress(scenario.fromAddress);
+      setToAddress(scenario.toAddress);
+      setValue(scenario.value);
+      setGasLimit(scenario.gasLimit);
+      setGasPrice(scenario.gasPrice);
+      if (scenario.data) {
+        setData(scenario.data);
+      } else {
+        setData("");
+      }
     }
+    
+    // Clear previous results
+    setSimulationResult(null);
+    setSimulationError("");
   };
 
   // Main simulation function
+  // Enhanced scenarios for testing
+  const enhancedScenarios = [
+    {
+      name: "Simple Transfer",
+      icon: "💰",
+      description: "Basic ETH transfer between accounts",
+      fromAddress: "0x742d35Cc6C4BA3b8B68d3e9Ea9A7C0C1b3C5aBe1",
+      toAddress: "0x742d35Cc6C4BA3b8B68d3e9Ea9A7C0C1b3C5aBe2",
+      value: "1.0",
+      gasLimit: "21000",
+      gasPrice: "20"
+    },
+    {
+      name: "Large Transfer",
+      icon: "🐋",
+      description: "High-value transfer to test whale scenarios",
+      fromAddress: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+      toAddress: "0x742d35Cc6C4BA3b8B68d3e9Ea9A7C0C1b3C5aBe2",
+      value: "1000.0",
+      gasLimit: "21000",
+      gasPrice: "50"
+    },
+    {
+      name: "Smart Contract",
+      icon: "📄",
+      description: "Contract interaction with complex data",
+      fromAddress: "0x742d35Cc6C4BA3b8B68d3e9Ea9A7C0C1b3C5aBe1",
+      toAddress: "0xa0b86a33e6d616c93c8c8f3c9b3d4ed2a8b3d3c4",
+      value: "0.0",
+      gasLimit: "200000",
+      gasPrice: "30",
+      data: "0xa9059cbb000000000000000000000000742d35cc6c4ba3b8b68d3e9ea9a7c0c1b3c5abe200000000000000000000000000000000000000000000000de0b6b3a7640000"
+    },
+    {
+      name: "DeFi Interaction",
+      icon: "🔄",
+      description: "Complex DeFi protocol interaction",
+      fromAddress: "0x742d35Cc6C4BA3b8B68d3e9Ea9A7C0C1b3C5aBe1",
+      toAddress: "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+      value: "5.0",
+      gasLimit: "300000",
+      gasPrice: "40",
+      data: "0x7ff36ab5000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      name: "Gas Optimization",
+      icon: "⚡",
+      description: "Test transaction with optimized gas settings",
+      fromAddress: "0x742d35Cc6C4BA3b8B68d3e9Ea9A7C0C1b3C5aBe1",
+      toAddress: "0x742d35Cc6C4BA3b8B68d3e9Ea9A7C0C1b3C5aBe2",
+      value: "0.1",
+      gasLimit: "21000",
+      gasPrice: "1"
+    }
+  ];
+
   const handleSimulation = async () => {
     if (!simulator) {
       setSimulationError("Simulator not initialized");
@@ -248,10 +341,35 @@ export default function HyperEVMSimulatorPage() {
             </span>{" "}
             Transaction Simulator
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
             Comprehensive transaction simulation platform for HyperEVM ecosystem. 
             Test, debug, and optimize your transactions before execution.
           </p>
+          
+          {/* Feature Highlights */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div className="bg-gradient-to-br from-emerald-500/10 to-green-600/10 p-6 rounded-xl border border-emerald-500/20">
+              <div className="text-3xl mb-3">🚀</div>
+              <h3 className="font-semibold text-emerald-400 mb-2">Auto-Balance Handling</h3>
+              <p className="text-gray-300 text-sm">
+                No more "insufficient funds" errors! Automatically provides test balance for realistic simulations.
+              </p>
+            </div>
+            <div className="bg-gradient-to-br from-blue-500/10 to-cyan-600/10 p-6 rounded-xl border border-blue-500/20">
+              <div className="text-3xl mb-3">🔬</div>
+              <h3 className="font-semibold text-blue-400 mb-2">Advanced Analysis</h3>
+              <p className="text-gray-300 text-sm">
+                Historical simulation, state overrides, whale testing, access lists, and asset tracking.
+              </p>
+            </div>
+            <div className="bg-gradient-to-br from-purple-500/10 to-pink-600/10 p-6 rounded-xl border border-purple-500/20">
+              <div className="text-3xl mb-3">⚡</div>
+              <h3 className="font-semibold text-purple-400 mb-2">HyperEVM Optimized</h3>
+              <p className="text-gray-300 text-sm">
+                Native support for HyperEVM's low latency, precompiles, and cross-chain features.
+              </p>
+            </div>
+          </div>
         </motion.div>
 
         {/* Network and RPC Selection */}
@@ -304,9 +422,9 @@ export default function HyperEVMSimulatorPage() {
         >
           <div className="flex space-x-4 border-b border-gray-700">
             {[
-              { id: 'single', label: '🎯 Single Transaction', desc: 'Simulate individual transactions' },
+              { id: 'single', label: '🎯 Single Transaction', desc: 'Simulate individual transactions with auto-balance' },
               { id: 'bundle', label: '📦 Bundle Simulation', desc: 'Test multiple transactions together' },
-              { id: 'analysis', label: '🔍 Advanced Analysis', desc: 'Deep dive into transaction behavior' }
+              { id: 'analysis', label: '🔍 Advanced Analysis', desc: 'Deep dive with historical & whale testing' }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -321,6 +439,15 @@ export default function HyperEVMSimulatorPage() {
                 <div className="text-xs text-gray-500">{tab.desc}</div>
               </button>
             ))}
+            
+            {/* Quick Link to Advanced Features Page */}
+            <a
+              href="/advanced"
+              className="px-6 py-3 text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors border-l border-gray-600"
+            >
+              <div>🚀 Advanced Features</div>
+              <div className="text-xs text-gray-500">Full feature showcase</div>
+            </a>
           </div>
         </motion.div>
 
@@ -332,6 +459,25 @@ export default function HyperEVMSimulatorPage() {
             transition={{ duration: 0.5 }}
             className="space-y-6"
           >
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-emerald-400 mb-2">🎯 Single Transaction Simulator</h2>
+              <p className="text-gray-300">Test individual transactions with comprehensive analysis and auto-balance handling</p>
+            </div>
+
+            {/* Enhanced Info Banner */}
+            <div className="bg-gradient-to-r from-emerald-900/20 to-blue-900/20 border border-emerald-400/30 rounded-lg p-4 mb-6">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">🚀</span>
+                <div>
+                  <h5 className="font-semibold text-emerald-400 mb-1">Smart Balance Management</h5>
+                  <p className="text-emerald-200 text-sm leading-relaxed">
+                    Our simulator automatically provides 10,000 ETH test balance when needed, eliminating "insufficient funds" errors. 
+                    Perfect for testing whale transactions, DeFi interactions, and complex scenarios without requiring actual funds!
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Scenario Selection */}
             <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
               <h3 className="text-xl font-bold text-emerald-400 mb-4">🚀 Quick Start Scenarios</h3>
@@ -423,55 +569,191 @@ export default function HyperEVMSimulatorPage() {
               {/* Advanced Parameters Toggle */}
               <button
                 onClick={() => setShowAdvanced(!showAdvanced)}
-                className="mb-4 text-emerald-400 hover:text-emerald-300 font-medium"
+                className="mb-4 text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-2"
               >
-                {showAdvanced ? '▼' : '▶'} Advanced Parameters
+                {showAdvanced ? '🔽' : '🔼'} Advanced Simulation Features
+                <span className="text-xs text-gray-400">(Balance handling, impersonation, state overrides)</span>
               </button>
 
               {showAdvanced && (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 p-4 bg-gray-700/30 rounded-lg border border-gray-600">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Max Fee Per Gas</label>
-                    <input
-                      type="text"
-                      value={maxFeePerGas}
-                      onChange={(e) => setMaxFeePerGas(e.target.value)}
-                      placeholder="Auto"
-                      className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    />
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="mb-6 space-y-4 bg-gray-800/30 p-4 rounded-lg border border-gray-600"
+                >
+                  {/* Info Banner */}
+                  <div className="bg-emerald-900/20 border border-emerald-400/30 rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <span className="text-emerald-400 text-xl">✨</span>
+                      <div>
+                        <h5 className="font-semibold text-emerald-400">Enhanced Simulation Engine</h5>
+                        <p className="text-emerald-200 text-sm">
+                          Automatically handles insufficient balance issues by providing test funds. 
+                          Perfect for whale testing and complex scenarios!
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Max Priority Fee</label>
-                    <input
-                      type="text"
-                      value={maxPriorityFeePerGas}
-                      onChange={(e) => setMaxPriorityFeePerGas(e.target.value)}
-                      placeholder="Auto"
-                      className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    />
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Max Fee Per Gas (gwei)</label>
+                      <input
+                        type="text"
+                        value={maxFeePerGas}
+                        onChange={(e) => setMaxFeePerGas(e.target.value)}
+                        placeholder="Auto"
+                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Max Priority Fee (gwei)</label>
+                      <input
+                        type="text"
+                        value={maxPriorityFeePerGas}
+                        onChange={(e) => setMaxPriorityFeePerGas(e.target.value)}
+                        placeholder="Auto"
+                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Block Number</label>
+                      <input
+                        type="text"
+                        value={blockNumber}
+                        onChange={(e) => setBlockNumber(e.target.value)}
+                        placeholder="Latest"
+                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Block Number</label>
-                    <input
-                      type="text"
-                      value={blockNumber}
-                      onChange={(e) => setBlockNumber(e.target.value)}
-                      placeholder="Latest"
-                      className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    />
+
+                  {/* Advanced Feature Buttons */}
+                  <div className="border-t border-gray-600 pt-4">
+                    <h5 className="text-sm font-semibold text-gray-300 mb-3">🚀 Advanced Analysis Tools</h5>
+                    <div className="flex flex-wrap gap-3">
+                      <button
+                        onClick={async () => {
+                          if (!simulator) return;
+                          try {
+                            const result = await simulator.generateAccessListForTransaction({
+                              to: toAddress,
+                              value: value,
+                              data: data || '0x'
+                            });
+                            console.log('Access List Result:', result);
+                            alert(JSON.stringify(result, null, 2));
+                          } catch (err: any) {
+                            alert(`Error: ${err.message}`);
+                          }
+                        }}
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+                      >
+                        📋 Generate Access List
+                      </button>
+                      
+                      <button
+                        onClick={async () => {
+                          if (!simulator || !toAddress) return;
+                          try {
+                            const result = await simulator.trackAssetChanges({
+                              to: toAddress,
+                              value: value,
+                              data: data || '0x',
+                              from: fromAddress || undefined
+                            });
+                            console.log('Asset Tracking Result:', result);
+                            alert('Asset tracking complete! Check console for details.');
+                          } catch (err: any) {
+                            alert(`Error: ${err.message}`);
+                          }
+                        }}
+                        disabled={!toAddress}
+                        className="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white rounded-lg text-sm font-medium transition-colors"
+                      >
+                        💰 Track Asset Changes
+                      </button>
+
+                      <button
+                        onClick={async () => {
+                          if (!simulator || !toAddress) return;
+                          try {
+                            const whaleAddress = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
+                            const result = await simulator.simulateWithImpersonation({
+                              to: toAddress,
+                              value: value,
+                              data: data || '0x'
+                            }, whaleAddress);
+                            setSimulationResult(result);
+                            alert('Whale simulation complete! Check results below.');
+                          } catch (err: any) {
+                            alert(`Error: ${err.message}`);
+                          }
+                        }}
+                        disabled={!toAddress}
+                        className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-600 text-white rounded-lg text-sm font-medium transition-colors"
+                      >
+                        🐋 Whale Simulation
+                      </button>
+                    </div>
                   </div>
-                </div>
+                </motion.div>
               )}
+
+              {/* Test Scenarios */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-300 mb-3">
+                  💡 Sample Test Scenarios - <span className="text-emerald-400">Auto-funded for testing!</span>
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {enhancedScenarios.map((scenario, index) => (
+                    <button
+                      key={index}
+                      onClick={() => loadScenario(scenario)}
+                      className="p-3 bg-gray-700 hover:bg-gray-600 rounded-lg border border-gray-600 hover:border-emerald-500 transition-all text-left group"
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-lg">{scenario.icon}</span>
+                        <span className="text-sm font-medium text-gray-200 group-hover:text-emerald-300">
+                          {scenario.name}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-400 leading-relaxed">{scenario.description}</p>
+                      <div className="mt-2 text-xs text-emerald-400 font-medium">
+                        Value: {scenario.value} ETH
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
 
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-4">
                 <button
                   onClick={handleSimulation}
                   disabled={simulationLoading || (!toAddress && !data)}
-                  className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-colors"
+                  className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
                 >
-                  {simulationLoading ? '🔄 Simulating...' : 
-                   (!toAddress && data) ? '🚀 Deploy Contract' : '🎯 Simulate Transaction'}
+                  {simulationLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <span>Simulating with Auto Balance...</span>
+                    </>
+                  ) : (
+                    <>
+                      {(!toAddress && data) ? (
+                        <>
+                          <span>🚀</span>
+                          <span>Deploy Contract</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>✨</span>
+                          <span>Smart Simulate (Auto-funded)</span>
+                        </>
+                      )}
+                    </>
+                  )}
                 </button>
                 
                 <button
@@ -494,6 +776,18 @@ export default function HyperEVMSimulatorPage() {
               {simulationError && (
                 <div className="mt-4 p-4 bg-red-900/30 border border-red-500/50 rounded-lg text-red-300">
                   ❌ {simulationError}
+                </div>
+              )}
+
+              {simulationResult && !simulationError && (
+                <div className="mt-4 p-4 bg-emerald-900/30 border border-emerald-500/50 rounded-lg text-emerald-300">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-emerald-400">✅</span>
+                    <span className="font-semibold">Simulation Successful!</span>
+                  </div>
+                  <p className="text-sm text-emerald-200">
+                    Auto-balance feature ensured sufficient funds for testing. Check results below for detailed analysis.
+                  </p>
                 </div>
               )}
             </div>
