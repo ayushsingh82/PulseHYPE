@@ -160,6 +160,57 @@ export default function HyperEVMSimulator() {
   // Handlers
   const handleSimulation = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate required fields
+    if (!fromAddress.trim()) {
+      setSimulationError("From address is required");
+      return;
+    }
+    
+    if (!toAddress.trim()) {
+      setSimulationError("To address is required");
+      return;
+    }
+
+    // Validate address format (basic check)
+    const addressRegex = /^0x[a-fA-F0-9]{40}$/;
+    if (!addressRegex.test(fromAddress)) {
+      setSimulationError("Invalid from address format");
+      return;
+    }
+    
+    if (!addressRegex.test(toAddress)) {
+      setSimulationError("Invalid to address format");
+      return;
+    }
+
+    // Validate value if provided
+    if (value && value.trim() !== "") {
+      const valueNum = parseFloat(value);
+      if (isNaN(valueNum) || valueNum < 0) {
+        setSimulationError("Invalid value amount");
+        return;
+      }
+    }
+
+    // Validate gas limit if provided
+    if (gasLimit && gasLimit.trim() !== "") {
+      const gasNum = parseInt(gasLimit);
+      if (isNaN(gasNum) || gasNum <= 0) {
+        setSimulationError("Invalid gas limit");
+        return;
+      }
+    }
+
+    // Validate gas price if provided
+    if (gasPrice && gasPrice.trim() !== "") {
+      const gasPriceNum = parseFloat(gasPrice);
+      if (isNaN(gasPriceNum) || gasPriceNum <= 0) {
+        setSimulationError("Invalid gas price");
+        return;
+      }
+    }
+
     setSimulationLoading(true);
     setSimulationError("");
     setSimulationResult(null);
@@ -185,6 +236,38 @@ export default function HyperEVMSimulator() {
   };
 
   const handleGasEstimation = async () => {
+    // Validate required fields
+    if (!fromAddress.trim()) {
+      setGasEstimateError("From address is required");
+      return;
+    }
+    
+    if (!toAddress.trim()) {
+      setGasEstimateError("To address is required");
+      return;
+    }
+
+    // Validate address format (basic check)
+    const addressRegex = /^0x[a-fA-F0-9]{40}$/;
+    if (!addressRegex.test(fromAddress)) {
+      setGasEstimateError("Invalid from address format");
+      return;
+    }
+    
+    if (!addressRegex.test(toAddress)) {
+      setGasEstimateError("Invalid to address format");
+      return;
+    }
+
+    // Validate value if provided
+    if (value && value.trim() !== "") {
+      const valueNum = parseFloat(value);
+      if (isNaN(valueNum) || valueNum < 0) {
+        setGasEstimateError("Invalid value amount");
+        return;
+      }
+    }
+
     setGasEstimateLoading(true);
     setGasEstimateError("");
     setGasEstimateResult(null);

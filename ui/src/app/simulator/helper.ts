@@ -3,6 +3,56 @@
 
 // HyperEVM Transaction Simulation Helper Functions
 
+// Utility function to safely convert ETH value to Wei
+function ethToWei(ethValue: string): string {
+  if (!ethValue || ethValue.trim() === "" || ethValue === "0") {
+    return "0x0";
+  }
+  
+  try {
+    const valueFloat = parseFloat(ethValue);
+    if (isNaN(valueFloat) || valueFloat < 0) {
+      throw new Error(`Invalid ETH value: ${ethValue}`);
+    }
+    
+    if (valueFloat === 0) {
+      return "0x0";
+    }
+    
+    // Convert to wei using BigInt to handle large numbers properly
+    const valueInWei = BigInt(Math.floor(valueFloat * 1e18));
+    return "0x" + valueInWei.toString(16);
+  } catch (error) {
+    console.warn("Error converting ETH to Wei:", error);
+    return "0x0";
+  }
+}
+
+// Utility function to safely convert Gwei to Wei
+function gweiToWei(gweiValue: string): string {
+  if (!gweiValue || gweiValue.trim() === "" || gweiValue === "0") {
+    return "0x0";
+  }
+  
+  try {
+    const valueFloat = parseFloat(gweiValue);
+    if (isNaN(valueFloat) || valueFloat < 0) {
+      throw new Error(`Invalid Gwei value: ${gweiValue}`);
+    }
+    
+    if (valueFloat === 0) {
+      return "0x0";
+    }
+    
+    // Convert Gwei to Wei
+    const valueInWei = BigInt(Math.floor(valueFloat * 1e9));
+    return "0x" + valueInWei.toString(16);
+  } catch (error) {
+    console.warn("Error converting Gwei to Wei:", error);
+    return "0x0";
+  }
+}
+
 interface TransactionParams {
   from: string;
   to: string;
@@ -185,16 +235,16 @@ export async function simulateTransaction(
     const transactionData: any = {
       from: params.from,
       to: params.to,
-      value: params.value ? `0x${(parseFloat(params.value) * 1e18).toString(16)}` : "0x0",
+      value: ethToWei(params.value || "0"),
       data: params.data || "0x"
     };
 
     // Add gas parameters (prioritize EIP-1559 if available)
     if (params.maxFeePerGas && params.maxPriorityFeePerGas) {
-      transactionData.maxFeePerGas = `0x${(parseFloat(params.maxFeePerGas) * 1e9).toString(16)}`;
-      transactionData.maxPriorityFeePerGas = `0x${(parseFloat(params.maxPriorityFeePerGas) * 1e9).toString(16)}`;
+      transactionData.maxFeePerGas = gweiToWei(params.maxFeePerGas);
+      transactionData.maxPriorityFeePerGas = gweiToWei(params.maxPriorityFeePerGas);
     } else if (params.gasPrice) {
-      transactionData.gasPrice = `0x${(parseFloat(params.gasPrice) * 1e9).toString(16)}`;
+      transactionData.gasPrice = gweiToWei(params.gasPrice);
     }
 
     if (params.gas) {
@@ -655,7 +705,7 @@ export async function estimateGas(
     const transactionData = {
       from: params.from,
       to: params.to,
-      value: params.value ? `0x${(parseFloat(params.value) * 1e18).toString(16)}` : "0x0",
+      value: ethToWei(params.value || "0"),
       data: params.data || "0x"
     };
 
