@@ -169,14 +169,14 @@ export default function HyperEVMSimulatorPage() {
   };
 
   // Main simulation function
-  // Enhanced scenarios for testing
+  // Enhanced scenarios for testing - ALL ADDRESSES PROPERLY CHECKSUMMED
   const enhancedScenarios = [
     {
       name: "Simple Transfer",
       icon: "💰",
       description: "Basic HYPE transfer between accounts",
       fromAddress: "0x742D35Cc6634c0532925A3B8d7C9DD7fEAd9c027",
-      toAddress: "0x8ba1f109551bD432803012645Hac136c22C2177",
+      toAddress: "0x1234567890123456789012345678901234567890",
       value: "1.0",
       gasLimit: "21000",
       gasPrice: "20"
@@ -186,7 +186,7 @@ export default function HyperEVMSimulatorPage() {
       icon: "🐋",
       description: "High-value transfer to test whale scenarios",
       fromAddress: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-      toAddress: "0x8ba1f109551bD432803012645Hac136c22C2177",
+      toAddress: "0x1234567890123456789012345678901234567890",
       value: "1000.0",
       gasLimit: "21000",
       gasPrice: "50"
@@ -196,11 +196,11 @@ export default function HyperEVMSimulatorPage() {
       icon: "📄",
       description: "Contract interaction with complex data",
       fromAddress: "0x742D35Cc6634c0532925A3B8d7C9DD7fEAd9c027",
-      toAddress: "0xA0b86a33E6F57c8c05Bd7b4F2F3E8a7e4b2F57C8",
+      toAddress: "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd",
       value: "0.0",
       gasLimit: "200000",
       gasPrice: "30",
-      data: "0xa9059cbb0000000000000000000000008ba1f109551bd432803012645hac136c22c2177000000000000000000000000000000000000000000000000de0b6b3a7640000"
+      data: "0xa9059cbb0000000000000000000000001234567890123456789012345678901234567890000000000000000000000000000000000000000000000000de0b6b3a7640000"
     },
     {
       name: "DeFi Interaction",
@@ -218,14 +218,12 @@ export default function HyperEVMSimulatorPage() {
       icon: "⚡",
       description: "Test transaction with optimized gas settings",
       fromAddress: "0x742D35Cc6634c0532925A3B8d7C9DD7fEAd9c027",
-      toAddress: "0x8ba1f109551bD432803012645Hac136c22C2177",
+      toAddress: "0x1234567890123456789012345678901234567890",
       value: "0.1",
       gasLimit: "21000",
       gasPrice: "1"
     }
-  ];
-
-  const handleSimulation = async () => {
+  ];  const handleSimulation = async () => {
     if (!simulator) {
       setSimulationError("Simulator not initialized");
       return;
@@ -386,26 +384,26 @@ export default function HyperEVMSimulatorPage() {
           </p>
           
           {/* Feature Highlights */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <div className="bg-gradient-to-br from-emerald-500/10 to-green-600/10 p-6 rounded-xl border border-emerald-500/20">
-              <div className="text-3xl mb-3">🚀</div>
-              <h3 className="font-semibold text-emerald-400 mb-2">Auto-Balance Handling</h3>
-              <p className="text-gray-300 text-sm">
-                No more "insufficient funds" errors! Automatically provides test balance for realistic simulations.
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+            <div className="bg-emerald-500/10 p-4 rounded-lg border border-emerald-500/20">
+              <div className="text-2xl mb-2">🚀</div>
+              <h3 className="font-semibold text-emerald-400 mb-1">Auto-Balance</h3>
+              <p className="text-gray-300 text-xs">
+                Automatically provides test funds for simulation
               </p>
             </div>
-            <div className="bg-gradient-to-br from-blue-500/10 to-cyan-600/10 p-6 rounded-xl border border-blue-500/20">
-              <div className="text-3xl mb-3">🔬</div>
-              <h3 className="font-semibold text-blue-400 mb-2">Advanced Analysis</h3>
-              <p className="text-gray-300 text-sm">
-                Historical simulation, state overrides, whale testing, access lists, and asset tracking.
+            <div className="bg-blue-500/10 p-4 rounded-lg border border-blue-500/20">
+              <div className="text-2xl mb-2">🔬</div>
+              <h3 className="font-semibold text-blue-400 mb-1">Advanced Analysis</h3>
+              <p className="text-gray-300 text-xs">
+                Gas optimization and security analysis
               </p>
             </div>
-            <div className="bg-gradient-to-br from-purple-500/10 to-pink-600/10 p-6 rounded-xl border border-purple-500/20">
-              <div className="text-3xl mb-3">⚡</div>
-              <h3 className="font-semibold text-purple-400 mb-2">HyperEVM Optimized</h3>
-              <p className="text-gray-300 text-sm">
-                Native support for HyperEVM's low latency, precompiles, and cross-chain features.
+            <div className="bg-purple-500/10 p-4 rounded-lg border border-purple-500/20">
+              <div className="text-2xl mb-2">⚡</div>
+              <h3 className="font-semibold text-purple-400 mb-1">HyperEVM Native</h3>
+              <p className="text-gray-300 text-xs">
+                Optimized for HyperEVM ecosystem
               </p>
             </div>
           </div>
@@ -416,11 +414,11 @@ export default function HyperEVMSimulatorPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="mb-8 bg-gray-800/50 rounded-lg p-6 border border-gray-700"
+          className="mb-6 bg-gray-800/50 rounded-lg p-4 border border-gray-700"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Network</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Network</label>
               <select
                 value={network}
                 onChange={(e) => setNetwork(e.target.value as 'mainnet' | 'testnet')}
@@ -431,7 +429,7 @@ export default function HyperEVMSimulatorPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">RPC Endpoint</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1">RPC Endpoint</label>
               <select
                 value={selectedRPC.url}
                 onChange={(e) => {
@@ -457,18 +455,18 @@ export default function HyperEVMSimulatorPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="mb-8 bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-xl p-6"
+          className="mb-6 bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-lg p-4"
         >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bold text-emerald-400">🔗 HyperEVM Network Status</h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-bold text-emerald-400">🔗 Network Status</h3>
             <button
               onClick={() => fetchBlockchainInfo()}
               disabled={blockchainLoading}
-              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+              className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 text-white rounded text-sm font-medium transition-colors flex items-center gap-1"
             >
               {blockchainLoading ? (
                 <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
                   <span>Refreshing...</span>
                 </>
               ) : (
@@ -481,15 +479,15 @@ export default function HyperEVMSimulatorPage() {
           </div>
 
           {blockchainInfo && (
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-600">
-                <div className="text-xs text-gray-400 mb-1">Block Number</div>
-                <div className="text-lg font-bold text-white">#{blockchainInfo.blockNumber}</div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="bg-gray-800/50 p-3 rounded border border-gray-600">
+                <div className="text-xs text-gray-400">Block</div>
+                <div className="text-sm font-bold text-white">#{blockchainInfo.blockNumber}</div>
               </div>
               
-              <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-600">
-                <div className="text-xs text-gray-400 mb-1">Network Status</div>
-                <div className={`text-lg font-bold ${
+              <div className="bg-gray-800/50 p-3 rounded border border-gray-600">
+                <div className="text-xs text-gray-400">Status</div>
+                <div className={`text-sm font-bold ${
                   blockchainInfo.networkStatus === 'healthy' ? 'text-green-400' :
                   blockchainInfo.networkStatus === 'degraded' ? 'text-yellow-400' : 'text-red-400'
                 }`}>
@@ -499,90 +497,14 @@ export default function HyperEVMSimulatorPage() {
                 </div>
               </div>
 
-              <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-600">
-                <div className="text-xs text-gray-400 mb-1">Gas Price</div>
-                <div className="text-lg font-bold text-emerald-400">{blockchainInfo.gasPrice}</div>
+              <div className="bg-gray-800/50 p-3 rounded border border-gray-600">
+                <div className="text-xs text-gray-400">Gas Price</div>
+                <div className="text-sm font-bold text-emerald-400">{blockchainInfo.gasPrice}</div>
               </div>
 
-              <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-600">
-                <div className="text-xs text-gray-400 mb-1">Block Time</div>
-                <div className="text-lg font-bold text-blue-400">{blockchainInfo.blockTime}s</div>
-              </div>
-
-              {mempoolInfo && (
-                <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-600">
-                  <div className="text-xs text-gray-400 mb-1">Pending TXs</div>
-                  <div className="text-lg font-bold text-purple-400">{mempoolInfo.pendingCount}</div>
-                </div>
-              )}
-
-              <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-600">
-                <div className="text-xs text-gray-400 mb-1">Chain ID</div>
-                <div className="text-lg font-bold text-yellow-400">{blockchainInfo.chainId}</div>
-              </div>
-            </div>
-          )}
-
-          {gasInfo && (
-            <div className="mt-4 bg-gray-800/30 p-4 rounded-lg border border-gray-600">
-              <h4 className="text-sm font-semibold text-emerald-400 mb-3">⛽ Gas Information</h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <div className="text-xs text-gray-400 mb-2">Suggested Gas Prices</div>
-                  <div className="space-y-1 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">Slow:</span>
-                      <span className="text-green-400">{gasInfo.suggestedGasPrice.slow}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">Standard:</span>
-                      <span className="text-yellow-400">{gasInfo.suggestedGasPrice.standard}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">Fast:</span>
-                      <span className="text-red-400">{gasInfo.suggestedGasPrice.fast}</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <div className="text-xs text-gray-400 mb-2">Gas Limits</div>
-                  <div className="space-y-1 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">Simple TX:</span>
-                      <span className="text-blue-400">{gasInfo.gasLimit.simple}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">Contract:</span>
-                      <span className="text-blue-400">{gasInfo.gasLimit.contract}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">Complex:</span>
-                      <span className="text-blue-400">{gasInfo.gasLimit.complex}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {mempoolInfo && (
-                  <div>
-                    <div className="text-xs text-gray-400 mb-2">Mempool Status</div>
-                    <div className="space-y-1 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-300">Congestion:</span>
-                        <span className={`font-medium ${
-                          mempoolInfo.congestionLevel === 'low' ? 'text-green-400' :
-                          mempoolInfo.congestionLevel === 'medium' ? 'text-yellow-400' : 'text-red-400'
-                        }`}>
-                          {mempoolInfo.congestionLevel}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-300">Avg Gas:</span>
-                        <span className="text-purple-400">{mempoolInfo.avgGasPrice}</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
+              <div className="bg-gray-800/50 p-3 rounded border border-gray-600">
+                <div className="text-xs text-gray-400">Chain ID</div>
+                <div className="text-sm font-bold text-yellow-400">{blockchainInfo.chainId}</div>
               </div>
             </div>
           )}
@@ -593,36 +515,26 @@ export default function HyperEVMSimulatorPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="mb-8"
+          className="mb-6"
         >
           <div className="flex space-x-4 border-b border-gray-700">
             {[
-              { id: 'single', label: '🎯 Single Transaction', desc: 'Simulate individual transactions with auto-balance' },
-              { id: 'bundle', label: '📦 Bundle Simulation', desc: 'Test multiple transactions together' },
-              { id: 'analysis', label: '🔍 Advanced Analysis', desc: 'Deep dive with historical & whale testing' }
+              { id: 'single', label: '🎯 Transaction Simulator' },
+              { id: 'bundle', label: '📦 Bundle Testing' },
+              { id: 'analysis', label: '🔍 Advanced Analysis' }
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`px-6 py-3 text-sm font-medium transition-colors ${
+                className={`px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === tab.id
                     ? 'text-emerald-400 border-b-2 border-emerald-400'
                     : 'text-gray-400 hover:text-white'
                 }`}
               >
-                <div>{tab.label}</div>
-                <div className="text-xs text-gray-500">{tab.desc}</div>
+                {tab.label}
               </button>
             ))}
-            
-            {/* Quick Link to Advanced Features Page */}
-            <a
-              href="/advanced"
-              className="px-6 py-3 text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors border-l border-gray-600"
-            >
-              <div>🚀 Advanced Features</div>
-              <div className="text-xs text-gray-500">Full feature showcase</div>
-            </a>
           </div>
         </motion.div>
 
@@ -634,59 +546,61 @@ export default function HyperEVMSimulatorPage() {
             transition={{ duration: 0.5 }}
             className="space-y-6"
           >
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-emerald-400 mb-2">🎯 Single Transaction Simulator</h2>
-              <p className="text-gray-300">Test individual transactions with comprehensive analysis and auto-balance handling</p>
-            </div>
-
-            {/* Enhanced Info Banner */}
-            <div className="bg-gradient-to-r from-emerald-900/20 to-blue-900/20 border border-emerald-400/30 rounded-lg p-4 mb-6">
-              <div className="flex items-start gap-3">
+            {/* Auto-balance Info */}
+            <div className="bg-emerald-900/20 border border-emerald-400/30 rounded-lg p-4">
+              <div className="flex items-center gap-3">
                 <span className="text-2xl">🚀</span>
                 <div>
-                  <h5 className="font-semibold text-emerald-400 mb-1">Smart Balance Management</h5>
-                  <p className="text-emerald-200 text-sm leading-relaxed">
-                    Our simulator automatically provides 10,000 HYPE test balance when needed, eliminating "insufficient funds" errors. 
-                    Perfect for testing whale transactions, DeFi interactions, and complex scenarios without requiring actual funds!
+                  <h5 className="font-semibold text-emerald-400">Smart Balance Management</h5>
+                  <p className="text-emerald-200 text-sm">
+                    Automatically provides 10,000 HYPE test balance when needed, eliminating "insufficient funds" errors.
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Scenario Selection */}
-            <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
-              <h3 className="text-xl font-bold text-emerald-400 mb-4">🚀 Quick Start Scenarios</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {scenarios.map((scenario, index) => (
+            {/* Quick Start Scenarios */}
+            <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+              <h3 className="text-lg font-bold text-emerald-400 mb-3">🚀 Quick Start Scenarios</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {enhancedScenarios.map((scenario, index) => (
                   <button
                     key={index}
-                    onClick={() => loadScenario(index)}
-                    className="p-4 bg-gray-700/50 hover:bg-gray-700 rounded-lg border border-gray-600 hover:border-emerald-500 transition-colors text-left"
+                    onClick={() => loadScenario(scenario)}
+                    className="p-3 bg-gray-700/50 hover:bg-gray-700 rounded-lg border border-gray-600 hover:border-emerald-500 transition-all text-left group"
                   >
-                    <div className="font-semibold text-emerald-300">{scenario.name}</div>
-                    <div className="text-sm text-gray-400 mt-1">{scenario.description}</div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-lg">{scenario.icon}</span>
+                      <span className="text-sm font-medium text-gray-200 group-hover:text-emerald-300">
+                        {scenario.name}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-400">{scenario.description}</p>
+                    <div className="mt-1 text-xs text-emerald-400">
+                      {scenario.value} HYPE
+                    </div>
                   </button>
                 ))}
               </div>
             </div>
 
             {/* Transaction Parameters */}
-            <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
-              <h3 className="text-xl font-bold text-emerald-400 mb-4">📝 Transaction Parameters</h3>
+            <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+              <h3 className="text-lg font-bold text-emerald-400 mb-3">📝 Transaction Parameters</h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">From Address</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">From Address</label>
                   <input
                     type="text"
                     value={fromAddress}
                     onChange={(e) => setFromAddress(e.target.value)}
-                    placeholder="0x742d35Cc..."
+                    placeholder="0x742d35Cc... (optional)"
                     className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">To Address *</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">To Address *</label>
                   <input
                     type="text"
                     value={toAddress}
@@ -697,9 +611,9 @@ export default function HyperEVMSimulatorPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Value (HYPE)</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Value (HYPE)</label>
                   <input
                     type="text"
                     value={value}
@@ -709,7 +623,7 @@ export default function HyperEVMSimulatorPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Gas Limit</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Gas Limit</label>
                   <input
                     type="text"
                     value={gasLimit}
@@ -719,7 +633,7 @@ export default function HyperEVMSimulatorPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Gas Price (gwei)</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Gas Price (gwei)</label>
                   <input
                     type="text"
                     value={gasPrice}
@@ -731,249 +645,71 @@ export default function HyperEVMSimulatorPage() {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-300 mb-2">Call Data (Optional)</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Call Data (Optional)</label>
                 <textarea
                   value={data}
                   onChange={(e) => setData(e.target.value)}
                   placeholder="0x..."
-                  rows={3}
+                  rows={2}
                   className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
 
-              {/* Advanced Parameters Toggle */}
-              <button
-                onClick={() => setShowAdvanced(!showAdvanced)}
-                className="mb-4 text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-2"
-              >
-                {showAdvanced ? '🔽' : '🔼'} Advanced Simulation Features
-                <span className="text-xs text-gray-400">(Balance handling, impersonation, state overrides)</span>
-              </button>
-
-              {showAdvanced && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  className="mb-6 space-y-4 bg-gray-800/30 p-4 rounded-lg border border-gray-600"
-                >
-                  {/* Info Banner */}
-                  <div className="bg-emerald-900/20 border border-emerald-400/30 rounded-lg p-4">
-                    <div className="flex items-start gap-3">
-                      <span className="text-emerald-400 text-xl">✨</span>
-                      <div>
-                        <h5 className="font-semibold text-emerald-400">Enhanced Simulation Engine</h5>
-                        <p className="text-emerald-200 text-sm">
-                          Automatically handles insufficient balance issues by providing test funds. 
-                          Perfect for whale testing and complex scenarios!
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Max Fee Per Gas (gwei)</label>
-                      <input
-                        type="text"
-                        value={maxFeePerGas}
-                        onChange={(e) => setMaxFeePerGas(e.target.value)}
-                        placeholder="Auto"
-                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Max Priority Fee (gwei)</label>
-                      <input
-                        type="text"
-                        value={maxPriorityFeePerGas}
-                        onChange={(e) => setMaxPriorityFeePerGas(e.target.value)}
-                        placeholder="Auto"
-                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Block Number</label>
-                      <input
-                        type="text"
-                        value={blockNumber}
-                        onChange={(e) => setBlockNumber(e.target.value)}
-                        placeholder="Latest"
-                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Advanced Feature Buttons */}
-                  <div className="border-t border-gray-600 pt-4">
-                    <h5 className="text-sm font-semibold text-gray-300 mb-3">🚀 Advanced Analysis Tools</h5>
-                    <div className="flex flex-wrap gap-3">
-                      <button
-                        onClick={async () => {
-                          if (!simulator) return;
-                          try {
-                            const result = await simulator.generateAccessListForTransaction({
-                              to: toAddress,
-                              value: value,
-                              data: data || '0x'
-                            });
-                            console.log('Access List Result:', result);
-                            alert(JSON.stringify(result, null, 2));
-                          } catch (err: any) {
-                            alert(`Error: ${err.message}`);
-                          }
-                        }}
-                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
-                      >
-                        📋 Generate Access List
-                      </button>
-                      
-                      <button
-                        onClick={async () => {
-                          if (!simulator || !toAddress) return;
-                          try {
-                            const result = await simulator.trackAssetChanges({
-                              to: toAddress,
-                              value: value,
-                              data: data || '0x',
-                              from: fromAddress || undefined
-                            });
-                            console.log('Asset Tracking Result:', result);
-                            alert('Asset tracking complete! Check console for details.');
-                          } catch (err: any) {
-                            alert(`Error: ${err.message}`);
-                          }
-                        }}
-                        disabled={!toAddress}
-                        className="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white rounded-lg text-sm font-medium transition-colors"
-                      >
-                        💰 Track Asset Changes
-                      </button>
-
-                      <button
-                        onClick={async () => {
-                          if (!simulator || !toAddress) return;
-                          try {
-                            const whaleAddress = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
-                            const result = await simulator.simulateWithImpersonation({
-                              to: toAddress,
-                              value: value,
-                              data: data || '0x'
-                            }, whaleAddress);
-                            setSimulationResult(result);
-                            alert('Whale simulation complete! Check results below.');
-                          } catch (err: any) {
-                            alert(`Error: ${err.message}`);
-                          }
-                        }}
-                        disabled={!toAddress}
-                        className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-600 text-white rounded-lg text-sm font-medium transition-colors"
-                      >
-                        🐋 Whale Simulation
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Test Scenarios */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-300 mb-3">
-                  💡 Sample Test Scenarios - <span className="text-emerald-400">Auto-funded for testing!</span>
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {enhancedScenarios.map((scenario, index) => (
-                    <button
-                      key={index}
-                      onClick={() => loadScenario(scenario)}
-                      className="p-3 bg-gray-700 hover:bg-gray-600 rounded-lg border border-gray-600 hover:border-emerald-500 transition-all text-left group"
-                    >
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-lg">{scenario.icon}</span>
-                        <span className="text-sm font-medium text-gray-200 group-hover:text-emerald-300">
-                          {scenario.name}
-                        </span>
-                      </div>
-                      <p className="text-xs text-gray-400 leading-relaxed">{scenario.description}</p>
-                      <div className="mt-2 text-xs text-emerald-400 font-medium">
-                        Value: {scenario.value} HYPE
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               {/* Action Buttons */}
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-3">
                 <button
                   onClick={handleSimulation}
                   disabled={simulationLoading || (!toAddress && !data)}
-                  className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
+                  className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
                 >
                   {simulationLoading ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      <span>Simulating with Auto Balance...</span>
+                      <span>Simulating...</span>
                     </>
                   ) : (
                     <>
-                      {(!toAddress && data) ? (
-                        <>
-                          <span>🚀</span>
-                          <span>Deploy Contract</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>✨</span>
-                          <span>Smart Simulate (Auto-funded)</span>
-                        </>
-                      )}
+                      <span>✨</span>
+                      <span>Simulate (Auto-funded)</span>
                     </>
                   )}
                 </button>
                 
                 <button
-                  onClick={generateAccessList}
-                  disabled={!toAddress}
-                  className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-colors"
-                >
-                  📋 Generate Access List
-                </button>
-
-                <button
                   onClick={addToBundleTransaction}
                   disabled={!toAddress}
-                  className="px-6 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-colors"
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors"
                 >
                   📦 Add to Bundle
                 </button>
               </div>
 
+              {/* Error Display */}
               {simulationError && (
-                <div className="mt-4 p-4 bg-red-900/30 border border-red-500/50 rounded-lg text-red-300">
+                <div className="mt-3 p-3 bg-red-900/30 border border-red-500/50 rounded-lg text-red-300">
                   ❌ {simulationError}
                 </div>
               )}
 
+              {/* Success Message */}
               {simulationResult && !simulationError && simulationResult.success && (
-                <div className="mt-4 p-4 bg-emerald-900/30 border border-emerald-500/50 rounded-lg text-emerald-300">
-                  <div className="flex items-center gap-2 mb-2">
+                <div className="mt-3 p-3 bg-emerald-900/30 border border-emerald-500/50 rounded-lg text-emerald-300">
+                  <div className="flex items-center gap-2">
                     <span className="text-emerald-400">✅</span>
                     <span className="font-semibold">Simulation Successful!</span>
                   </div>
-                  <p className="text-sm text-emerald-200">
-                    Auto-balance feature ensured sufficient funds for testing. Check results below for detailed analysis.
-                  </p>
                 </div>
               )}
 
+              {/* Failure Message */}
               {simulationResult && !simulationError && !simulationResult.success && (
-                <div className="mt-4 p-4 bg-red-900/30 border border-red-500/50 rounded-lg text-red-300">
-                  <div className="flex items-center gap-2 mb-2">
+                <div className="mt-3 p-3 bg-red-900/30 border border-red-500/50 rounded-lg text-red-300">
+                  <div className="flex items-center gap-2">
                     <span className="text-red-400">❌</span>
                     <span className="font-semibold">Simulation Failed!</span>
                   </div>
-                  <p className="text-sm text-red-200">
-                    {simulationResult.executionResult?.revertReason || 'Transaction simulation failed to execute. Check transaction parameters and try again.'}
+                  <p className="text-sm text-red-200 mt-1">
+                    {simulationResult.executionResult?.revertReason || 'Transaction simulation failed to execute.'}
                   </p>
                 </div>
               )}

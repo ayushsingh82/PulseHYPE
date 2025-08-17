@@ -91,6 +91,10 @@ export interface SimulationResult {
   securityAnalysis: SecurityAnalysis;
   recommendations: Recommendation[];
   hyperevmSpecific: HyperEVMSpecific;
+  // Auto-balance feature properties
+  autoBalanceUsed?: boolean;
+  originalFrom?: string;
+  whaleFrom?: string;
 }
 
 export interface StateChange {
@@ -231,7 +235,40 @@ export class HyperEVMSimulator {
 
       const block = await this.provider.getBlock(blockNumber);
       const tx = await this.buildTransaction(request);
-      const simulationResult = await this.executeSimulation(tx, request);
+      
+      // First attempt: Try normal simulation
+      let simulationResult = await this.executeSimulation(tx, request);
+      
+      // Track if auto-balance was used
+      let autoBalanceUsed = false;
+      let originalFrom = request.from;
+      let whaleFrom = undefined;
+      
+      // If failed due to insufficient funds, try with auto-balance using whale address
+      if (!simulationResult.success && 
+          (simulationResult.error?.includes('insufficient funds') || 
+           simulationResult.error?.includes('INSUFFICIENT_FUNDS'))) {
+        
+        console.log('💰 Auto-balance: Insufficient funds detected, trying with whale address...');
+        
+        // Use a whale address with lots of HYPE
+        const whaleAddress = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
+        const modifiedRequest = {
+          ...request,
+          from: whaleAddress
+        };
+        
+        const modifiedTx = await this.buildTransaction(modifiedRequest);
+        simulationResult = await this.executeSimulation(modifiedTx, modifiedRequest);
+        
+        if (simulationResult.success) {
+          console.log('✅ Auto-balance: Simulation successful with whale address');
+          // Track that auto-balance was used
+          autoBalanceUsed = true;
+          whaleFrom = whaleAddress;
+        }
+      }
+      
       const analysis = await this.analyzeSimulation(simulationResult, tx);
       
       return {
@@ -247,9 +284,12 @@ export class HyperEVMSimulator {
         trace: analysis.trace,
         securityAnalysis: analysis.securityAnalysis,
         recommendations: analysis.recommendations,
-        hyperevmSpecific: analysis.hyperevmSpecific
+        hyperevmSpecific: analysis.hyperevmSpecific,
+        autoBalanceUsed: autoBalanceUsed,
+        originalFrom: originalFrom,
+        whaleFrom: whaleFrom
       };
-    } catch (error) {
+    } catch (error: any) {
       return this.handleSimulationError(error);
     }
   }
@@ -561,19 +601,16 @@ export class HyperEVMSimulator {
         }
       };
       
+      console.log('🔧 State override for balance:', stateOverride);
+      
       // Step 1: Try to estimate gas with state override
       let gasEstimate: bigint;
       try {
-        // Try with state override first
-        try {
-          const gasHex = await this.provider.send('eth_estimateGas', [tx, 'latest', stateOverride]);
-          gasEstimate = BigInt(gasHex);
-          console.log('✅ Gas estimate with state override successful:', gasEstimate.toString());
-        } catch (overrideError) {
-          // Fallback to regular estimation
-          gasEstimate = await this.provider.estimateGas(tx);
-          console.log('✅ Gas estimate (fallback) successful:', gasEstimate.toString());
-        }
+        // Always try with state override first for HyperEVM
+        console.log('📊 Estimating gas with state override...');
+        const gasHex = await this.provider.send('eth_estimateGas', [tx, 'latest', stateOverride]);
+        gasEstimate = BigInt(gasHex);
+        console.log('✅ Gas estimate with state override successful:', gasEstimate.toString());
       } catch (estimateError: any) {
         console.warn('⚠️ Gas estimation failed:', estimateError);
         
@@ -582,7 +619,7 @@ export class HyperEVMSimulator {
         if (estimateError.code === 'UNPREDICTABLE_GAS_LIMIT') {
           errorMessage = 'Transaction would fail - unpredictable gas limit';
         } else if (estimateError.code === 'INSUFFICIENT_FUNDS') {
-          errorMessage = 'Insufficient funds for gas and value (using simulated balance)';
+          errorMessage = 'Insufficient funds even with auto-balance (check transaction parameters)';
         } else if (estimateError.reason) {
           errorMessage = estimateError.reason;
         } else if (estimateError.message) {
@@ -600,15 +637,10 @@ export class HyperEVMSimulator {
       // Step 2: Try to call the transaction with state override
       let callResult: string;
       try {
-        // Try with state override first
-        try {
-          callResult = await this.provider.send('eth_call', [tx, 'latest', stateOverride]);
-          console.log('✅ Transaction call with state override successful, result length:', callResult.length);
-        } catch (overrideError) {
-          // Fallback to regular call
-          callResult = await this.provider.call(tx);
-          console.log('✅ Transaction call (fallback) successful, result length:', callResult.length);
-        }
+        // Always use state override for HyperEVM calls
+        console.log('📞 Calling transaction with state override...');
+        callResult = await this.provider.send('eth_call', [tx, 'latest', stateOverride]);
+        console.log('✅ Transaction call with state override successful, result length:', callResult.length);
       } catch (callError: any) {
         console.warn('⚠️ Transaction call failed:', callError);
         
