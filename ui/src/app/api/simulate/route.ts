@@ -1,6 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { HyperEVMSimulator } from '../../simulator/enhanced-helper';
 
+// Helper function to serialize BigInt values in objects
+function serializeBigInt(obj: any): any {
+  if (obj === null || obj === undefined) return obj;
+  if (typeof obj === 'bigint') return obj.toString();
+  if (Array.isArray(obj)) return obj.map(serializeBigInt);
+  if (typeof obj === 'object') {
+    const serialized: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      serialized[key] = serializeBigInt(value);
+    }
+    return serialized;
+  }
+  return obj;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -13,42 +28,42 @@ export async function POST(request: NextRequest) {
     switch (options.simulationType) {
       case 'bundle':
         const bundleResults = await simulator.simulateBundle(transaction.transactions);
-        return NextResponse.json({
+        return NextResponse.json(serializeBigInt({
           success: true,
           type: 'bundle',
           results: bundleResults,
           timestamp: Date.now()
-        });
+        }));
 
       case 'historical':
         const historicalResult = await simulator.simulateHistorical(transaction, options.blockNumber);
-        return NextResponse.json({
+        return NextResponse.json(serializeBigInt({
           success: true,
           type: 'historical',
           result: historicalResult,
           blockNumber: options.blockNumber,
           timestamp: Date.now()
-        });
+        }));
 
       case 'state_override':
         const overrideResult = await simulator.simulateWithStateOverrides(transaction, options.stateOverrides);
-        return NextResponse.json({
+        return NextResponse.json(serializeBigInt({
           success: true,
           type: 'state_override',
           result: overrideResult,
           overrides: options.stateOverrides,
           timestamp: Date.now()
-        });
+        }));
 
       default:
         // Standard simulation
         const result = await simulator.simulateTransaction(transaction);
-        return NextResponse.json({
+        return NextResponse.json(serializeBigInt({
           success: true,
           type: 'standard',
           result,
           timestamp: Date.now()
-        });
+        }));
     }
   } catch (error: any) {
     console.error('Simulation API Error:', error);

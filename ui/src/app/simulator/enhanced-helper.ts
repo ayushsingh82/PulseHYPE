@@ -274,7 +274,7 @@ export class HyperEVMSimulator {
       return {
         success: simulationResult.success,
         gasUsed: simulationResult.gasUsed,
-        gasLimit: tx.gasLimit || '0',
+        gasLimit: tx.gasLimit ? tx.gasLimit.toString() : '0',
         blockNumber: blockNumber.toString(),
         timestamp: block?.timestamp?.toString() || Date.now().toString(),
         executionResult: analysis.executionResult,
@@ -367,8 +367,18 @@ export class HyperEVMSimulator {
       let gasEstimate: bigint;
       
       try {
-        result = await this.provider.send('eth_call', [tx, 'latest', stateOverrideParams]);
-        gasEstimate = BigInt(await this.provider.send('eth_estimateGas', [tx, 'latest', stateOverrideParams]));
+        // Convert transaction for RPC - BigInt values must be hex strings
+        const rpcTx = {
+          ...tx,
+          value: tx.value ? '0x' + tx.value.toString(16) : '0x0',
+          gasPrice: tx.gasPrice ? '0x' + tx.gasPrice.toString(16) : undefined,
+          maxFeePerGas: tx.maxFeePerGas ? '0x' + tx.maxFeePerGas.toString(16) : undefined,
+          maxPriorityFeePerGas: tx.maxPriorityFeePerGas ? '0x' + tx.maxPriorityFeePerGas.toString(16) : undefined,
+          gasLimit: tx.gasLimit ? '0x' + tx.gasLimit.toString(16) : undefined
+        };
+        
+        result = await this.provider.send('eth_call', [rpcTx, 'latest', stateOverrideParams]);
+        gasEstimate = BigInt(await this.provider.send('eth_estimateGas', [rpcTx, 'latest', stateOverrideParams]));
       } catch (overrideError: any) {
         console.warn('⚠️ State override not supported, falling back to regular simulation');
         return await this.simulateTransaction(request);
@@ -486,14 +496,14 @@ export class HyperEVMSimulator {
         const value = BigInt(tx.value || '0');
         
         balanceChanges[fromAddress] = {
-          eth: -(gasCost + value),
+          eth: (-(gasCost + value)).toString(), // Convert to string
           nonce: 1
         };
       }
       
       if (toAddress && toAddress !== fromAddress && tx.value) {
         balanceChanges[toAddress] = {
-          eth: BigInt(tx.value),
+          eth: BigInt(tx.value).toString(), // Convert to string
           nonce: 0
         };
       }
@@ -573,7 +583,7 @@ export class HyperEVMSimulator {
       console.log('✅ Using default 20 Gwei gas price');
     }
 
-    console.log('🎯 Final transaction:', tx);
+    console.log('🎯 Final transaction - to:', tx.to, 'from:', tx.from, 'value:', tx.value?.toString(), 'gasLimit:', tx.gasLimit?.toString());
     return tx;
   }
 
@@ -583,7 +593,7 @@ export class HyperEVMSimulator {
         to: tx.to || '(contract deployment)',
         from: tx.from,
         value: tx.value?.toString() || '0',
-        gasLimit: tx.gasLimit,
+        gasLimit: tx.gasLimit?.toString() || '0',
         dataLength: tx.data?.length || 0,
         rpcUrl: this.config.rpcUrl 
       });
@@ -608,7 +618,18 @@ export class HyperEVMSimulator {
       try {
         // Always try with state override first for HyperEVM
         console.log('📊 Estimating gas with state override...');
-        const gasHex = await this.provider.send('eth_estimateGas', [tx, 'latest', stateOverride]);
+        
+        // Convert transaction for RPC - BigInt values must be hex strings
+        const rpcTx = {
+          ...tx,
+          value: tx.value ? '0x' + tx.value.toString(16) : '0x0',
+          gasPrice: tx.gasPrice ? '0x' + tx.gasPrice.toString(16) : undefined,
+          maxFeePerGas: tx.maxFeePerGas ? '0x' + tx.maxFeePerGas.toString(16) : undefined,
+          maxPriorityFeePerGas: tx.maxPriorityFeePerGas ? '0x' + tx.maxPriorityFeePerGas.toString(16) : undefined,
+          gasLimit: tx.gasLimit ? '0x' + tx.gasLimit.toString(16) : undefined
+        };
+        
+        const gasHex = await this.provider.send('eth_estimateGas', [rpcTx, 'latest', stateOverride]);
         gasEstimate = BigInt(gasHex);
         console.log('✅ Gas estimate with state override successful:', gasEstimate.toString());
       } catch (estimateError: any) {
@@ -639,7 +660,18 @@ export class HyperEVMSimulator {
       try {
         // Always use state override for HyperEVM calls
         console.log('📞 Calling transaction with state override...');
-        callResult = await this.provider.send('eth_call', [tx, 'latest', stateOverride]);
+        
+        // Convert transaction for RPC - BigInt values must be hex strings
+        const rpcTx = {
+          ...tx,
+          value: tx.value ? '0x' + tx.value.toString(16) : '0x0',
+          gasPrice: tx.gasPrice ? '0x' + tx.gasPrice.toString(16) : undefined,
+          maxFeePerGas: tx.maxFeePerGas ? '0x' + tx.maxFeePerGas.toString(16) : undefined,
+          maxPriorityFeePerGas: tx.maxPriorityFeePerGas ? '0x' + tx.maxPriorityFeePerGas.toString(16) : undefined,
+          gasLimit: tx.gasLimit ? '0x' + tx.gasLimit.toString(16) : undefined
+        };
+        
+        callResult = await this.provider.send('eth_call', [rpcTx, 'latest', stateOverride]);
         console.log('✅ Transaction call with state override successful, result length:', callResult.length);
       } catch (callError: any) {
         console.warn('⚠️ Transaction call failed:', callError);
@@ -702,7 +734,7 @@ export class HyperEVMSimulator {
   }
 
   private async analyzeSimulation(simulationResult: any, tx: any) {
-    console.log('🔍 Analyzing simulation result:', simulationResult);
+    console.log('🔍 Analyzing simulation result - success:', simulationResult.success, 'gasUsed:', simulationResult.gasUsed);
     
     const gasUsed = parseInt(simulationResult.gasUsed || '0');
     const gasBreakdown = this.calculateGasBreakdown(gasUsed, tx);
