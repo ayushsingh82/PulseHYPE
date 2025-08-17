@@ -13,7 +13,7 @@ export default function Navbar() {
             HYPE
           </Link>
         </div>
-        <div className="flex gap-8">
+        <div className="flex gap-6">
           <Link 
             href="/gluex" 
             className="text-white font-medium hover:text-[#97FBE4] transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-[#97FBE4]/10 hover:scale-110"
@@ -25,6 +25,12 @@ export default function Navbar() {
             className="text-[#97FBE4] font-semibold hover:text-white transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-[#97FBE4]/10 hover:scale-110"
           >
             Liquid Labs
+          </Link>
+          <Link 
+            href="/simulator" 
+            className="text-[#FF6B6B] font-semibold hover:text-white transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-[#FF6B6B]/10 hover:scale-110"
+          >
+            Simulator
           </Link>
         </div>
       </div>

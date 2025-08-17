@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 import { Compare } from "../components/ui/compare";
 import { motion } from "motion/react";
 import { SparklesCore } from "../components/ui/sparkles";
@@ -232,6 +233,29 @@ export default function Home() {
               >
                 <h4 className="text-lg font-semibold mb-1 text-[#22d3ee]">Integrated Yield</h4>
                 <p className="text-xs text-[#97FBE4]/80">Stake, lend, and farm directly from your wallet.</p>
+              </motion.div>
+
+              {/* Transaction Simulator */}
+              <motion.div 
+                className="col-span-12 md:col-span-6 bg-[#FF6B6B] rounded-2xl p-6 shadow-md flex flex-col justify-center card-hover button-glow"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 3.2, type: "spring", stiffness: 200 }}
+                whileHover={{ y: -8, scale: 1.02 }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-lg">🔬</span>
+                  <h4 className="text-lg font-semibold text-black">Transaction Simulator</h4>
+                </div>
+                <p className="text-xs text-black/80 font-light pixel-font mb-3">
+                  Test, debug, and optimize HyperEVM transactions before execution.
+                </p>
+                <Link 
+                  href="/simulator"
+                  className="text-xs font-semibold text-black hover:text-black/80 transition-colors duration-300 inline-flex items-center gap-1"
+                >
+                  Try Simulator →
+                </Link>
               </motion.div>
             </motion.div>
           </div>
