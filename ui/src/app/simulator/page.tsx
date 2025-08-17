@@ -51,19 +51,6 @@ export default function HyperEVMSimulator() {
 
   // Demo Data Options
   const demoScenarios = {
-    ethTransfer: {
-      name: "🔄 Simple ETH Transfer",
-      description: "Basic ETH transfer between accounts",
-      data: {
-        fromAddress: "0x742d35Cc6634C0532925a3b8d1Ecf55E0965E5C0",
-        toAddress: "0x8ba1f109551bD432803012645Hac136c22C8e8a9",
-        value: "0.1",
-        gasLimit: "21000",
-        gasPrice: "20",
-        data: "",
-        blockNumber: ""
-      }
-    },
     uniswapSwap: {
       name: "🦄 Uniswap Token Swap",
       description: "Swap ETH for USDC on Uniswap V3",
