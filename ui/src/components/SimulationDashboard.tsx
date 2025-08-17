@@ -25,6 +25,29 @@ export const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ result
     }
   };
 
+  const getExecutionStatus = () => {
+    // Check for explicit failure first
+    if (result.success === false) return 'failed';
+    
+    // Check execution result status
+    if (result.executionResult?.status) {
+      return result.executionResult.status;
+    }
+    
+    // Check for revert reason (indicates failure)
+    if (result.executionResult?.revertReason && result.executionResult.revertReason !== 'Unknown error') {
+      return 'reverted';
+    }
+    
+    // Check for error conditions
+    if (result.error || (result.gasUsed === '0' && result.blockNumber === '0')) {
+      return 'failed';
+    }
+    
+    // Default to success if no failure indicators
+    return 'success';
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'success': return 'text-green-400 bg-green-900/20 border-green-400/30';
@@ -47,25 +70,22 @@ export const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ result
   return (
     <div className="space-y-6">
       {/* Error Display (if any) */}
-      {(result.error || result.executionResult?.error || result.revertReason) && (
-        <div className="bg-red-900/20 border border-red-400/30 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-red-400 mb-4">❌ Execution Failed</h3>
-          {result.error && (
-            <div className="mb-3">
-              <div className="text-sm text-red-300 font-semibold">Error Message:</div>
-              <div className="text-red-100 bg-red-900/30 p-3 rounded mt-1 font-mono text-sm">
-                {result.error}
-              </div>
-            </div>
-          )}
-          {result.revertReason && (
-            <div className="mb-3">
-              <div className="text-sm text-red-300 font-semibold">Revert Reason:</div>
-              <div className="text-red-100 bg-red-900/30 p-3 rounded mt-1 font-mono text-sm">
-                {result.revertReason}
-              </div>
-            </div>
-          )}
+      {(result.error || result.executionResult?.error || result.executionResult?.revertReason || getExecutionStatus() === 'failed') && (
+        <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-red-400 text-xl">⚠️</span>
+            <h3 className="text-xl font-bold text-red-400">Simulation Failed</h3>
+          </div>
+          
+          <div className="text-red-200 mb-3">
+            <strong>Reason:</strong> {
+              result.executionResult?.revertReason || 
+              result.error || 
+              result.executionResult?.error || 
+              'Transaction simulation failed to execute'
+            }
+          </div>
+          
           {result.returnData && (
             <div className="mb-3">
               <div className="text-sm text-red-300 font-semibold">Return Data:</div>
@@ -74,20 +94,25 @@ export const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ result
               </div>
             </div>
           )}
-          <div className="text-sm text-red-300">
-            💡 Check your transaction parameters, account balance, and contract state.
+          
+          <div className="text-sm text-red-300 bg-red-900/20 p-3 rounded border border-red-400/20">
+            <div className="font-semibold mb-2">💡 Troubleshooting Tips:</div>
+            <ul className="list-disc list-inside space-y-1 text-xs">
+              <li>Check transaction parameters (to address, value, data)</li>
+              <li>Verify contract exists and function signature is correct</li>
+              <li>Ensure sufficient gas limit for complex operations</li>
+              <li>Try with our auto-funded test scenarios</li>
+            </ul>
           </div>
         </div>
-      )}
-
-      {/* Execution Summary */}
+      )}      {/* Execution Summary */}
       <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
         <h3 className="text-xl font-bold text-emerald-400 mb-4">🎯 Execution Summary</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className={`p-4 rounded-lg border ${getStatusColor(result.success === false ? 'failed' : result.executionResult?.status || 'success')}`}>
+          <div className={`p-4 rounded-lg border ${getStatusColor(getExecutionStatus())}`}>
             <div className="text-sm opacity-75">Status</div>
             <div className="text-lg font-bold capitalize">
-              {result.success === false ? 'Failed' : result.executionResult?.status || 'Success'}
+              {getExecutionStatus()}
             </div>
           </div>
           <div className="p-4 rounded-lg border border-blue-400/30 bg-blue-900/20 text-blue-400">
@@ -102,7 +127,7 @@ export const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ result
       </div>
 
       {/* Gas Analysis */}
-      {result.executionResult && (
+      {getExecutionStatus() !== 'failed' && result.executionResult && (
         <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
           <h3 className="text-xl font-bold text-blue-400 mb-4">⛽ Gas Analysis</h3>
           {result.executionResult.gasBreakdown ? (
@@ -125,8 +150,10 @@ export const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ result
               </div>
             </div>
           ) : (
-            <div className="text-center py-4 text-gray-400">
-              Gas breakdown analysis not available
+            <div className="text-center py-8">
+              <div className="text-gray-400 mb-2">⛽ Gas Usage</div>
+              <div className="text-3xl font-bold text-blue-400 mb-2">{formatGas(result.gasUsed || '0')}</div>
+              <div className="text-sm text-gray-500">Detailed breakdown not available for this transaction</div>
             </div>
           )}
           
@@ -153,6 +180,18 @@ export const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ result
               )}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Failed Transaction Gas Info */}
+      {getExecutionStatus() === 'failed' && (
+        <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
+          <h3 className="text-xl font-bold text-red-400 mb-4">⛽ Gas Analysis</h3>
+          <div className="text-center py-8">
+            <div className="text-6xl mb-4">⚠️</div>
+            <div className="text-red-400 text-lg font-semibold mb-2">No Gas Data Available</div>
+            <div className="text-gray-400 text-sm">Transaction failed before gas consumption could be measured</div>
+          </div>
         </div>
       )}
 
@@ -220,7 +259,7 @@ export const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ result
       )}
 
       {/* Security Analysis */}
-      {result.securityAnalysis && (
+      {getExecutionStatus() !== 'failed' && result.securityAnalysis && (
         <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
           <h3 className="text-xl font-bold text-red-400 mb-4">🛡️ Security Analysis</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -274,6 +313,18 @@ export const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ result
                 </div>
               )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Failed Transaction Security Info */}
+      {getExecutionStatus() === 'failed' && (
+        <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
+          <h3 className="text-xl font-bold text-red-400 mb-4">🛡️ Security Analysis</h3>
+          <div className="text-center py-8">
+            <div className="text-6xl mb-4">🛡️</div>
+            <div className="text-gray-400 text-lg font-semibold mb-2">Risk Level: LOW</div>
+            <div className="text-gray-500 text-sm">Transaction failed before security analysis could be performed</div>
           </div>
         </div>
       )}

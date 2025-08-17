@@ -175,8 +175,8 @@ export default function HyperEVMSimulatorPage() {
       name: "Simple Transfer",
       icon: "💰",
       description: "Basic HYPE transfer between accounts",
-      fromAddress: "0x742d35Cc6C4BA3b8B68d3e9Ea9A7C0C1b3C5aBe1",
-      toAddress: "0x742d35Cc6C4BA3b8B68d3e9Ea9A7C0C1b3C5aBe2",
+      fromAddress: "0x742D35Cc6634c0532925A3B8d7C9DD7fEAd9c027",
+      toAddress: "0x8ba1f109551bD432803012645Hac136c22C2177",
       value: "1.0",
       gasLimit: "21000",
       gasPrice: "20"
@@ -186,7 +186,7 @@ export default function HyperEVMSimulatorPage() {
       icon: "🐋",
       description: "High-value transfer to test whale scenarios",
       fromAddress: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-      toAddress: "0x742d35Cc6C4BA3b8B68d3e9Ea9A7C0C1b3C5aBe2",
+      toAddress: "0x8ba1f109551bD432803012645Hac136c22C2177",
       value: "1000.0",
       gasLimit: "21000",
       gasPrice: "50"
@@ -195,18 +195,18 @@ export default function HyperEVMSimulatorPage() {
       name: "Smart Contract",
       icon: "📄",
       description: "Contract interaction with complex data",
-      fromAddress: "0x742d35Cc6C4BA3b8B68d3e9Ea9A7C0C1b3C5aBe1",
-      toAddress: "0xa0b86a33e6d616c93c8c8f3c9b3d4ed2a8b3d3c4",
+      fromAddress: "0x742D35Cc6634c0532925A3B8d7C9DD7fEAd9c027",
+      toAddress: "0xA0b86a33E6F57c8c05Bd7b4F2F3E8a7e4b2F57C8",
       value: "0.0",
       gasLimit: "200000",
       gasPrice: "30",
-      data: "0xa9059cbb000000000000000000000000742d35cc6c4ba3b8b68d3e9ea9a7c0c1b3c5abe200000000000000000000000000000000000000000000000de0b6b3a7640000"
+      data: "0xa9059cbb0000000000000000000000008ba1f109551bd432803012645hac136c22c2177000000000000000000000000000000000000000000000000de0b6b3a7640000"
     },
     {
       name: "DeFi Interaction",
       icon: "🔄",
       description: "Complex DeFi protocol interaction",
-      fromAddress: "0x742d35Cc6C4BA3b8B68d3e9Ea9A7C0C1b3C5aBe1",
+      fromAddress: "0x742D35Cc6634c0532925A3B8d7C9DD7fEAd9c027",
       toAddress: "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
       value: "5.0",
       gasLimit: "300000",
@@ -217,8 +217,8 @@ export default function HyperEVMSimulatorPage() {
       name: "Gas Optimization",
       icon: "⚡",
       description: "Test transaction with optimized gas settings",
-      fromAddress: "0x742d35Cc6C4BA3b8B68d3e9Ea9A7C0C1b3C5aBe1",
-      toAddress: "0x742d35Cc6C4BA3b8B68d3e9Ea9A7C0C1b3C5aBe2",
+      fromAddress: "0x742D35Cc6634c0532925A3B8d7C9DD7fEAd9c027",
+      toAddress: "0x8ba1f109551bD432803012645Hac136c22C2177",
       value: "0.1",
       gasLimit: "21000",
       gasPrice: "1"
@@ -241,8 +241,14 @@ export default function HyperEVMSimulatorPage() {
     }
 
     // If toAddress is provided, it must be valid
-    if (toAddress.trim() && !utils.isValidHyperEVMAddress(toAddress)) {
+    if (toAddress.trim() && !utils.isValidHyperEVMAddress(toAddress.trim())) {
       setSimulationError("Invalid to address format");
+      return;
+    }
+
+    // If fromAddress is provided, it must be valid
+    if (fromAddress.trim() && !utils.isValidHyperEVMAddress(fromAddress.trim())) {
+      setSimulationError("Invalid from address format");
       return;
     }
 
@@ -251,8 +257,8 @@ export default function HyperEVMSimulatorPage() {
 
     try {
       const request: SimulationRequest = {
-        to: toAddress.trim() || undefined, // Allow undefined for contract deployment
-        from: fromAddress || undefined,
+        to: toAddress.trim() ? utils.normalizeAddress(toAddress.trim()) : undefined, // Normalize for contract calls
+        from: fromAddress.trim() ? utils.normalizeAddress(fromAddress.trim()) : undefined, // Normalize from address
         value: value ? utils.parseHypeAmount(value) : undefined,
         data: data || undefined,
         gasLimit: gasLimit || undefined,
@@ -948,7 +954,7 @@ export default function HyperEVMSimulatorPage() {
                 </div>
               )}
 
-              {simulationResult && !simulationError && (
+              {simulationResult && !simulationError && simulationResult.success && (
                 <div className="mt-4 p-4 bg-emerald-900/30 border border-emerald-500/50 rounded-lg text-emerald-300">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-emerald-400">✅</span>
@@ -956,6 +962,18 @@ export default function HyperEVMSimulatorPage() {
                   </div>
                   <p className="text-sm text-emerald-200">
                     Auto-balance feature ensured sufficient funds for testing. Check results below for detailed analysis.
+                  </p>
+                </div>
+              )}
+
+              {simulationResult && !simulationError && !simulationResult.success && (
+                <div className="mt-4 p-4 bg-red-900/30 border border-red-500/50 rounded-lg text-red-300">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-red-400">❌</span>
+                    <span className="font-semibold">Simulation Failed!</span>
+                  </div>
+                  <p className="text-sm text-red-200">
+                    {simulationResult.executionResult?.revertReason || 'Transaction simulation failed to execute. Check transaction parameters and try again.'}
                   </p>
                 </div>
               )}

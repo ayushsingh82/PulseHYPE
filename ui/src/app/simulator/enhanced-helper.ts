@@ -477,14 +477,16 @@ export class HyperEVMSimulator {
     
     const tx: any = {
       data: request.data || '0x',
-      from: request.from || ethers.ZeroAddress,
+      from: request.from ? utils.normalizeAddress(request.from) : ethers.ZeroAddress,
       gasLimit: request.gasLimit || '21000'
     };
 
     // Only add 'to' field if it's provided (for contract calls)
     // Contract deployments don't have a 'to' field
     if (request.to && request.to.trim()) {
-      tx.to = request.to.trim();
+      const normalizedTo = utils.normalizeAddress(request.to.trim());
+      console.log('🎯 Normalized to address:', request.to.trim(), '->', normalizedTo);
+      tx.to = normalizedTo;
     }
 
     // Handle value - always set to 0 if not provided or invalid
@@ -1421,17 +1423,32 @@ export const utils = {
         return false;
       }
       
-      // Try to normalize the address (this will fix checksum issues)
-      try {
-        const normalizedAddress = ethers.getAddress(cleanAddress.toLowerCase());
-        return ethers.isAddress(normalizedAddress);
-      } catch {
-        // If normalization fails, try direct validation
-        return ethers.isAddress(cleanAddress);
-      }
+      // Use ethers to validate and normalize
+      return ethers.isAddress(cleanAddress);
     } catch (error) {
       console.warn('Address validation error:', error);
       return false;
+    }
+  },
+
+  normalizeAddress: (address: string): string => {
+    try {
+      if (!address || typeof address !== 'string') {
+        return address;
+      }
+      
+      // Remove whitespace and ensure proper checksum
+      const cleanAddress = address.trim();
+      
+      // If it's a valid format, normalize it with proper checksum
+      if (ethers.isAddress(cleanAddress)) {
+        return ethers.getAddress(cleanAddress);
+      }
+      
+      return cleanAddress;
+    } catch (error) {
+      console.warn('Address normalization error:', error);
+      return address;
     }
   },
 
