@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ethers } from 'ethers';
 
 // HyperEVM Configuration
@@ -253,53 +255,105 @@ export class HyperEVMSimulator {
   }
 
   private async buildTransaction(request: SimulationRequest) {
+    console.log('🔧 Building transaction with request:', request);
+    
     const tx: any = {
       data: request.data || '0x',
-      value: request.value || '0',
       from: request.from || ethers.ZeroAddress,
       gasLimit: request.gasLimit || '21000'
     };
 
     // Only add 'to' field if it's provided (for contract calls)
     // Contract deployments don't have a 'to' field
-    if (request.to) {
-      tx.to = request.to;
+    if (request.to && request.to.trim()) {
+      tx.to = request.to.trim();
     }
 
-    if (request.maxFeePerGas && request.maxPriorityFeePerGas) {
-      tx.maxFeePerGas = request.maxFeePerGas;
-      tx.maxPriorityFeePerGas = request.maxPriorityFeePerGas;
-      tx.type = 2;
-    } else if (request.gasPrice) {
-      tx.gasPrice = request.gasPrice;
-      tx.type = 0;
+    // Handle value - always set to 0 if not provided or invalid
+    if (request.value && request.value !== '0' && request.value !== '0.0') {
+      try {
+        // Convert to wei
+        const valueInWei = ethers.parseEther(request.value.toString());
+        tx.value = valueInWei;
+        console.log('✅ Parsed value:', ethers.formatEther(valueInWei), 'ETH');
+      } catch (valueError) {
+        console.warn('⚠️ Failed to parse value, using 0:', valueError);
+        tx.value = BigInt(0);
+      }
     } else {
-      const feeData = await this.provider.getFeeData();
-      if (feeData.maxFeePerGas && feeData.maxPriorityFeePerGas) {
-        tx.maxFeePerGas = feeData.maxFeePerGas.toString();
-        tx.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.toString();
+      tx.value = BigInt(0);
+    }
+
+    // Handle gas pricing
+    if (request.maxFeePerGas && request.maxPriorityFeePerGas) {
+      try {
+        tx.maxFeePerGas = ethers.parseUnits(request.maxFeePerGas.toString(), 'gwei');
+        tx.maxPriorityFeePerGas = ethers.parseUnits(request.maxPriorityFeePerGas.toString(), 'gwei');
         tx.type = 2;
-      } else if (feeData.gasPrice) {
-        tx.gasPrice = feeData.gasPrice.toString();
+        console.log('✅ Using EIP-1559 gas pricing');
+      } catch (gasError) {
+        console.warn('⚠️ Failed to parse EIP-1559 gas values, using legacy:', gasError);
+        tx.gasPrice = ethers.parseUnits('20', 'gwei');
         tx.type = 0;
       }
+    } else if (request.gasPrice) {
+      try {
+        tx.gasPrice = ethers.parseUnits(request.gasPrice.toString(), 'gwei');
+        tx.type = 0;
+        console.log('✅ Using legacy gas pricing');
+      } catch (gasError) {
+        console.warn('⚠️ Failed to parse gas price, using 20 Gwei:', gasError);
+        tx.gasPrice = ethers.parseUnits('20', 'gwei');
+        tx.type = 0;
+      }
+    } else {
+      // Use default 20 Gwei
+      tx.gasPrice = ethers.parseUnits('20', 'gwei');
+      tx.type = 0;
+      console.log('✅ Using default 20 Gwei gas price');
     }
 
+    console.log('🎯 Final transaction:', tx);
     return tx;
   }
 
   private async executeSimulation(tx: any, request: SimulationRequest) {
     try {
-      console.log('🚀 Starting real HyperEVM simulation with:', { tx, rpcUrl: this.config.rpcUrl });
+      console.log('🚀 Starting HyperEVM simulation with:', { 
+        to: tx.to || '(contract deployment)',
+        from: tx.from,
+        value: tx.value?.toString() || '0',
+        gasLimit: tx.gasLimit,
+        dataLength: tx.data?.length || 0,
+        rpcUrl: this.config.rpcUrl 
+      });
       
       // Step 1: Try to estimate gas first
       let gasEstimate: bigint;
       try {
         gasEstimate = await this.provider.estimateGas(tx);
         console.log('✅ Gas estimate successful:', gasEstimate.toString());
-      } catch (estimateError) {
+      } catch (estimateError: any) {
         console.warn('⚠️ Gas estimation failed:', estimateError);
-        throw new Error(`Gas estimation failed: ${estimateError instanceof Error ? estimateError.message : 'Unknown error'}`);
+        
+        // Extract useful error information
+        let errorMessage = 'Gas estimation failed';
+        if (estimateError.code === 'UNPREDICTABLE_GAS_LIMIT') {
+          errorMessage = 'Transaction would fail - unpredictable gas limit';
+        } else if (estimateError.code === 'INSUFFICIENT_FUNDS') {
+          errorMessage = 'Insufficient funds for gas and value';
+        } else if (estimateError.reason) {
+          errorMessage = estimateError.reason;
+        } else if (estimateError.message) {
+          errorMessage = estimateError.message;
+        }
+        
+        return {
+          success: false,
+          gasUsed: '0',
+          error: errorMessage,
+          revertReason: this.extractRevertReason(estimateError)
+        };
       }
 
       // Step 2: Try to call the transaction to see if it would succeed
@@ -307,12 +361,26 @@ export class HyperEVMSimulator {
       try {
         callResult = await this.provider.call(tx);
         console.log('✅ Transaction call successful, result length:', callResult.length);
-      } catch (callError) {
+      } catch (callError: any) {
         console.warn('⚠️ Transaction call failed:', callError);
-        throw new Error(`Transaction would fail: ${callError instanceof Error ? callError.message : 'Unknown error'}`);
+        
+        let errorMessage = 'Transaction call failed';
+        if (callError.reason) {
+          errorMessage = callError.reason;
+        } else if (callError.message) {
+          errorMessage = callError.message;
+        }
+        
+        return {
+          success: false,
+          gasUsed: gasEstimate.toString(),
+          error: errorMessage,
+          revertReason: this.extractRevertReason(callError),
+          returnData: callError.data
+        };
       }
 
-      // Step 3: Try to get detailed trace using debug_traceCall
+      // Step 3: Try to get detailed trace using debug_traceCall (optional)
       let traceResult: any = null;
       try {
         const traceParams = {
@@ -326,7 +394,7 @@ export class HyperEVMSimulator {
         traceResult = traceResponse;
         console.log('✅ Trace call successful');
       } catch (traceError) {
-        console.warn('⚠️ Trace call not available:', traceError);
+        console.warn('⚠️ Trace call not available (this is normal for most RPC endpoints)');
         // Continue without trace - many RPC endpoints don't support debug_traceCall
       }
 
@@ -346,7 +414,7 @@ export class HyperEVMSimulator {
       return {
         success: false,
         gasUsed: '0',
-        error: error.message,
+        error: error.message || 'Unknown simulation error',
         revertReason: this.extractRevertReason(error)
       };
     }
@@ -490,18 +558,18 @@ export class HyperEVMSimulator {
     return 'low';
   }
 
-  private generateRecommendations(gasBreakdown: any, securityAnalysis: SecurityAnalysis): Recommendation[] {
+  private generateRecommendations(gasBreakdown: any, securityAnalysis: SecurityAnalysis, executionResult?: any): Recommendation[] {
     const recommendations: Recommendation[] = [];
 
-    if (gasBreakdown.optimization.efficiency !== 'optimal') {
+    if (gasBreakdown.optimization && gasBreakdown.optimization.efficiency !== 'optimal') {
       recommendations.push({
         category: 'gas',
         severity: 'warning',
         title: 'Gas Optimization Opportunity',
         description: `Current gas efficiency is ${gasBreakdown.optimization.efficiency}`,
-        solution: gasBreakdown.optimization.suggestions.join('. '),
+        solution: gasBreakdown.optimization.suggestions?.join('. ') || 'Optimize gas usage',
         impact: {
-          gasReduction: gasBreakdown.optimization.potentialSavings
+          gasReduction: gasBreakdown.optimization.potentialSavings || 0
         }
       });
     }
@@ -513,6 +581,17 @@ export class HyperEVMSimulator {
         title: 'Security Review Needed',
         description: `Transaction has ${securityAnalysis.riskLevel} security risk`,
         solution: 'Review security vulnerabilities and contract interactions'
+      });
+    }
+
+    // Add execution failure recommendations
+    if (executionResult && executionResult.status === 'failed') {
+      recommendations.push({
+        category: 'security',
+        severity: 'error',
+        title: 'Transaction Failed',
+        description: executionResult.revertReason || 'Transaction execution failed',
+        solution: 'Check transaction parameters, gas limit, and contract requirements'
       });
     }
 
@@ -647,6 +726,140 @@ export class HyperEVMSimulator {
       return false;
     }
   }
+
+  // Additional analysis methods for real data extraction
+  private async extractStateChanges(simulationResult: any, tx: any): Promise<StateChange[]> {
+    const changes: StateChange[] = [];
+    
+    // For ETH transfers
+    if (tx.value && tx.value !== '0') {
+      changes.push({
+        address: tx.from,
+        slot: '0x0', // Balance slot
+        oldValue: '0', // Would need pre-state to get real value
+        newValue: '0', // Would need post-state to get real value
+        type: 'balance',
+        humanReadable: `ETH balance decreased by ${utils.formatWei(tx.value)} ETH`
+      });
+      
+      if (tx.to) {
+        changes.push({
+          address: tx.to,
+          slot: '0x0', // Balance slot
+          oldValue: '0',
+          newValue: '0',
+          type: 'balance',
+          humanReadable: `ETH balance increased by ${utils.formatWei(tx.value)} ETH`
+        });
+      }
+    }
+
+    return changes;
+  }
+
+  private async decodeEvents(logs: any[]): Promise<DecodedEvent[]> {
+    const events: DecodedEvent[] = [];
+    
+    for (const log of logs) {
+      try {
+        // Detect ERC20 Transfer events
+        if (log.topics && log.topics[0] === '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
+          const from = ethers.getAddress(`0x${log.topics[1].slice(-40)}`);
+          const to = ethers.getAddress(`0x${log.topics[2].slice(-40)}`);
+          const value = BigInt(log.data || '0x0');
+          
+          events.push({
+            address: log.address,
+            contractAddress: log.address,
+            topics: log.topics,
+            data: log.data,
+            eventName: 'Transfer',
+            signature: 'Transfer(address,address,uint256)',
+            args: { from, to, value: value.toString() },
+            humanReadable: `Transfer ${utils.formatWei(value)} tokens from ${from} to ${to}`,
+            category: {
+              type: 'transfer',
+              impact: 'medium'
+            }
+          });
+        }
+        // Add more event decoders here as needed
+      } catch (error) {
+        console.warn('Failed to decode event:', error);
+      }
+    }
+    
+    return events;
+  }
+
+  private async extractAssetChanges(simulationResult: any, tx: any, events: DecodedEvent[]): Promise<AssetChange[]> {
+    const changes: AssetChange[] = [];
+    
+    // ETH transfers
+    if (tx.value && tx.value !== '0') {
+      changes.push({
+        address: tx.from,
+        from: tx.from,
+        to: tx.to || '0x0000000000000000000000000000000000000000',
+        amount: utils.formatWei(tx.value),
+        type: 'ETH',
+        changeType: 'sent'
+      });
+    }
+    
+    // Token transfers from events
+    for (const event of events) {
+      if (event.eventName === 'Transfer' && event.args) {
+        changes.push({
+          address: event.contractAddress,
+          from: event.args.from,
+          to: event.args.to,
+          amount: utils.formatWei(event.args.value),
+          type: 'ERC20',
+          changeType: event.args.from === tx.from ? 'sent' : 'received',
+          tokenInfo: {
+            address: event.contractAddress,
+            symbol: 'TOKEN', // Would need to fetch from contract
+            name: 'Unknown Token',
+            decimals: 18
+          }
+        });
+      }
+    }
+    
+    return changes;
+  }
+
+  private processTrace(trace: any): ExecutionTrace {
+    if (!trace) {
+      return { calls: [], gasUsed: '0', depth: 0 };
+    }
+    
+    const calls: TraceCall[] = [];
+    
+    if (trace.calls) {
+      for (const call of trace.calls) {
+        calls.push({
+          type: call.type || 'CALL',
+          from: call.from || '0x0',
+          to: call.to || '0x0',
+          value: call.value || '0x0',
+          gasUsed: call.gasUsed || '0x0',
+          gasLimit: call.gas || '0x0',
+          input: call.input || '0x',
+          output: call.output,
+          error: call.error
+        });
+      }
+    }
+    
+    return {
+      calls,
+      gasUsed: trace.gasUsed || '0',
+      depth: trace.depth || 0
+    };
+  }
+
 }
 
 export const utils = {

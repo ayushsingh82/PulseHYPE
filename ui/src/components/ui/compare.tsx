@@ -1,4 +1,6 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { SparklesCore } from "./sparkles";
 import { AnimatePresence, motion } from "motion/react";

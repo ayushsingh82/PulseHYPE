@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 
 interface SimulationDashboardProps {
@@ -45,13 +46,49 @@ export const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ result
 
   return (
     <div className="space-y-6">
+      {/* Error Display (if any) */}
+      {(result.error || result.executionResult?.error || result.revertReason) && (
+        <div className="bg-red-900/20 border border-red-400/30 rounded-lg p-6">
+          <h3 className="text-xl font-bold text-red-400 mb-4">❌ Execution Failed</h3>
+          {result.error && (
+            <div className="mb-3">
+              <div className="text-sm text-red-300 font-semibold">Error Message:</div>
+              <div className="text-red-100 bg-red-900/30 p-3 rounded mt-1 font-mono text-sm">
+                {result.error}
+              </div>
+            </div>
+          )}
+          {result.revertReason && (
+            <div className="mb-3">
+              <div className="text-sm text-red-300 font-semibold">Revert Reason:</div>
+              <div className="text-red-100 bg-red-900/30 p-3 rounded mt-1 font-mono text-sm">
+                {result.revertReason}
+              </div>
+            </div>
+          )}
+          {result.returnData && (
+            <div className="mb-3">
+              <div className="text-sm text-red-300 font-semibold">Return Data:</div>
+              <div className="text-red-100 bg-red-900/30 p-3 rounded mt-1 font-mono text-xs break-all">
+                {result.returnData}
+              </div>
+            </div>
+          )}
+          <div className="text-sm text-red-300">
+            💡 Check your transaction parameters, account balance, and contract state.
+          </div>
+        </div>
+      )}
+
       {/* Execution Summary */}
       <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
         <h3 className="text-xl font-bold text-emerald-400 mb-4">🎯 Execution Summary</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className={`p-4 rounded-lg border ${getStatusColor(result.executionResult?.status || 'unknown')}`}>
+          <div className={`p-4 rounded-lg border ${getStatusColor(result.success === false ? 'failed' : result.executionResult?.status || 'success')}`}>
             <div className="text-sm opacity-75">Status</div>
-            <div className="text-lg font-bold capitalize">{result.executionResult?.status || 'Unknown'}</div>
+            <div className="text-lg font-bold capitalize">
+              {result.success === false ? 'Failed' : result.executionResult?.status || 'Success'}
+            </div>
           </div>
           <div className="p-4 rounded-lg border border-blue-400/30 bg-blue-900/20 text-blue-400">
             <div className="text-sm opacity-75">Gas Used</div>
@@ -65,29 +102,35 @@ export const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ result
       </div>
 
       {/* Gas Analysis */}
-      {result.executionResult?.gasBreakdown && (
+      {result.executionResult && (
         <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
           <h3 className="text-xl font-bold text-blue-400 mb-4">⛽ Gas Analysis</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-400">{formatGas(result.executionResult.gasBreakdown.intrinsic)}</div>
-              <div className="text-sm text-gray-400">Intrinsic</div>
+          {result.executionResult.gasBreakdown ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-400">{formatGas(result.executionResult.gasBreakdown.intrinsic || '0')}</div>
+                <div className="text-sm text-gray-400">Intrinsic</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-400">{formatGas(result.executionResult.gasBreakdown.execution || '0')}</div>
+                <div className="text-sm text-gray-400">Execution</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-yellow-400">{formatGas(result.executionResult.gasBreakdown.calldata || '0')}</div>
+                <div className="text-sm text-gray-400">Calldata</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-purple-400">{formatGas(result.executionResult.gasBreakdown.total || result.gasUsed || '0')}</div>
+                <div className="text-sm text-gray-400">Total</div>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-400">{formatGas(result.executionResult.gasBreakdown.execution)}</div>
-              <div className="text-sm text-gray-400">Execution</div>
+          ) : (
+            <div className="text-center py-4 text-gray-400">
+              Gas breakdown analysis not available
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-yellow-400">{formatGas(result.executionResult.gasBreakdown.calldata)}</div>
-              <div className="text-sm text-gray-400">Calldata</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-400">{formatGas(result.executionResult.gasBreakdown.total)}</div>
-              <div className="text-sm text-gray-400">Total</div>
-            </div>
-          </div>
+          )}
           
-          {result.executionResult.gasBreakdown.optimization && (
+          {result.executionResult.gasBreakdown?.optimization && (
             <div className="mt-4 p-4 bg-gray-700/50 rounded-lg">
               <div className="flex items-center justify-between mb-2">
                 <span className="font-semibold">Gas Efficiency</span>
@@ -101,7 +144,7 @@ export const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ result
                 </span>
               </div>
               <div className="text-sm text-gray-400">
-                Score: {result.executionResult.gasBreakdown.optimization.score}/100
+                Score: {result.executionResult.gasBreakdown.optimization.score || 0}/100
               </div>
               {result.executionResult.gasBreakdown.optimization.potentialSavings > 0 && (
                 <div className="text-sm text-green-400 mt-1">

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
@@ -50,14 +51,14 @@ export default function HyperEVMSimulatorPage() {
     setSimulator(new HyperEVMSimulator(network));
   }, [network]);
 
-  // Predefined scenarios for testing
+    // Predefined scenarios for testing
   const scenarios = [
     {
       name: "Simple ETH Transfer",
       description: "Transfer 1 HYPE to another address",
       params: {
         to: "0x742D35Cc6634c0532925A3B8d7C9DD7fEAd9c027",
-        value: utils.parseHypeAmount("1"),
+        value: "1.0",
         gasLimit: "21000"
       }
     },
@@ -66,6 +67,7 @@ export default function HyperEVMSimulatorPage() {
       description: "Transfer tokens using ERC20 interface",
       params: {
         to: "0xA0b86a33E6F57c8c05Bd7b4F2F3E8a7e4b2F57C8",
+        value: "0.0",
         data: "0xa9059cbb000000000000000000000000742D35Cc6634c0532925A3B8d7C9DD7fEAd9c027000000000000000000000000000000000000000000000000016345785d8a0000",
         gasLimit: "60000"
       }
@@ -74,7 +76,8 @@ export default function HyperEVMSimulatorPage() {
       name: "Contract Deployment",
       description: "Deploy a simple contract",
       params: {
-        data: "0x608060405234801561001057600080fd5b50610150806100206000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80636057361d1461003b578063b05784b814610057575b600080fd5b610055600480360381019061005091906100c3565b610075565b005b61005f61007f565b60405161006c91906100ff565b60405180910390f35b8060008190555050565b60008054905090565b600080fd5b6000819050919050565b6100a08161008d565b81146100ab57600080fd5b50565b6000813590506100bd81610097565b92915050565b6000602082840312156100d9576100d8610088565b5b60006100e7848285016100ae565b91505092915050565b6100f98161008d565b82525050565b600060208201905061011460008301846100f0565b9291505056fea2646970667358221220a2d45c0b77a5f6d3c8c4d4e7f8e9f2a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f264736f6c63430008120033",
+        value: "0.0",
+        data: "0x608060405234801561001057600080fd5b50610150806100206000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80636057361d1461003b578063b05784b814610057575b600080fd5b610055600480360381019061005091906100c3565b610075565b005b61005f61007f565b60405161006c91906100ff565b60405180910390f35b8060008190555050565b60008054905090565b600080fd5b6000819050919050565b6100a08161008d565b81146100ab57600080fd5b50565b6000813590506100bd81610097565b92915050565b6000602082840312156100d9576100d8610088565b5b60006100e7848285016100ae565b91505092915050565b6100f98161008d565b82525050565b600060208201905061011460008301846100f0565b9291505056fea2646970667358221220a2d45c0b77a5f6d3c8c4d4e7f8e9f2a5b6c9d0e1f264736f6c63430008120033",
         gasLimit: "200000"
       }
     }
@@ -464,10 +467,11 @@ export default function HyperEVMSimulatorPage() {
               <div className="flex flex-wrap gap-4">
                 <button
                   onClick={handleSimulation}
-                  disabled={simulationLoading || !toAddress}
+                  disabled={simulationLoading || (!toAddress && !data)}
                   className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-colors"
                 >
-                  {simulationLoading ? '🔄 Simulating...' : '🎯 Simulate Transaction'}
+                  {simulationLoading ? '🔄 Simulating...' : 
+                   (!toAddress && data) ? '🚀 Deploy Contract' : '🎯 Simulate Transaction'}
                 </button>
                 
                 <button
