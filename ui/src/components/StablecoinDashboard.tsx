@@ -111,6 +111,7 @@ export function StablecoinDashboard() {
   const [activeTab, setActiveTab] = useState<'overview' | 'supply' | 'protocols' | 'rehypothecation'>('overview');
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loadingProgress, setLoadingProgress] = useState({ current: 0, total: 7, currentToken: '' });
 
   const api = new HyperEVMApiService();
 
@@ -188,11 +189,53 @@ export function StablecoinDashboard() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
-        <div className="text-center">
-          <div className="text-emerald-400 font-medium">Loading HyperEVM Stablecoin Data</div>
-          <div className="text-gray-400 text-sm mt-1">Fetching real-time data from blockchain...</div>
+      <div className="flex flex-col items-center justify-center min-h-[500px] space-y-6">
+        <div className="relative">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-emerald-500/20 border-t-emerald-500"></div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="animate-pulse text-emerald-400 text-xl">💰</div>
+          </div>
+        </div>
+        
+        <div className="text-center space-y-3">
+          <div className="text-emerald-400 font-bold text-xl">Loading HyperEVM Stablecoins</div>
+          <div className="text-gray-400 text-sm">Fetching real-time data from Blockscout API...</div>
+          
+          <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700 max-w-md">
+            <div className="text-gray-300 text-sm mb-3">
+              Fetching Data: {loadingProgress.current}/{loadingProgress.total} Contracts
+            </div>
+            
+            {/* Progress Bar */}
+            <div className="w-full bg-gray-700 rounded-full h-2 mb-3">
+              <div 
+                className="bg-emerald-500 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${(loadingProgress.current / loadingProgress.total) * 100}%` }}
+              ></div>
+            </div>
+            
+            {loadingProgress.currentToken && (
+              <div className="text-emerald-400 text-sm mb-2">
+                Currently fetching: {loadingProgress.currentToken}
+              </div>
+            )}
+            
+            <div className="grid grid-cols-1 gap-1 text-xs text-gray-400">
+              <div>💰 USD₮0 (Tether) - 0xb8ce...5ebb</div>
+              <div>💰 feUSD (FelixDeFi) - 0x02c6...c70</div>
+              <div>💰 rUSDC (Relend) - 0x9ab9...b8d</div>
+              <div>💰 USDe (USDeOFT) - 0x5d3a...f34</div>
+              <div>💰 USDXL (Last USD) - 0xca79...645</div>
+              <div>💰 KEI (KEI Stablecoin) - 0xb5fe...20c</div>
+              <div>💰 USH (Hyperstable) - 0x8ff0...bd8</div>
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-center space-x-2 text-xs text-gray-500">
+            <div className="animate-bounce">●</div>
+            <div className="animate-bounce" style={{ animationDelay: '0.1s' }}>●</div>
+            <div className="animate-bounce" style={{ animationDelay: '0.2s' }}>●</div>
+          </div>
         </div>
       </div>
     );
