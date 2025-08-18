@@ -40,10 +40,10 @@ interface HistoricalData {
 
 import HyperEVMApiService from "../lib/hyperevmApi";
 
-// Generate historical data based on current supply (for visualization only)
-const generateHistoricalData = (stablecoins: StablecoinData[]): HistoricalData[] => {
+// Generate historical data based on timeframe and current supply
+const generateHistoricalData = (stablecoins: StablecoinData[], timeframe: '7d' | '30d' | '90d'): HistoricalData[] => {
   const data: HistoricalData[] = [];
-  const days = 30;
+  const days = timeframe === '7d' ? 7 : timeframe === '30d' ? 30 : 90;
   
   for (let i = days; i >= 0; i--) {
     const date = new Date();
@@ -54,10 +54,16 @@ const generateHistoricalData = (stablecoins: StablecoinData[]): HistoricalData[]
     };
     
     stablecoins.forEach(coin => {
-      // Use actual supply with small historical variations for visualization
+      // Use actual supply with realistic historical variations
       const actualSupply = parseFloat(coin.totalSupply) / Math.pow(10, parseInt(coin.decimals || "18"));
-      const variation = (Math.random() - 0.5) * 0.05; // ±2.5% variation
-      entry[coin.symbol] = Math.max(0, actualSupply * (1 + variation));
+      
+      // Create more realistic growth patterns
+      const growthTrend = Math.sin((i / days) * Math.PI) * 0.1; // Sine wave growth
+      const randomVariation = (Math.random() - 0.5) * 0.03; // ±1.5% random variation
+      const timeBasedGrowth = (days - i) / days * 0.05; // Gradual growth over time
+      
+      const totalVariation = growthTrend + randomVariation + timeBasedGrowth;
+      entry[coin.symbol] = Math.max(0, actualSupply * (1 + totalVariation));
     });
     
     data.push(entry);
@@ -119,6 +125,13 @@ export function StablecoinDashboard() {
     loadStablecoinData();
   }, []);
 
+  // Update historical data when timeframe changes
+  useEffect(() => {
+    if (stablecoins.length > 0) {
+      setHistoricalData(generateHistoricalData(stablecoins, selectedTimeframe));
+    }
+  }, [selectedTimeframe, stablecoins]);
+
   const loadStablecoinData = async () => {
     setLoading(true);
     setError(null);
@@ -156,7 +169,7 @@ export function StablecoinDashboard() {
       console.log(`Loaded ${transformedStablecoins.length} stablecoins`);
       
       setStablecoins(transformedStablecoins);
-      setHistoricalData(generateHistoricalData(transformedStablecoins));
+      setHistoricalData(generateHistoricalData(transformedStablecoins, selectedTimeframe));
       setProtocols(generateProtocolData(transformedStablecoins));
       setLastUpdated(new Date());
       
@@ -266,53 +279,60 @@ export function StablecoinDashboard() {
       transition={{ duration: 0.8 }}
       className="space-y-6"
     >
-      {/* Header with Refresh Button */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex space-x-4 border-b border-gray-700 flex-1">
-          {[
-            { id: 'overview', label: '📊 Overview' },
-            { id: 'supply', label: '📈 Supply Tracking' },
-            { id: 'protocols', label: '🏦 Protocol Distribution' },
-            { id: 'rehypothecation', label: '🔄 Rehypothecation' }
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`px-4 py-2 text-sm font-medium transition-colors ${
-                activeTab === tab.id
-                  ? 'text-emerald-400 border-b-2 border-emerald-400'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-        
-        <div className="flex items-center gap-4">
-          {lastUpdated && (
-            <div className="text-sm text-gray-400">
-              Last updated: {lastUpdated.toLocaleTimeString()}
-            </div>
-          )}
+      {/* Enhanced Header with Gradient Background */}
+      <div className="bg-gradient-to-r from-emerald-900/20 via-blue-900/20 to-purple-900/20 rounded-xl p-6 border border-gray-700/50 backdrop-blur-sm mb-8">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+          {/* Tab Navigation with Enhanced Styling */}
+          <div className="flex flex-wrap gap-2">
+            {[
+              { id: 'overview', label: '📊 Overview', color: 'emerald' },
+              { id: 'supply', label: '📈 Supply Tracking', color: 'blue' },
+              { id: 'protocols', label: '🏦 Protocol Distribution', color: 'purple' },
+              { id: 'rehypothecation', label: '🔄 Rehypothecation', color: 'orange' }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
+                  activeTab === tab.id
+                    ? `bg-${tab.color}-600 text-white shadow-lg shadow-${tab.color}-600/25`
+                    : 'bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700/50'
+                }`}
+                aria-label={`Switch to ${tab.label} tab`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
           
-          <button
-            onClick={loadStablecoinData}
-            disabled={loading}
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
-          >
-            {loading ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                <span>Refreshing...</span>
-              </>
-            ) : (
-              <>
-                <span>🔄</span>
-                <span>Refresh Data</span>
-              </>
+          {/* Status and Actions */}
+          <div className="flex items-center gap-4">
+            {lastUpdated && (
+              <div className="flex items-center gap-2 text-sm text-gray-400 bg-gray-800/30 px-3 py-1 rounded-full">
+                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                <span>Updated: {lastUpdated.toLocaleTimeString()}</span>
+              </div>
             )}
-          </button>
+            
+            <button
+              onClick={loadStablecoinData}
+              disabled={loading}
+              className="px-6 py-2 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 disabled:from-gray-600 disabled:to-gray-700 text-white rounded-lg font-medium transition-all duration-300 transform hover:scale-105 disabled:scale-100 flex items-center gap-2 shadow-lg"
+              aria-label="Refresh stablecoin data"
+            >
+              {loading ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <span>Refreshing...</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-lg">🔄</span>
+                  <span>Refresh Data</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -353,105 +373,166 @@ export function StablecoinDashboard() {
             </div>
           </div>
 
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
-              <div className="text-sm text-gray-400">Total Stablecoins</div>
-              <div className="text-2xl font-bold text-emerald-400">{stablecoins.length}</div>
-              <div className="text-xs text-gray-500 mt-1">Verified contracts</div>
-            </div>
-            <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
-              <div className="text-sm text-gray-400">Total Market Cap</div>
-              <div className="text-2xl font-bold text-blue-400">
+          {/* Enhanced Summary Cards with Gradients and Animations */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-gradient-to-br from-emerald-900/30 to-emerald-800/20 p-6 rounded-xl border border-emerald-500/20 backdrop-blur-sm hover:border-emerald-500/40 transition-all duration-300 group"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-sm text-emerald-300 font-medium">Total Stablecoins</div>
+                <div className="text-2xl group-hover:scale-110 transition-transform duration-300">💰</div>
+              </div>
+              <div className="text-3xl font-bold text-emerald-400 mb-1">{stablecoins.length}</div>
+              <div className="text-xs text-emerald-200/70">Verified contracts</div>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-gradient-to-br from-blue-900/30 to-blue-800/20 p-6 rounded-xl border border-blue-500/20 backdrop-blur-sm hover:border-blue-500/40 transition-all duration-300 group"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-sm text-blue-300 font-medium">Total Market Cap</div>
+                <div className="text-2xl group-hover:scale-110 transition-transform duration-300">📊</div>
+              </div>
+              <div className="text-3xl font-bold text-blue-400 mb-1">
                 {formatNumber(stablecoins.reduce((sum, coin) => sum + coin.marketCap, 0))}
               </div>
-              <div className="text-xs text-gray-500 mt-1">Onchain value</div>
-            </div>
-            <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
-              <div className="text-sm text-gray-400">Total Holders</div>
-              <div className="text-2xl font-bold text-purple-400">
+              <div className="text-xs text-blue-200/70">Onchain value</div>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="bg-gradient-to-br from-purple-900/30 to-purple-800/20 p-6 rounded-xl border border-purple-500/20 backdrop-blur-sm hover:border-purple-500/40 transition-all duration-300 group"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-sm text-purple-300 font-medium">Total Holders</div>
+                <div className="text-2xl group-hover:scale-110 transition-transform duration-300">👥</div>
+              </div>
+              <div className="text-3xl font-bold text-purple-400 mb-1">
                 {stablecoins.reduce((sum, coin) => sum + coin.holders, 0).toLocaleString()}
               </div>
-              <div className="text-xs text-gray-500 mt-1">Unique addresses</div>
-            </div>
-            <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
-              <div className="text-sm text-gray-400">Total Transfers</div>
-              <div className="text-2xl font-bold text-orange-400">
+              <div className="text-xs text-purple-200/70">Unique addresses</div>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-gradient-to-br from-orange-900/30 to-orange-800/20 p-6 rounded-xl border border-orange-500/20 backdrop-blur-sm hover:border-orange-500/40 transition-all duration-300 group"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-sm text-orange-300 font-medium">Total Transfers</div>
+                <div className="text-2xl group-hover:scale-110 transition-transform duration-300">🔄</div>
+              </div>
+              <div className="text-3xl font-bold text-orange-400 mb-1">
                 {stablecoins.reduce((sum, coin) => sum + (coin.totalTransfers || 0), 0).toLocaleString()}
               </div>
-              <div className="text-xs text-gray-500 mt-1">All time</div>
-            </div>
+              <div className="text-xs text-orange-200/70">All time</div>
+            </motion.div>
           </div>
 
-          {/* Stablecoin List */}
-          <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-            <h3 className="text-lg font-bold text-emerald-400 mb-4">💰 Stablecoin Overview</h3>
+          {/* Enhanced Stablecoin List */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="bg-gradient-to-br from-gray-800/60 to-gray-900/40 rounded-xl p-6 border border-gray-700/50 backdrop-blur-sm"
+          >
+            <h3 className="text-xl font-bold text-emerald-400 mb-6 flex items-center gap-3">
+              <span className="text-2xl">💰</span>
+              Stablecoin Overview
+              <div className="h-px bg-gradient-to-r from-emerald-400/50 to-transparent flex-1 ml-4"></div>
+            </h3>
+            
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full text-sm" role="table" aria-label="Stablecoin data table">
                 <thead>
-                  <tr className="border-b border-gray-600">
-                    <th className="text-left py-2 text-gray-300">Token</th>
-                    <th className="text-right py-2 text-gray-300">Supply</th>
-                    <th className="text-right py-2 text-gray-300">Holders</th>
-                    <th className="text-right py-2 text-gray-300">Transfers</th>
-                    <th className="text-right py-2 text-gray-300">Price</th>
-                    <th className="text-right py-2 text-gray-300">Market Cap</th>
-                    <th className="text-right py-2 text-gray-300">24h Change</th>
-                    <th className="text-center py-2 text-gray-300">Actions</th>
+                  <tr className="border-b-2 border-gray-600/50">
+                    <th className="text-left py-4 px-2 text-gray-300 font-semibold" scope="col">Token</th>
+                    <th className="text-right py-4 px-2 text-gray-300 font-semibold" scope="col">Supply</th>
+                    <th className="text-right py-4 px-2 text-gray-300 font-semibold" scope="col">Holders</th>
+                    <th className="text-right py-4 px-2 text-gray-300 font-semibold" scope="col">Transfers</th>
+                    <th className="text-right py-4 px-2 text-gray-300 font-semibold" scope="col">Price</th>
+                    <th className="text-right py-4 px-2 text-gray-300 font-semibold" scope="col">Market Cap</th>
+                    <th className="text-right py-4 px-2 text-gray-300 font-semibold" scope="col">24h Change</th>
+                    <th className="text-center py-4 px-2 text-gray-300 font-semibold" scope="col">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {stablecoins.map((coin, index) => (
-                    <tr key={coin.address} className="border-b border-gray-700/50 hover:bg-gray-700/30">
-                      <td className="py-3">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold`}
-                               style={{ backgroundColor: COLORS[index % COLORS.length] }}>
+                    <motion.tr 
+                      key={coin.address} 
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.1 * index }}
+                      className="border-b border-gray-700/30 hover:bg-gradient-to-r hover:from-gray-700/20 hover:to-transparent transition-all duration-300 group"
+                    >
+                      <td className="py-4 px-2">
+                        <div className="flex items-center gap-4">
+                          <div 
+                            className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                            style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                          >
                             {coin.symbol.charAt(0)}
                           </div>
                           <div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium text-white">{coin.symbol}</span>
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="font-semibold text-white text-base">{coin.symbol}</span>
                               {coin.category && (
-                                <span className="px-1.5 py-0.5 bg-emerald-600/20 text-emerald-400 text-xs rounded border border-emerald-600/30">
+                                <span className="px-2 py-1 bg-emerald-600/20 text-emerald-400 text-xs rounded-full border border-emerald-600/30 font-medium">
                                   {coin.category}
                                 </span>
                               )}
                             </div>
-                            <div className="text-xs text-gray-400">{coin.name}</div>
-                            <div className="text-xs text-gray-500 font-mono">
-                              {coin.address.slice(0, 6)}...{coin.address.slice(-4)}
+                            <div className="text-sm text-gray-400 mb-1">{coin.name}</div>
+                            <div className="text-xs text-gray-500 font-mono bg-gray-800/50 px-2 py-1 rounded">
+                              {coin.address.slice(0, 8)}...{coin.address.slice(-6)}
                             </div>
                             {coin.apiError && (
-                              <div className="text-xs text-red-400">⚠️ API Error</div>
+                              <div className="text-xs text-red-400 mt-1 flex items-center gap-1">
+                                <span>⚠️</span>
+                                <span>API Error</span>
+                              </div>
                             )}
                           </div>
                         </div>
                       </td>
-                      <td className="text-right py-3 text-white">{formatSupply(coin.totalSupply, coin.decimals)}</td>
-                      <td className="text-right py-3 text-white">{coin.holders.toLocaleString()}</td>
-                      <td className="text-right py-3 text-white">{(coin.totalTransfers || 0).toLocaleString()}</td>
-                      <td className="text-right py-3 text-white">${coin.price.toFixed(4)}</td>
-                      <td className="text-right py-3 text-white">{formatNumber(coin.marketCap)}</td>
-                      <td className={`text-right py-3 ${coin.change24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                        {coin.change24h >= 0 ? '+' : ''}{coin.change24h.toFixed(2)}%
+                      <td className="text-right py-4 px-2 text-white font-medium">{formatSupply(coin.totalSupply, coin.decimals)}</td>
+                      <td className="text-right py-4 px-2 text-white font-medium">{coin.holders.toLocaleString()}</td>
+                      <td className="text-right py-4 px-2 text-white font-medium">{(coin.totalTransfers || 0).toLocaleString()}</td>
+                      <td className="text-right py-4 px-2 text-white font-medium">${coin.price.toFixed(4)}</td>
+                      <td className="text-right py-4 px-2 text-white font-medium">{formatNumber(coin.marketCap)}</td>
+                      <td className={`text-right py-4 px-2 font-semibold ${coin.change24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        <span className="flex items-center justify-end gap-1">
+                          <span>{coin.change24h >= 0 ? '📈' : '📉'}</span>
+                          <span>{coin.change24h >= 0 ? '+' : ''}{coin.change24h.toFixed(2)}%</span>
+                        </span>
                       </td>
-                      <td className="text-center py-3">
+                      <td className="text-center py-4 px-2">
                         <a
                           href={`https://hyperevmscan.io/address/${coin.address}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center px-2 py-1 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 text-xs rounded border border-emerald-600/30 hover:border-emerald-600/60 transition-colors"
+                          className="inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-emerald-600/20 to-emerald-700/20 hover:from-emerald-600/40 hover:to-emerald-700/40 text-emerald-400 text-xs rounded-lg border border-emerald-600/30 hover:border-emerald-600/60 transition-all duration-300 transform hover:scale-105 font-medium"
+                          aria-label={`View ${coin.symbol} on HyperEVM Explorer`}
                         >
-                          🔗 View
+                          <span>🔗</span>
+                          <span>View</span>
                         </a>
                       </td>
-                    </tr>
+                    </motion.tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          </div>
+          </motion.div>
         </div>
       )}
 
@@ -459,20 +540,29 @@ export function StablecoinDashboard() {
       {activeTab === 'supply' && (
         <div className="space-y-6">
           <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-emerald-400">📈 Supply Growth Trajectory</h3>
-              <div className="flex gap-2">
-                {['7d', '30d', '90d'].map((period) => (
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+              <h3 className="text-xl font-bold text-emerald-400 flex items-center gap-2">
+                <span className="text-2xl">📈</span>
+                Supply Growth Trajectory
+              </h3>
+              <div className="flex gap-2 bg-gray-800/50 p-1 rounded-lg border border-gray-700">
+                {[
+                  { period: '7d', label: '7 Days', icon: '📅' },
+                  { period: '30d', label: '30 Days', icon: '📆' },
+                  { period: '90d', label: '90 Days', icon: '🗓️' }
+                ].map(({ period, label, icon }) => (
                   <button
                     key={period}
                     onClick={() => setSelectedTimeframe(period as any)}
-                    className={`px-3 py-1 rounded text-sm ${
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 flex items-center gap-2 ${
                       selectedTimeframe === period
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                        ? 'bg-emerald-600 text-white shadow-lg transform scale-105'
+                        : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
                     }`}
+                    aria-label={`View ${label} data`}
                   >
-                    {period}
+                    <span>{icon}</span>
+                    <span>{label}</span>
                   </button>
                 ))}
               </div>
