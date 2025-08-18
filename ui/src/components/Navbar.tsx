@@ -32,6 +32,12 @@ export default function Navbar() {
           >
             Simulator
           </Link>
+          <Link 
+            href="/stablecoin-tracker" 
+            className="text-[#22c55e] font-semibold hover:text-white transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-[#22c55e]/10 hover:scale-110"
+          >
+            Stablecoin Tracker
+          </Link>
         </div>
       </div>
     </nav>

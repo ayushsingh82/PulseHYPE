@@ -56,25 +56,25 @@ export default function Home() {
           particleColor="#97FBE4"
         />
       </div>
-      
+
       {/* Main Content */}
       <main className="flex-1 relative z-10">
         {/* Hero Section */}
         <section className="relative z-10 px-4 pb-20">
           <div className="max-w-5xl mx-auto">
-            <motion.div 
+            <motion.div
               className="mb-16 pt-12"
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
-              <motion.h1 
+              <motion.h1
                 className="text-4xl md:text-6xl font-light mb-4 tracking-tight"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
-                <motion.span 
+                <motion.span
                   className="block text-[#97FBE4]"
                   initial={{ opacity: 0, x: -50 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -82,7 +82,7 @@ export default function Home() {
                 >
                   Universal Hype.
                 </motion.span>
-                <motion.span 
+                <motion.span
                   className="block text-[#5eead4]"
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -91,7 +91,7 @@ export default function Home() {
                   For Everyone.
                 </motion.span>
               </motion.h1>
-              <motion.p 
+              <motion.p
                 className="text-base md:text-lg text-[#97FBE4]/80 max-w-2xl pixel-font"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -102,20 +102,20 @@ export default function Home() {
             </motion.div>
 
             {/* Bento Grid */}
-            <motion.div 
+            <motion.div
               className="grid grid-cols-12 gap-4 auto-rows-[160px]"
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1.0 }}
             >
               {/* Main Feature */}
-              <motion.div 
+              <motion.div
                 className="col-span-12 md:col-span-8 row-span-2 group relative glass-morphism rounded-2xl p-8 shadow-xl overflow-hidden card-hover"
                 whileHover={{ scale: 1.02, y: -5 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
                 <div className="relative z-10">
-                  <motion.p 
+                  <motion.p
                     className="text-sm text-[#97FBE4]/60 mb-4"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -123,7 +123,7 @@ export default function Home() {
                   >
                     FEATURED
                   </motion.p>
-                  <motion.h3 
+                  <motion.h3
                     className="text-3xl font-light mb-3"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -131,7 +131,7 @@ export default function Home() {
                   >
                     Optimal Swaps & Yield
                   </motion.h3>
-                  <motion.p 
+                  <motion.p
                     className="text-[#97FBE4]/80 max-w-lg pixel-font"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -141,22 +141,22 @@ export default function Home() {
                   </motion.p>
                 </div>
                 <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-[#97FBE4] to-transparent w-full" />
-                <motion.div 
+                <motion.div
                   className="absolute top-0 right-0 w-32 h-32 border border-[#97FBE4]/20 rounded-full"
                   animate={{ rotate: 360 }}
                   transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                 />
               </motion.div>
-              
+
               {/* Live Stats */}
-              <motion.div 
+              <motion.div
                 className="col-span-12 md:col-span-4 row-span-2 bg-[#97FBE4] rounded-2xl p-8 relative overflow-hidden shadow-xl live-stats-box float-animation pulse-glow"
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
                 <div className="flex flex-col justify-between h-full">
                   <div>
-                    <motion.p 
+                    <motion.p
                       className="text-sm mb-2"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -164,7 +164,7 @@ export default function Home() {
                     >
                       LIVE
                     </motion.p>
-                    <motion.p 
+                    <motion.p
                       className="text-5xl font-light"
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
@@ -172,7 +172,7 @@ export default function Home() {
                     >
                       $1.2M+
                     </motion.p>
-                    <motion.p 
+                    <motion.p
                       className="text-sm mt-1"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -181,13 +181,13 @@ export default function Home() {
                       TVL Secured
                     </motion.p>
                   </div>
-                  <motion.div 
+                  <motion.div
                     className="flex items-center space-x-2"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 2.4 }}
                   >
-                    <motion.div 
+                    <motion.div
                       className="w-2 h-2 bg-black"
                       animate={{ scale: [1, 1.2, 1] }}
                       transition={{ duration: 1, repeat: Infinity }}
@@ -195,14 +195,14 @@ export default function Home() {
                     <span className="text-xs">Real-time</span>
                   </motion.div>
                 </div>
-                <motion.div 
+                <motion.div
                   className="absolute top-0 right-0 w-32 h-32 border border-black/10 -translate-y-1/2 translate-x-1/2"
                   animate={{ rotate: -360 }}
                   transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
                 />
               </motion.div>
               {/* Feature Cards */}
-              <motion.div 
+              <motion.div
                 className="col-span-6 md:col-span-3 glass-morphism rounded-2xl p-6 shadow-md flex flex-col justify-center card-hover"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -212,8 +212,8 @@ export default function Home() {
                 <h4 className="text-lg font-semibold mb-1 text-[#97FBE4]">Optimal Swaps</h4>
                 <p className="text-xs text-[#97FBE4]/80">Get the best rates and lowest slippage with LiquidSwap route-finding.</p>
               </motion.div>
-              
-              <motion.div 
+
+              <motion.div
                 className="col-span-6 md:col-span-3 bg-[#97FBE4] rounded-2xl p-6 border border-[#97FBE4]/30 shadow-md flex flex-col justify-center card-hover button-glow"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -223,8 +223,8 @@ export default function Home() {
                 <h4 className="text-lg font-semibold mb-1 text-black">Cross-Chain</h4>
                 <p className="text-xs text-black font-light pixel-font">Bridge and swap across chains in one seamless flow.</p>
               </motion.div>
-              
-              <motion.div 
+
+              <motion.div
                 className="col-span-12 md:col-span-6 glass-morphism rounded-2xl p-6 shadow-md flex flex-col justify-center card-hover"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -236,7 +236,7 @@ export default function Home() {
               </motion.div>
 
               {/* Transaction Simulator */}
-              <motion.div 
+              <motion.div
                 className="col-span-12 md:col-span-6 bg-[#FF6B6B] rounded-2xl p-6 shadow-md flex flex-col justify-center card-hover button-glow"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -250,7 +250,7 @@ export default function Home() {
                 <p className="text-xs text-black/80 font-light pixel-font mb-3">
                   Test, debug, and optimize HyperEVM transactions before execution.
                 </p>
-                <Link 
+                <Link
                   href="/simulator"
                   className="text-xs font-semibold text-black hover:text-black/80 transition-colors duration-300 inline-flex items-center gap-1"
                 >
@@ -262,7 +262,7 @@ export default function Home() {
         </section>
 
         {/* Built for Agents + CompareDemo Section */}
-        <motion.section 
+        <motion.section
           className="relative z-10 px-4 py-20"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -277,7 +277,7 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              <motion.h2 
+              <motion.h2
                 className="text-3xl font-light mb-4"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -286,7 +286,7 @@ export default function Home() {
               >
                 Built for Agents
               </motion.h2>
-              <motion.p 
+              <motion.p
                 className="text-[#97FBE4]/80 mb-8"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -295,7 +295,7 @@ export default function Home() {
               >
                 Integrate payments in minutes, not months. Simple, powerful APIs that just work without KYC.
               </motion.p>
-              <motion.div 
+              <motion.div
                 className="space-y-4"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -307,7 +307,7 @@ export default function Home() {
                   { title: "Compliant Privacy", desc: "Hide your revenue from competitors" },
                   { title: "Instant Payments", desc: "Receive payments in any token from any chain" }
                 ].map((item, index) => (
-                  <motion.div 
+                  <motion.div
                     key={index}
                     className="flex items-start space-x-3"
                     initial={{ opacity: 0, x: -20 }}
@@ -316,11 +316,11 @@ export default function Home() {
                     viewport={{ once: true }}
                     whileHover={{ x: 10 }}
                   >
-                    <motion.div 
+                    <motion.div
                       className="w-6 h-6 border border-[#97FBE4]/30 flex items-center justify-center mt-1"
                       whileHover={{ scale: 1.2, borderColor: "#97FBE4" }}
                     >
-                      <motion.div 
+                      <motion.div
                         className="w-2 h-2 bg-[#97FBE4]/50"
                         animate={{ scale: [1, 1.2, 1] }}
                         transition={{ duration: 2, repeat: Infinity, delay: index * 0.3 }}
@@ -335,7 +335,7 @@ export default function Home() {
               </motion.div>
             </motion.div>
             {/* Right: CompareDemo */}
-            <motion.div 
+            <motion.div
               className="flex justify-center items-center"
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -353,7 +353,7 @@ export default function Home() {
         </motion.section>
 
         {/* FAQ Section */}
-        <motion.section 
+        <motion.section
           className="relative z-10 px-4 py-20 border-t border-[#97FBE4]/20"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -361,7 +361,7 @@ export default function Home() {
           viewport={{ once: true }}
         >
           <div className="max-w-3xl mx-auto">
-            <motion.h2 
+            <motion.h2
               className="text-3xl font-light mb-12 text-center"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -370,7 +370,7 @@ export default function Home() {
             >
               Frequently Asked Questions
             </motion.h2>
-            <motion.div 
+            <motion.div
               className="space-y-4"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -378,8 +378,8 @@ export default function Home() {
               viewport={{ once: true }}
             >
               {faqs.map((faq, index) => (
-                <motion.div 
-                  key={index} 
+                <motion.div
+                  key={index}
                   className="glass-morphism rounded-2xl overflow-hidden card-hover"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -393,7 +393,7 @@ export default function Home() {
                     whileHover={{ backgroundColor: "rgba(0, 21, 14, 0.5)" }}
                   >
                     <span className="font-medium">{faq.q}</span>
-                    <motion.span 
+                    <motion.span
                       className="text-2xl"
                       animate={{ rotate: expandedFaq === index ? 45 : 0 }}
                       transition={{ duration: 0.3 }}
@@ -410,7 +410,7 @@ export default function Home() {
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                     style={{ overflow: "hidden" }}
                   >
-                    <motion.div 
+                    <motion.div
                       className="px-6 pb-6 text-[#97FBE4]/80"
                       initial={{ y: -10 }}
                       animate={{ y: expandedFaq === index ? 0 : -10 }}
@@ -422,34 +422,34 @@ export default function Home() {
                 </motion.div>
               ))}
             </motion.div>
-        </div>
+          </div>
         </motion.section>
       </main>
       {/* Footer */}
-      <motion.footer 
+      <motion.footer
         className="w-full border-t border-[#97FBE4]/20 py-6 flex items-center justify-between px-4 max-w-3xl mx-auto relative z-10"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
       >
-        <motion.span 
+        <motion.span
           className="text-lg font-bold tracking-tight"
           whileHover={{ scale: 1.1 }}
           transition={{ type: "spring", stiffness: 400, damping: 17 }}
         >
           HYPE
         </motion.span>
-        <motion.a 
-          href="https://github.com/" 
-          target="_blank" 
-          rel="noopener noreferrer" 
+        <motion.a
+          href="https://github.com/"
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center"
           whileHover={{ scale: 1.2, rotate: 360 }}
           transition={{ type: "spring", stiffness: 400, damping: 17 }}
         >
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#97FBE4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 4 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 21.13V25"/>
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 4 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 21.13V25" />
           </svg>
         </motion.a>
       </motion.footer>
