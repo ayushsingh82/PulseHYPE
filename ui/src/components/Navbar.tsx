@@ -33,10 +33,23 @@ export default function Navbar() {
             Simulator
           </Link>
           <Link 
+<<<<<<< HEAD
             href="/stablecoin-tracker" 
             className="text-[#22c55e] font-semibold hover:text-white transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-[#22c55e]/10 hover:scale-110"
           >
             Stablecoin Tracker
+=======
+            href="/goldsky" 
+            className="text-[#97FBE4] font-semibold hover:text-white transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-[#97FBE4]/10 hover:scale-110"
+          >
+            GoldSky
+          </Link>
+          <Link 
+            href="/goldrush" 
+            className="text-[#97FBE4] font-semibold hover:text-white transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-[#97FBE4]/10 hover:scale-110"
+          >
+            GoldRush
+>>>>>>> dcbc780 (goldrush)
           </Link>
         </div>
       </div>

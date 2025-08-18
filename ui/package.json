@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@covalenthq/client-sdk": "^2.3.2",
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/contracts": "^5.7.0",
     "@tabler/icons-react": "^3.34.1",
