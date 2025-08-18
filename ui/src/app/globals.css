@@ -72,8 +72,26 @@ h1, h2, h3, h4, h5, h6, p, span, a, li, label, input, button, div, section {
   51%, 100% { opacity: 0; }
 }
 
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 10px rgba(151, 251, 228, 0.2), 0 0 20px rgba(151, 251, 228, 0.1);
+  }
+  50% { 
+    box-shadow: 0 0 20px rgba(151, 251, 228, 0.4), 0 0 40px rgba(151, 251, 228, 0.2);
+  }
+}
+
 .float-animation {
   animation: float 6s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
 }
 
 .pulse-glow {
@@ -118,12 +136,32 @@ h1, h2, h3, h4, h5, h6, p, span, a, li, label, input, button, div, section {
   border: 1px solid rgba(151, 251, 228, 0.2);
 }
 
+/* Enhanced glass morphism for navbar */
+.glass-morphism-enhanced {
+  background: rgba(0, 21, 14, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(151, 251, 228, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(151, 251, 228, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
 .neon-text {
   text-shadow: 
     0 0 5px #97FBE4,
     0 0 10px #97FBE4,
     0 0 15px #97FBE4,
     0 0 20px #97FBE4;
+}
+
+/* Subtle neon text for navbar logo */
+.neon-text-subtle {
+  text-shadow: 
+    0 0 10px rgba(151, 251, 228, 0.6),
+    0 0 20px rgba(151, 251, 228, 0.4),
+    0 0 30px rgba(151, 251, 228, 0.2);
 }
 
 .button-glow {
@@ -134,4 +172,54 @@ h1, h2, h3, h4, h5, h6, p, span, a, li, label, input, button, div, section {
 .button-glow:hover {
   box-shadow: 0 0 30px rgba(151, 251, 228, 0.8);
   transform: translateY(-2px);
+}
+
+/* Enhanced nav link styles */
+.nav-link {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.nav-link:hover::before {
+  left: 100%;
+}
+
+/* Custom scrollbar for loading components */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(151, 251, 228, 0.3) rgba(0, 0, 0, 0.1);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(151, 251, 228, 0.3);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(151, 251, 228, 0.5);
+}
+
+/* Enhanced border styles */
+.border-6 {
+  border-width: 6px;
 }

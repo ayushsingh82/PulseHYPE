@@ -202,52 +202,124 @@ export function StablecoinDashboard() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[500px] space-y-6">
+      <div className="flex flex-col items-center justify-center min-h-[600px] space-y-8 relative">
+        {/* Animated background particles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="animate-float absolute top-10 left-10 w-4 h-4 bg-emerald-500/20 rounded-full blur-sm"></div>
+          <div className="animate-float absolute top-20 right-20 w-6 h-6 bg-blue-500/20 rounded-full blur-sm" style={{ animationDelay: '1s' }}></div>
+          <div className="animate-float absolute bottom-20 left-20 w-3 h-3 bg-purple-500/20 rounded-full blur-sm" style={{ animationDelay: '2s' }}></div>
+          <div className="animate-float absolute bottom-10 right-10 w-5 h-5 bg-orange-500/20 rounded-full blur-sm" style={{ animationDelay: '3s' }}></div>
+        </div>
+
+        {/* Main loading spinner with enhanced animation */}
         <div className="relative">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-emerald-500/20 border-t-emerald-500"></div>
+          <div className="animate-spin rounded-full h-24 w-24 border-6 border-emerald-500/30 border-t-emerald-400 shadow-2xl shadow-emerald-500/25"></div>
+          <div className="absolute inset-0 animate-spin rounded-full h-24 w-24 border-6 border-transparent border-r-blue-400/50" style={{ animationDuration: '2s', animationDirection: 'reverse' }}></div>
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="animate-pulse text-emerald-400 text-xl">💰</div>
+            <div className="animate-pulse text-emerald-400 text-3xl drop-shadow-lg">💰</div>
           </div>
+          
+          {/* Pulsing rings */}
+          <div className="absolute inset-0 animate-ping rounded-full h-24 w-24 border-2 border-emerald-400/40"></div>
+          <div className="absolute inset-0 animate-ping rounded-full h-32 w-32 border border-emerald-400/20" style={{ animationDelay: '0.5s' }}></div>
         </div>
         
-        <div className="text-center space-y-3">
-          <div className="text-emerald-400 font-bold text-xl">Loading HyperEVM Stablecoins</div>
-          <div className="text-gray-400 text-sm">Fetching real-time data from Blockscout API...</div>
+        {/* Enhanced loading text */}
+        <div className="text-center space-y-4 max-w-lg">
+          <div className="text-emerald-400 font-bold text-2xl bg-gradient-to-r from-emerald-400 via-blue-400 to-emerald-400 bg-clip-text text-transparent animate-pulse">
+            Loading HyperEVM Stablecoins
+          </div>
+          <div className="text-gray-400 text-base font-medium">
+            Fetching real-time data from Blockscout API...
+          </div>
           
-          <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700 max-w-md">
-            <div className="text-gray-300 text-sm mb-3">
-              Fetching Data: {loadingProgress.current}/{loadingProgress.total} Contracts
+          {/* Enhanced progress card */}
+          <div className="bg-gradient-to-br from-gray-800/80 to-gray-900/60 rounded-2xl p-6 border border-gray-700/50 backdrop-blur-sm shadow-2xl">
+            <div className="text-gray-300 text-lg font-semibold mb-4 flex items-center justify-center gap-3">
+              <span className="animate-spin text-xl">⚡</span>
+              <span>Fetching Data: {loadingProgress.current}/{loadingProgress.total} Contracts</span>
             </div>
             
-            {/* Progress Bar */}
-            <div className="w-full bg-gray-700 rounded-full h-2 mb-3">
+            {/* Enhanced Progress Bar */}
+            <div className="relative w-full bg-gray-700/50 rounded-full h-4 mb-4 overflow-hidden">
               <div 
-                className="bg-emerald-500 h-2 rounded-full transition-all duration-300"
+                className="bg-gradient-to-r from-emerald-500 via-blue-500 to-emerald-600 h-4 rounded-full transition-all duration-500 ease-out relative overflow-hidden"
                 style={{ width: `${(loadingProgress.current / loadingProgress.total) * 100}%` }}
-              ></div>
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-ping"></div>
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center text-xs font-bold text-white drop-shadow-lg">
+                {Math.round((loadingProgress.current / loadingProgress.total) * 100)}%
+              </div>
             </div>
             
             {loadingProgress.currentToken && (
-              <div className="text-emerald-400 text-sm mb-2">
-                Currently fetching: {loadingProgress.currentToken}
+              <div className="text-emerald-400 text-base font-medium mb-4 flex items-center justify-center gap-2 animate-pulse">
+                <span className="text-lg">🔍</span>
+                <span>Currently fetching: {loadingProgress.currentToken}</span>
               </div>
             )}
             
-            <div className="grid grid-cols-1 gap-1 text-xs text-gray-400">
-              <div>💰 USD₮0 (Tether) - 0xb8ce...5ebb</div>
-              <div>💰 feUSD (FelixDeFi) - 0x02c6...c70</div>
-              <div>💰 rUSDC (Relend) - 0x9ab9...b8d</div>
-              <div>💰 USDe (USDeOFT) - 0x5d3a...f34</div>
-              <div>💰 USDXL (Last USD) - 0xca79...645</div>
-              <div>💰 KEI (KEI Stablecoin) - 0xb5fe...20c</div>
-              <div>💰 USH (Hyperstable) - 0x8ff0...bd8</div>
+            {/* Enhanced contract list */}
+            <div className="grid grid-cols-1 gap-2 text-sm">
+              <div className="text-gray-300 font-semibold mb-2 flex items-center justify-center gap-2">
+                <span>🏦</span>
+                <span>Tracked Stablecoin Contracts</span>
+              </div>
+              <div className="grid grid-cols-1 gap-1 max-h-32 overflow-y-auto custom-scrollbar">
+                <div className="flex items-center gap-2 text-gray-400 bg-gray-800/30 rounded-lg p-2 hover:bg-gray-700/30 transition-colors">
+                  <span className="text-base">💰</span>
+                  <span className="font-medium">USD₮0 (Tether)</span>
+                  <span className="text-xs text-gray-500 font-mono ml-auto">0xb8ce...5ebb</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-400 bg-gray-800/30 rounded-lg p-2 hover:bg-gray-700/30 transition-colors">
+                  <span className="text-base">💰</span>
+                  <span className="font-medium">feUSD (FelixDeFi)</span>
+                  <span className="text-xs text-gray-500 font-mono ml-auto">0x02c6...c70</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-400 bg-gray-800/30 rounded-lg p-2 hover:bg-gray-700/30 transition-colors">
+                  <span className="text-base">💰</span>
+                  <span className="font-medium">rUSDC (Relend)</span>
+                  <span className="text-xs text-gray-500 font-mono ml-auto">0x9ab9...b8d</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-400 bg-gray-800/30 rounded-lg p-2 hover:bg-gray-700/30 transition-colors">
+                  <span className="text-base">💰</span>
+                  <span className="font-medium">USDe (USDeOFT)</span>
+                  <span className="text-xs text-gray-500 font-mono ml-auto">0x5d3a...f34</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-400 bg-gray-800/30 rounded-lg p-2 hover:bg-gray-700/30 transition-colors">
+                  <span className="text-base">💰</span>
+                  <span className="font-medium">USDXL (Last USD)</span>
+                  <span className="text-xs text-gray-500 font-mono ml-auto">0xca79...645</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-400 bg-gray-800/30 rounded-lg p-2 hover:bg-gray-700/30 transition-colors">
+                  <span className="text-base">💰</span>
+                  <span className="font-medium">KEI (KEI Stablecoin)</span>
+                  <span className="text-xs text-gray-500 font-mono ml-auto">0xb5fe...20c</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-400 bg-gray-800/30 rounded-lg p-2 hover:bg-gray-700/30 transition-colors">
+                  <span className="text-base">💰</span>
+                  <span className="font-medium">USH (Hyperstable)</span>
+                  <span className="text-xs text-gray-500 font-mono ml-auto">0x8ff0...bd8</span>
+                </div>
+              </div>
             </div>
           </div>
           
-          <div className="flex items-center justify-center space-x-2 text-xs text-gray-500">
-            <div className="animate-bounce">●</div>
-            <div className="animate-bounce" style={{ animationDelay: '0.1s' }}>●</div>
-            <div className="animate-bounce" style={{ animationDelay: '0.2s' }}>●</div>
+          {/* Animated loading dots */}
+          <div className="flex items-center justify-center space-x-2 text-lg">
+            <div className="animate-bounce text-emerald-500" style={{ animationDelay: '0s' }}>●</div>
+            <div className="animate-bounce text-blue-500" style={{ animationDelay: '0.2s' }}>●</div>
+            <div className="animate-bounce text-purple-500" style={{ animationDelay: '0.4s' }}>●</div>
+            <div className="animate-bounce text-orange-500" style={{ animationDelay: '0.6s' }}>●</div>
+            <div className="animate-bounce text-emerald-500" style={{ animationDelay: '0.8s' }}>●</div>
+          </div>
+          
+          {/* Loading status indicator */}
+          <div className="flex items-center justify-center gap-3 text-sm text-gray-500 bg-gray-800/30 px-4 py-2 rounded-full border border-gray-700/50">
+            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+            <span>Connecting to HyperEVM network...</span>
           </div>
         </div>
       </div>
