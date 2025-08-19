@@ -152,7 +152,7 @@ export default function LiquidLabsRouteDemo() {
           <button
             key={title}
             onClick={() => setSelectedBox(idx)}
-            className={`flex-1 py-2 rounded-lg font-bold transition-all ${selectedBox === idx ? 'bg-[#97FBE4] text-black' : 'bg-[#00150E] text-[#97FBE4] border border-[#97FBE4]/30'}`}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all ${selectedBox === idx ? 'bg-black text-white border border-[#ffffff]' : 'bg-[#00150E] text-[#97FBE4] border border-[#97FBE4]/30'}`}
           >
             {title}
           </button>
@@ -166,14 +166,14 @@ export default function LiquidLabsRouteDemo() {
             className="w-full max-w-xl glass-morphism rounded-2xl shadow-2xl p-8 flex flex-col gap-6 relative z-10 card-hover"
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
+            transition={{ duration: 0.18, delay: 0.01 }}
             whileHover={{ y: -5, scale: 1.02 }}
           >
             <motion.h1 
               className="text-3xl font-bold text-[#97FBE4] mb-2"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.8 }}
+              transition={{ duration: 0.12, delay: 0.01 }}
             >
               Route API Demo
             </motion.h1>
@@ -182,7 +182,7 @@ export default function LiquidLabsRouteDemo() {
               className="flex flex-col gap-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 1.0 }}
+              transition={{ duration: 0.12, delay: 0.01 }}
             >
               {[
                 { label: "Token In Address", value: tokenIn, setter: setTokenIn, type: "text" },
@@ -194,7 +194,7 @@ export default function LiquidLabsRouteDemo() {
                   className="text-[#97FBE4] font-semibold"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: 1.2 + index * 0.1 }}
+                  transition={{ duration: 0.1, delay: 0.01 + index * 0.05 }}
                 >
                   {field.label}
                   <motion.input
@@ -215,7 +215,7 @@ export default function LiquidLabsRouteDemo() {
                 disabled={loading}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: 1.5 }}
+                transition={{ duration: 0.1, delay: 0.01 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -237,7 +237,7 @@ export default function LiquidLabsRouteDemo() {
                 className="text-red-400 font-bold bg-red-900/20 p-3 rounded-lg border border-red-400/30"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.1 }}
               >
                 Error: {error}
               </motion.div>
@@ -247,7 +247,7 @@ export default function LiquidLabsRouteDemo() {
                 className="bg-black/70 text-[#97FBE4] rounded-lg p-4 overflow-x-auto text-xs max-h-96 border border-[#97FBE4]/20"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.1 }}
               >
                 {JSON.stringify(response, null, 2)}
               </motion.pre>
@@ -259,14 +259,14 @@ export default function LiquidLabsRouteDemo() {
             className="w-full max-w-xl glass-morphism rounded-2xl shadow-2xl p-8 flex flex-col gap-6 relative z-10 card-hover"
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6, delay: 1.8 }}
+            transition={{ duration: 0.18, delay: 0.01 }}
             whileHover={{ y: -5, scale: 1.02 }}
           >
             <motion.h2 
               className="text-2xl font-bold text-[#97FBE4] mb-2"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 2.0 }}
+              transition={{ duration: 0.12, delay: 0.01 }}
             >
               Find Pools for Token Pair
             </motion.h2>
@@ -275,7 +275,7 @@ export default function LiquidLabsRouteDemo() {
               className="flex flex-col gap-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 2.2 }}
+              transition={{ duration: 0.12, delay: 0.01 }}
             >
               {[
                 { label: "Token A Address", value: poolTokenA, setter: setPoolTokenA },
@@ -286,7 +286,7 @@ export default function LiquidLabsRouteDemo() {
                   className="text-[#97FBE4] font-semibold"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: 2.4 + index * 0.1 }}
+                  transition={{ duration: 0.1, delay: 0.01 + index * 0.05 }}
                 >
                   {field.label}
                   <motion.input
@@ -304,7 +304,7 @@ export default function LiquidLabsRouteDemo() {
                 disabled={poolsLoading}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: 2.6 }}
+                transition={{ duration: 0.1, delay: 0.01 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -326,7 +326,7 @@ export default function LiquidLabsRouteDemo() {
                 className="text-red-400 font-bold bg-red-900/20 p-3 rounded-lg border border-red-400/30"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.1 }}
               >
                 Error: {poolsError}
               </motion.div>
@@ -336,7 +336,7 @@ export default function LiquidLabsRouteDemo() {
                 className="bg-black/70 text-[#97FBE4] rounded-lg p-4 overflow-x-auto text-xs max-h-96 border border-[#97FBE4]/20"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.1 }}
               >
                 {JSON.stringify(poolsResponse, null, 2)}
               </motion.pre>
@@ -348,14 +348,14 @@ export default function LiquidLabsRouteDemo() {
             className="w-full max-w-xl glass-morphism rounded-2xl shadow-2xl p-8 flex flex-col gap-6 relative z-10 card-hover"
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6, delay: 2.8 }}
+            transition={{ duration: 0.18, delay: 0.01 }}
             whileHover={{ y: -5, scale: 1.02 }}
           >
             <motion.h2 
               className="text-2xl font-bold text-[#97FBE4] mb-2"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 3.0 }}
+              transition={{ duration: 0.12, delay: 0.01 }}
             >
               Token List
             </motion.h2>
@@ -364,7 +364,7 @@ export default function LiquidLabsRouteDemo() {
               className="flex flex-col gap-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 3.2 }}
+              transition={{ duration: 0.12, delay: 0.01 }}
             >
               {[
                 { label: "Search (address, name, or symbol)", value: tokenSearch, setter: setTokenSearch, required: false },
@@ -375,7 +375,7 @@ export default function LiquidLabsRouteDemo() {
                   className="text-[#97FBE4] font-semibold"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: 3.4 + index * 0.1 }}
+                  transition={{ duration: 0.1, delay: 0.01 + index * 0.05 }}
                 >
                   {field.label}
                   <motion.input
@@ -395,7 +395,7 @@ export default function LiquidLabsRouteDemo() {
                 disabled={tokensLoading}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: 3.6 }}
+                transition={{ duration: 0.1, delay: 0.01 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -417,7 +417,7 @@ export default function LiquidLabsRouteDemo() {
                 className="text-red-400 font-bold bg-red-900/20 p-3 rounded-lg border border-red-400/30"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.1 }}
               >
                 Error: {tokensError}
               </motion.div>
@@ -427,7 +427,7 @@ export default function LiquidLabsRouteDemo() {
                 className="bg-black/70 text-[#97FBE4] rounded-lg p-4 overflow-x-auto text-xs max-h-96 border border-[#97FBE4]/20"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.1 }}
               >
                 {JSON.stringify(tokensResponse, null, 2)}
               </motion.pre>
@@ -439,14 +439,14 @@ export default function LiquidLabsRouteDemo() {
             className="w-full max-w-xl glass-morphism rounded-2xl shadow-2xl p-8 flex flex-col gap-6 relative z-10 card-hover"
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6, delay: 3.8 }}
+            transition={{ duration: 0.18, delay: 0.01 }}
             whileHover={{ y: -5, scale: 1.02 }}
           >
             <motion.h2 
               className="text-2xl font-bold text-[#97FBE4] mb-2"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 4.0 }}
+              transition={{ duration: 0.12, delay: 0.01 }}
             >
               Token Balances
             </motion.h2>
@@ -455,13 +455,13 @@ export default function LiquidLabsRouteDemo() {
               className="flex flex-col gap-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 4.2 }}
+              transition={{ duration: 0.12, delay: 0.01 }}
             >
               <motion.label 
                 className="text-[#97FBE4] font-semibold"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: 4.4 }}
+                transition={{ duration: 0.1, delay: 0.01 }}
               >
                 Wallet Address
                 <motion.input
@@ -478,7 +478,7 @@ export default function LiquidLabsRouteDemo() {
                 disabled={balancesLoading}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: 4.6 }}
+                transition={{ duration: 0.1, delay: 0.01 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -500,7 +500,7 @@ export default function LiquidLabsRouteDemo() {
                 className="text-red-400 font-bold bg-red-900/20 p-3 rounded-lg border border-red-400/30"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.1 }}
               >
                 Error: {balancesError}
               </motion.div>
@@ -510,7 +510,7 @@ export default function LiquidLabsRouteDemo() {
                 className="bg-black/70 text-[#97FBE4] rounded-lg p-4 overflow-x-auto text-xs max-h-96 border border-[#97FBE4]/20"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.1 }}
               >
                 {JSON.stringify(balancesResponse, null, 2)}
               </motion.pre>

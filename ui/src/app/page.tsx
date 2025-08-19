@@ -214,7 +214,7 @@ export default function Home() {
               </motion.div>
 
               <motion.div
-                className="col-span-6 md:col-span-3 bg-[#97FBE4] rounded-2xl p-6 border border-[#97FBE4]/30 shadow-md flex flex-col justify-center card-hover button-glow"
+                className="col-span-6 md:col-span-3 bg-black rounded-2xl p-6 border border-[#97FBE4]/30 shadow-md flex flex-col justify-center card-hover button-glow"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 2.8, type: "spring", stiffness: 200 }}
@@ -237,7 +237,7 @@ export default function Home() {
 
               {/* Transaction Simulator */}
               <motion.div
-                className="col-span-12 md:col-span-6 bg-[#FF6B6B] rounded-2xl p-6 shadow-md flex flex-col justify-center card-hover button-glow"
+                className="col-span-12 md:col-span-6 bg-black rounded-2xl p-6 shadow-md flex flex-col justify-center card-hover button-glow"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 3.2, type: "spring", stiffness: 200 }}

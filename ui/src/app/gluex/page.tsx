@@ -132,7 +132,7 @@ export default function GluexDemo() {
           <button
             key={title}
             onClick={() => setSelectedBox(idx)}
-            className={`flex-1 py-2 rounded-lg font-bold transition-all ${selectedBox === idx ? 'bg-[#97FBE4] text-black' : 'bg-[#00150E] text-[#97FBE4] border border-[#97FBE4]/30'}`}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all ${selectedBox === idx ? 'bg-black text-white border border-[#ffffff]' : 'bg-[#00150E] text-[#97FBE4] border border-[#97FBE4]/30'}`}
           >
             {title}
           </button>
@@ -146,14 +146,14 @@ export default function GluexDemo() {
             className="w-full max-w-xl glass-morphism rounded-2xl shadow-2xl p-8 flex flex-col gap-6 relative z-10 card-hover"
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
+            transition={{ duration: 0.18, delay: 0.01 }}
             whileHover={{ y: -5, scale: 1.02 }}
           >
             <motion.h1 
               className="text-3xl font-bold text-[#97FBE4] mb-2"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.8 }}
+              transition={{ duration: 0.12, delay: 0.01 }}
             >
               Active Protocols
             </motion.h1>
@@ -163,7 +163,7 @@ export default function GluexDemo() {
               disabled={activeLoading}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, delay: 1.0 }}
+              transition={{ duration: 0.12, delay: 0.01 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -171,7 +171,7 @@ export default function GluexDemo() {
                 <motion.span 
                   className="loading-dots"
                   animate={{ opacity: [1, 0.5, 1] }}
-                  transition={{ duration: 1, repeat: Infinity }}
+                  transition={{ duration: 0.5, repeat: Infinity }}
                 >
                   Loading
                 </motion.span>
@@ -184,7 +184,7 @@ export default function GluexDemo() {
                 className="text-red-400 font-bold bg-red-900/20 p-3 rounded-lg border border-red-400/30"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.1 }}
               >
                 Error: {activeError}
               </motion.div>
@@ -194,7 +194,7 @@ export default function GluexDemo() {
                 className="bg-black/70 text-[#97FBE4] rounded-lg p-4 overflow-x-auto text-xs max-h-96 border border-[#97FBE4]/20"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.1 }}
               >
                 {JSON.stringify(activeProtocols, null, 2)}
               </motion.pre>
@@ -206,14 +206,14 @@ export default function GluexDemo() {
             className="w-full max-w-xl glass-morphism rounded-2xl shadow-2xl p-8 flex flex-col gap-6 relative z-10 card-hover"
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6, delay: 1.2 }}
+            transition={{ duration: 0.18, delay: 0.01 }}
             whileHover={{ y: -5, scale: 1.02 }}
           >
             <motion.h2 
               className="text-2xl font-bold text-[#97FBE4] mb-2"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 1.4 }}
+              transition={{ duration: 0.12, delay: 0.01 }}
             >
               Historical APY
             </motion.h2>
@@ -222,7 +222,7 @@ export default function GluexDemo() {
               className="flex flex-col gap-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 1.6 }}
+              transition={{ duration: 0.12, delay: 0.01 }}
             >
               {[
                 { label: "Pool Address", value: histParams.pool_address, key: "pool_address" },
@@ -235,7 +235,7 @@ export default function GluexDemo() {
                   className="text-[#97FBE4] font-semibold"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: 1.8 + index * 0.1 }}
+                  transition={{ duration: 0.1, delay: 0.01 + index * 0.05 }}
                 >
                   {field.label}
                   <motion.input 
@@ -253,7 +253,7 @@ export default function GluexDemo() {
                 disabled={histLoading}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: 2.2 }}
+                transition={{ duration: 0.12, delay: 0.01 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -261,7 +261,7 @@ export default function GluexDemo() {
                   <motion.span 
                     className="loading-dots"
                     animate={{ opacity: [1, 0.5, 1] }}
-                    transition={{ duration: 1, repeat: Infinity }}
+                    transition={{ duration: 0.5, repeat: Infinity }}
                   >
                     Loading
                   </motion.span>
@@ -275,7 +275,7 @@ export default function GluexDemo() {
                 className="text-red-400 font-bold bg-red-900/20 p-3 rounded-lg border border-red-400/30"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.1 }}
               >
                 Error: {histError}
               </motion.div>
@@ -285,7 +285,7 @@ export default function GluexDemo() {
                 className="bg-black/70 text-[#97FBE4] rounded-lg p-4 overflow-x-auto text-xs max-h-96 border border-[#97FBE4]/20"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.1 }}
               >
                 {JSON.stringify(histResponse, null, 2)}
               </motion.pre>
@@ -297,14 +297,14 @@ export default function GluexDemo() {
             className="w-full max-w-xl glass-morphism rounded-2xl shadow-2xl p-8 flex flex-col gap-6 relative z-10 card-hover"
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6, delay: 2.4 }}
+            transition={{ duration: 0.18, delay: 0.01 }}
             whileHover={{ y: -5, scale: 1.02 }}
           >
             <motion.h2 
               className="text-2xl font-bold text-[#97FBE4] mb-2"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 2.6 }}
+              transition={{ duration: 0.12, delay: 0.01 }}
             >
               Diluted APY
             </motion.h2>
@@ -313,7 +313,7 @@ export default function GluexDemo() {
               className="flex flex-col gap-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 2.8 }}
+              transition={{ duration: 0.12, delay: 0.01 }}
             >
               {[
                 { label: "Pool Address", value: diluteParams.pool_address, key: "pool_address" },
@@ -327,7 +327,7 @@ export default function GluexDemo() {
                   className="text-[#97FBE4] font-semibold"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: 3.0 + index * 0.1 }}
+                  transition={{ duration: 0.1, delay: 0.01 + index * 0.05 }}
                 >
                   {field.label}
                   <motion.input 
@@ -345,7 +345,7 @@ export default function GluexDemo() {
                 disabled={diluteLoading}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: 3.5 }}
+                transition={{ duration: 0.12, delay: 0.01 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -353,7 +353,7 @@ export default function GluexDemo() {
                   <motion.span 
                     className="loading-dots"
                     animate={{ opacity: [1, 0.5, 1] }}
-                    transition={{ duration: 1, repeat: Infinity }}
+                    transition={{ duration: 0.5, repeat: Infinity }}
                   >
                     Loading
                   </motion.span>
@@ -367,7 +367,7 @@ export default function GluexDemo() {
                 className="text-red-400 font-bold bg-red-900/20 p-3 rounded-lg border border-red-400/30"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.1 }}
               >
                 Error: {diluteError}
               </motion.div>
@@ -377,7 +377,7 @@ export default function GluexDemo() {
                 className="bg-black/70 text-[#97FBE4] rounded-lg p-4 overflow-x-auto text-xs max-h-96 border border-[#97FBE4]/20"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.1 }}
               >
                 {JSON.stringify(diluteResponse, null, 2)}
               </motion.pre>
@@ -389,14 +389,14 @@ export default function GluexDemo() {
             className="w-full max-w-xl glass-morphism rounded-2xl shadow-2xl p-8 flex flex-col gap-6 relative z-10 card-hover"
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6, delay: 3.6 }}
+            transition={{ duration: 0.18, delay: 0.01 }}
             whileHover={{ y: -5, scale: 1.02 }}
           >
             <motion.h2 
               className="text-2xl font-bold text-[#97FBE4] mb-2"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 3.8 }}
+              transition={{ duration: 0.12, delay: 0.01 }}
             >
               Exchange Rates
             </motion.h2>
@@ -405,7 +405,7 @@ export default function GluexDemo() {
               className="flex flex-col gap-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 4.0 }}
+              transition={{ duration: 0.12, delay: 0.01 }}
             >
               {[
                 { label: "Domestic Blockchain", value: exchangeParams[0].domestic_blockchain, key: "domestic_blockchain" },
@@ -418,7 +418,7 @@ export default function GluexDemo() {
                   className="text-[#97FBE4] font-semibold"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: 4.2 + index * 0.1 }}
+                  transition={{ duration: 0.1, delay: 0.01 + index * 0.05 }}
                 >
                   {field.label}
                   <motion.input 
@@ -436,7 +436,7 @@ export default function GluexDemo() {
                 disabled={exchangeLoading}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: 4.6 }}
+                transition={{ duration: 0.12, delay: 0.01 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -444,7 +444,7 @@ export default function GluexDemo() {
                   <motion.span 
                     className="loading-dots"
                     animate={{ opacity: [1, 0.5, 1] }}
-                    transition={{ duration: 1, repeat: Infinity }}
+                    transition={{ duration: 0.5, repeat: Infinity }}
                   >
                     Loading
                   </motion.span>
@@ -458,7 +458,7 @@ export default function GluexDemo() {
                 className="text-red-400 font-bold bg-red-900/20 p-3 rounded-lg border border-red-400/30"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.1 }}
               >
                 Error: {exchangeError}
               </motion.div>
@@ -468,7 +468,7 @@ export default function GluexDemo() {
                 className="bg-black/70 text-[#97FBE4] rounded-lg p-4 overflow-x-auto text-xs max-h-96 border border-[#97FBE4]/20"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.1 }}
               >
                 {JSON.stringify(exchangeResponse, null, 2)}
               </motion.pre>
