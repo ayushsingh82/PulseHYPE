@@ -49,14 +49,7 @@ export default function Navbar() {
             <span className="relative z-10">GoldRush</span>
             <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700]/0 to-[#FFD700]/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
           </Link>
-          
-          <Link 
-            href="/goldsky" 
-            className="nav-link text-[#87CEEB] font-semibold hover:text-white transition-all duration-300 px-4 py-3 rounded-xl hover:bg-[#87CEEB]/15 hover:scale-105 hover:shadow-lg hover:shadow-[#87CEEB]/25 relative group"
-          >
-            <span className="relative z-10">GoldSky</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#87CEEB]/0 to-[#87CEEB]/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-          </Link>   
+       
           
           <Link 
             href="/stablecoin-tracker" 
