@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ethers } from 'ethers';
 
 // HyperEVM Configuration
@@ -241,7 +240,7 @@ export class HyperEVMSimulator {
       
       // Track if auto-balance was used
       let autoBalanceUsed = false;
-      let originalFrom = request.from;
+      const originalFrom = request.from;
       let whaleFrom = undefined;
       
       // If failed due to insufficient funds, try with auto-balance using whale address

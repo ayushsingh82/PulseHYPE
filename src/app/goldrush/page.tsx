@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { SparklesCore } from "../../components/ui/sparkles";
@@ -39,8 +40,9 @@ export default function GoldRushDemo() {
       const client = await getClient();
       const resp = await client.BalanceService.getTokenBalancesForWalletAddress(CHAIN_NAME, balancesWallet);
       setBalances(resp.data);
-    } catch (err: any) {
-      setError(err.message || "Unknown error");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
     } finally {
       setLoading("");
     }
@@ -52,8 +54,9 @@ export default function GoldRushDemo() {
       const client = await getClient();
       const resp = await client.BalanceService.getHistoricalPortfolioForWalletAddress(CHAIN_NAME, portfolioWallet);
       setPortfolio(resp.data);
-    } catch (err: any) {
-      setError(err.message || "Unknown error");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
     } finally {
       setLoading("");
     }
@@ -67,8 +70,9 @@ export default function GoldRushDemo() {
       if (logsBlockHeight) params.blockHeight = logsBlockHeight;
       const resp = await client.BaseService.getLogs(params);
       setLogs(resp.data);
-    } catch (err: any) {
-      setError(err.message || "Unknown error");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
     } finally {
       setLoading("");
     }
@@ -80,8 +84,9 @@ export default function GoldRushDemo() {
       const client = await getClient();
       const resp = await client.BaseService.getBlock(CHAIN_NAME, blockWallet);
       setBlock(resp.data);
-    } catch (err: any) {
-      setError(err.message || "Unknown error");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
     } finally {
       setLoading("");
     }
@@ -93,8 +98,9 @@ export default function GoldRushDemo() {
       const client = await getClient();
       const resp = await client.BaseService.getResolvedAddress(CHAIN_NAME, resolvedWallet);
       setResolved(resp.data);
-    } catch (err: any) {
-      setError(err.message || "Unknown error");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
     } finally {
       setLoading("");
     }
@@ -106,8 +112,9 @@ export default function GoldRushDemo() {
       const client = await getClient();
       const resp = await client.PricingService.getPoolSpotPrices(CHAIN_NAME, spotPricesContract);
       setSpotPrices(resp.data);
-    } catch (err: any) {
-      setError(err.message || "Unknown error");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
     } finally {
       setLoading("");
     }
@@ -120,8 +127,9 @@ export default function GoldRushDemo() {
       // getGasPrices requires an eventType, default to 'nativetokens'
       const resp = await client.BaseService.getGasPrices(CHAIN_NAME, 'nativetokens');
       setGasPrices(resp.data);
-    } catch (err: any) {
-      setError(err.message || "Unknown error");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
     } finally {
       setLoading("");
     }
@@ -174,7 +182,7 @@ export default function GoldRushDemo() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          Explore HyperEVM Mainnet data and analytics with Covalent's GoldRush SDK.
+          Explore HyperEVM Mainnet data and analytics with Covalent&apos;s GoldRush SDK.
         </motion.p>
         <div className="flex items-center justify-center gap-2 mb-2">
           <span className="inline-block px-3 py-1 rounded-full bg-black text-white font-bold text-xs">{CHAIN_LABEL}</span>

@@ -304,7 +304,7 @@ export default function AdvancedFeaturesPage() {
             <div className="space-y-6">
               <h3 className="text-2xl font-bold text-emerald-400 mb-4">🕒 Historical State Simulation</h3>
               <p className="text-gray-300 mb-6">
-                Test how your transaction would have behaved at any point in HyperEVM's history. 
+                Test how your transaction would have behaved at any point in HyperEVM&apos;s history. 
                 Perfect for debugging past issues or testing contract behavior at specific blocks.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -352,7 +352,7 @@ export default function AdvancedFeaturesPage() {
             <div className="space-y-6">
               <h3 className="text-2xl font-bold text-blue-400 mb-4">🔧 State Override Simulation</h3>
               <p className="text-gray-300 mb-6">
-                Modify any account's balance, nonce, or contract storage before simulation. 
+                Modify any account&apos;s balance, nonce, or contract storage before simulation. 
                 Test edge cases and hypothetical scenarios without deploying to mainnet.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -438,7 +438,7 @@ export default function AdvancedFeaturesPage() {
                     onChange={(e) => setImpersonationParams({...impersonationParams, impersonateAddress: e.target.value})}
                     className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white"
                   />
-                  <p className="text-sm text-gray-400 mt-1">Default: Vitalik's address for demonstration</p>
+                  <p className="text-sm text-gray-400 mt-1">Default: Vitalik&apos;s address for demonstration</p>
                 </div>
               </div>
               <button

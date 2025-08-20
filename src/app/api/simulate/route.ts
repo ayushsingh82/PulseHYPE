@@ -2,12 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { HyperEVMSimulator } from '../../simulator/enhanced-helper';
 
 // Helper function to serialize BigInt values in objects
-function serializeBigInt(obj: any): any {
+function serializeBigInt(obj: unknown): unknown {
   if (obj === null || obj === undefined) return obj;
   if (typeof obj === 'bigint') return obj.toString();
   if (Array.isArray(obj)) return obj.map(serializeBigInt);
   if (typeof obj === 'object') {
-    const serialized: any = {};
+    const serialized: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(obj)) {
       serialized[key] = serializeBigInt(value);
     }
@@ -65,11 +65,12 @@ export async function POST(request: NextRequest) {
           timestamp: Date.now()
         }));
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Simulation API Error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Simulation failed';
     return NextResponse.json({
       success: false,
-      error: error.message || 'Simulation failed',
+      error: errorMessage,
       timestamp: Date.now()
     }, { status: 500 });
   }

@@ -1,4 +1,54 @@
 // HyperEVM API Service using Blockscout
+
+interface TokenInfo {
+    address: string;
+    name: string;
+    symbol: string;
+    decimals: string;
+    total_supply?: string;
+    totalSupply?: string;
+    holders_count?: string;
+    verified?: boolean;
+    marketCap?: number;
+    price?: number;
+    change24h?: number;
+}
+
+interface TokenCounters {
+    transfers_count?: string;
+    transfersCount?: string;
+    token_holders_count?: string;
+    holdersCount?: number;
+}
+
+interface TokenTransfer {
+    blockNumber: number;
+    txHash: string;
+    from: string;
+    to: string;
+    value: string;
+    timestamp: string;
+}
+
+interface StablecoinData {
+    contractAddress?: string;
+    address: string;
+    name: string;
+    symbol: string;
+    totalSupply?: string;
+    holdersCount?: number;
+    price?: number;
+    marketCap?: number;
+    change24h?: number;
+    verified?: boolean;
+    decimals?: string;
+    totalTransfers?: number;
+    category?: string;
+    circulatingMarketCap?: number;
+    apiError?: boolean;
+    errorMessage?: string;
+}
+
 export class HyperEVMApiService {
     private baseUrl: string;
 
@@ -8,7 +58,7 @@ export class HyperEVMApiService {
     }
 
     // Fetch token information from Blockscout tokens endpoint
-    async fetchTokenInfo(contractAddress: string): Promise<any> {
+    async fetchTokenInfo(contractAddress: string): Promise<TokenInfo | null> {
         try {
             const url = `${this.baseUrl}/tokens/${contractAddress}`;
             console.log(`Fetching token info: ${url}`);
@@ -36,7 +86,7 @@ export class HyperEVMApiService {
     }
 
     // Fetch token counters (holders and transfers count)
-    async fetchTokenCounters(contractAddress: string): Promise<any> {
+    async fetchTokenCounters(contractAddress: string): Promise<TokenCounters | null> {
         try {
             const url = `${this.baseUrl}/tokens/${contractAddress}/counters`;
             console.log(`Fetching token counters: ${url}`);
@@ -64,7 +114,7 @@ export class HyperEVMApiService {
     }
 
     // Fetch token transfers from Blockscout
-    async fetchTokenTransfers(contractAddress: string, limit: number = 50): Promise<any[]> {
+    async fetchTokenTransfers(contractAddress: string, limit: number = 50): Promise<TokenTransfer[]> {
         try {
             const url = `${this.baseUrl}/tokens/${contractAddress}/transfers?limit=${limit}`;
             console.log(`Fetching token transfers: ${url}`);
@@ -155,7 +205,7 @@ export class HyperEVMApiService {
     }
 
     // Get comprehensive stablecoin data from API with progress callback
-    async getStablecoinData(onProgress?: (current: number, total: number, currentToken: string) => void): Promise<any[]> {
+    async getStablecoinData(onProgress?: (current: number, total: number, currentToken: string) => void): Promise<StablecoinData[]> {
         const knownStablecoins = this.getKnownStablecoinAddresses();
         const stablecoins = [];
 
@@ -218,6 +268,7 @@ export class HyperEVMApiService {
 
                     const basicData = {
                         contractAddress: stablecoin.address,
+                        address: stablecoin.address,
                         name: stablecoin.expectedName || "Unknown Stablecoin",
                         symbol: stablecoin.expectedSymbol || "UNKNOWN",
                         decimals: "18",
@@ -250,6 +301,7 @@ export class HyperEVMApiService {
 
                 const stablecoinData = {
                     contractAddress: stablecoin.address,
+                    address: stablecoin.address,
                     name: tokenName,
                     symbol: tokenSymbol,
                     decimals: tokenDecimals.toString(),
@@ -282,6 +334,7 @@ export class HyperEVMApiService {
                 // Create error entry to show the contract exists but data failed to load
                 const errorData = {
                     contractAddress: stablecoin.address,
+                    address: stablecoin.address,
                     name: stablecoin.expectedName || "Unknown Stablecoin",
                     symbol: stablecoin.expectedSymbol || "UNKNOWN",
                     decimals: "18",

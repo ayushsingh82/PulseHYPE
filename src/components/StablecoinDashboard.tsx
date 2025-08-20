@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { motion } from "motion/react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar } from "recharts";
 
@@ -119,20 +119,9 @@ export function StablecoinDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [loadingProgress, setLoadingProgress] = useState({ current: 0, total: 7, currentToken: '' });
 
-  const api = new HyperEVMApiService();
+  const api = useMemo(() => new HyperEVMApiService(), []);
 
-  useEffect(() => {
-    loadStablecoinData();
-  }, []);
-
-  // Update historical data when timeframe changes
-  useEffect(() => {
-    if (stablecoins.length > 0) {
-      setHistoricalData(generateHistoricalData(stablecoins, selectedTimeframe));
-    }
-  }, [selectedTimeframe, stablecoins]);
-
-  const loadStablecoinData = async () => {
+  const loadStablecoinData = useCallback(async () => {
     setLoading(true);
     setError(null);
     setLoadingProgress({ current: 0, total: 7, currentToken: '' });
@@ -190,7 +179,18 @@ export function StablecoinDashboard() {
       // Reset progress when finished
       setLoadingProgress({ current: 0, total: 7, currentToken: '' });
     }
-  };
+  }, [api, selectedTimeframe]);
+
+  useEffect(() => {
+    loadStablecoinData();
+  }, [loadStablecoinData]);
+
+  // Update historical data when timeframe changes
+  useEffect(() => {
+    if (stablecoins.length > 0) {
+      setHistoricalData(generateHistoricalData(stablecoins, selectedTimeframe));
+    }
+  }, [selectedTimeframe, stablecoins]);
 
   const formatNumber = (num: number): string => {
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
@@ -372,7 +372,7 @@ export function StablecoinDashboard() {
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id as 'overview' | 'supply' | 'protocols' | 'rehypothecation')}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
                   activeTab === tab.id
                     ? `bg-${tab.color}-600 text-white shadow-lg shadow-${tab.color}-600/25`
@@ -444,7 +444,7 @@ export function StablecoinDashboard() {
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 text-xs">
-              {stablecoins.map((coin, index) => (
+              {stablecoins.map((coin) => (
                 <div key={coin.address} className="bg-blue-800/20 p-2 rounded border border-blue-600/20">
                   <div className="font-mono text-blue-300">{coin.address}</div>
                   <div className="text-blue-200">{coin.symbol} - {coin.name}</div>
@@ -633,7 +633,7 @@ export function StablecoinDashboard() {
                 ].map(({ period, label, icon }) => (
                   <button
                     key={period}
-                    onClick={() => setSelectedTimeframe(period as any)}
+                    onClick={() => setSelectedTimeframe(period as '7d' | '30d' | '90d')}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 flex items-center gap-2 ${
                       selectedTimeframe === period
                         ? 'bg-emerald-600 text-white shadow-lg transform scale-105'
@@ -747,7 +747,7 @@ export function StablecoinDashboard() {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value: any) => formatNumber(value)} />
+                  <Tooltip formatter={(value: number) => formatNumber(value)} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -767,7 +767,7 @@ export function StablecoinDashboard() {
                   <XAxis dataKey="name" stroke="#9CA3AF" />
                   <YAxis stroke="#9CA3AF" />
                   <Tooltip 
-                    formatter={(value: any) => formatNumber(value)}
+                    formatter={(value: number) => formatNumber(value)}
                     contentStyle={{ 
                       backgroundColor: '#1F2937', 
                       border: '1px solid #374151',
@@ -814,7 +814,7 @@ export function StablecoinDashboard() {
                   <XAxis dataKey="name" stroke="#9CA3AF" />
                   <YAxis stroke="#9CA3AF" />
                   <Tooltip 
-                    formatter={(value: any) => `${value.toFixed(2)}%`}
+                    formatter={(value: number) => `${value.toFixed(2)}%`}
                     contentStyle={{ 
                       backgroundColor: '#1F2937', 
                       border: '1px solid #374151',

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { motion } from "motion/react";
 import { SparklesCore } from "../../components/ui/sparkles";
 import { StablecoinDashboard } from "../../components/StablecoinDashboard";
