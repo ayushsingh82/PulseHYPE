@@ -44,6 +44,7 @@ export default function HyperEVMSimulatorPage() {
 
   // UI state
   const [activeTab, setActiveTab] = useState<'single' | 'bundle' | 'analysis'>('single');
+  const [fakeSimulation, setFakeSimulation] = useState(false); // Toggle for fake simulation
   
   // Blockchain information state
   const [blockchainInfo, setBlockchainInfo] = useState<any>(null);
@@ -265,6 +266,7 @@ export default function HyperEVMSimulatorPage() {
         maxPriorityFeePerGas: maxPriorityFeePerGas || undefined,
         blockNumber: blockNumber || undefined,
         stateOverrides: Object.keys(stateOverrides).length > 0 ? stateOverrides : undefined,
+        fake: fakeSimulation, // Add fake simulation flag
       };
 
       const result = await simulator.simulateTransaction(request);
@@ -655,6 +657,22 @@ export default function HyperEVMSimulatorPage() {
                 />
               </div>
 
+              {/* Fake Simulation Toggle */}
+              <div className="flex items-center gap-3 p-3 bg-purple-900/20 border border-purple-500/30 rounded-lg">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={fakeSimulation}
+                    onChange={(e) => setFakeSimulation(e.target.checked)}
+                    className="form-checkbox h-4 w-4 text-purple-600 rounded focus:ring-purple-500 bg-gray-700 border-gray-600"
+                  />
+                  <span className="text-sm font-medium text-purple-300">🎭 Fake Simulation Mode</span>
+                </label>
+                <span className="text-xs text-purple-400">
+                  Generate fake successful results for testing UI
+                </span>
+              </div>
+
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-3">
                 <button
@@ -669,8 +687,8 @@ export default function HyperEVMSimulatorPage() {
                     </>
                   ) : (
                     <>
-                      <span>✨</span>
-                      <span>Simulate (Auto-funded)</span>
+                      <span>{fakeSimulation ? '🎭' : '✨'}</span>
+                      <span>{fakeSimulation ? 'Fake Simulate' : 'Simulate (Auto-funded)'}</span>
                     </>
                   )}
                 </button>

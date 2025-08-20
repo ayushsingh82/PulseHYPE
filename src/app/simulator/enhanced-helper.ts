@@ -46,6 +46,7 @@ export interface SimulationRequest {
   stateOverrides?: Record<string, StateOverride>;
   accessList?: AccessListItem[];
   simulate?: boolean;
+  fake?: boolean; // Enable fake simulation for testing
 }
 
 export interface StateOverride {
@@ -227,7 +228,156 @@ export class HyperEVMSimulator {
     this.provider = new ethers.JsonRpcProvider(this.config.rpcUrl);
   }
 
+  /**
+   * Generate a fake successful simulation for testing purposes
+   */
+  private generateFakeSimulation(request: SimulationRequest): SimulationResult {
+    const tx = {
+      from: request.from || '0x742D35Cc6634c0532925A3B8d7C9DD7fEAd9c027',
+      to: request.to || '0x1234567890123456789012345678901234567890',
+      value: request.value || '0',
+      gasLimit: request.gasLimit || '21000',
+      gasPrice: request.gasPrice || '20',
+      data: request.data || '0x'
+    };
+
+    const gasUsed = Math.floor(Math.random() * 50000) + 21000; // Random gas between 21k-71k
+    const blockNumber = Math.floor(Math.random() * 1000000) + 1000000; // Random block number
+
+    return {
+      success: true,
+      gasUsed: gasUsed.toString(),
+      gasLimit: tx.gasLimit,
+      blockNumber: blockNumber.toString(),
+      timestamp: Date.now().toString(),
+      executionResult: {
+        status: 'success',
+        returnData: '0x0000000000000000000000000000000000000000000000000000000000000001',
+        gasBreakdown: {
+          intrinsic: '21000',
+          execution: (gasUsed - 21000).toString(),
+          calldata: '0',
+          total: gasUsed.toString(),
+          optimization: {
+            efficiency: 'optimal',
+            score: 95,
+            potentialSavings: '0',
+            suggestions: ['Fake simulation - all optimizations applied']
+          }
+        }
+      },
+      stateChanges: [
+        {
+          address: tx.from,
+          slot: '0x0',
+          oldValue: '1000000000000000000000',
+          newValue: (BigInt('1000000000000000000000') - BigInt(tx.value || '0')).toString(),
+          type: 'balance',
+          humanReadable: `ETH balance decreased by ${utils.formatHypeAmount(tx.value || '0')} HYPE`
+        },
+        ...(tx.to !== tx.from ? [{
+          address: tx.to,
+          slot: '0x0',
+          oldValue: '500000000000000000000',
+          newValue: (BigInt('500000000000000000000') + BigInt(tx.value || '0')).toString(),
+          type: 'balance' as const,
+          humanReadable: `ETH balance increased by ${utils.formatHypeAmount(tx.value || '0')} HYPE`
+        }] : [])
+      ],
+      events: [
+        {
+          address: tx.to,
+          contractAddress: tx.to,
+          topics: ['0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef', 
+                   `0x000000000000000000000000${tx.from.slice(2)}`,
+                   `0x000000000000000000000000${tx.to.slice(2)}`],
+          data: `0x${BigInt(tx.value || '0').toString(16).padStart(64, '0')}`,
+          eventName: 'Transfer',
+          signature: 'Transfer(address,address,uint256)',
+          args: {
+            from: tx.from,
+            to: tx.to,
+            value: tx.value || '0'
+          },
+          humanReadable: `Fake transfer of ${utils.formatHypeAmount(tx.value || '0')} HYPE from ${tx.from} to ${tx.to}`,
+          category: {
+            type: 'transfer',
+            impact: 'medium'
+          }
+        }
+      ],
+      assetChanges: [
+        {
+          address: tx.from,
+          from: tx.from,
+          to: tx.to,
+          amount: utils.formatHypeAmount(tx.value || '0'),
+          type: 'ETH',
+          changeType: 'sent'
+        }
+      ],
+      trace: {
+        calls: [
+          {
+            type: 'CALL',
+            from: tx.from,
+            to: tx.to,
+            value: tx.value || '0',
+            gasUsed: gasUsed.toString(),
+            gasLimit: tx.gasLimit,
+            input: tx.data,
+            output: '0x0000000000000000000000000000000000000000000000000000000000000001'
+          }
+        ],
+        gasUsed: gasUsed.toString(),
+        depth: 1
+      },
+      securityAnalysis: {
+        riskLevel: 'low',
+        vulnerabilities: [],
+        interactions: [],
+        gasSafety: {
+          isOptimal: true,
+          maxGasUsage: tx.gasLimit,
+          gasEfficiencyScore: 95
+        }
+      },
+      recommendations: [
+        {
+          category: 'gas',
+          severity: 'info',
+          title: 'Fake Simulation',
+          description: 'This is a fake simulation for testing purposes',
+          solution: 'Switch to real simulation for accurate results'
+        }
+      ],
+      hyperevmSpecific: {
+        blockMode: 'small',
+        l1Settlement: {
+          estimatedTime: '2 minutes',
+          cost: '0.001 HYPE'
+        },
+        crossChainCompatibility: {
+          hyperCore: true,
+          layerZero: true,
+          debridge: true,
+          hyperlane: true
+        },
+        precompileUsage: []
+      },
+      autoBalanceUsed: false,
+      originalFrom: request.from,
+      whaleFrom: undefined
+    };
+  }
+
   async simulateTransaction(request: SimulationRequest): Promise<SimulationResult> {
+    // Check if fake simulation is requested
+    if (request.fake) {
+      console.log('🎭 Generating fake simulation for testing...');
+      return this.generateFakeSimulation(request);
+    }
+
     try {
       const blockNumber = request.blockNumber 
         ? (typeof request.blockNumber === 'string' ? parseInt(request.blockNumber) : request.blockNumber)
