@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { SparklesCore } from "../../components/ui/sparkles";
 import { SimulationDashboard } from "../../components/SimulationDashboard";
@@ -52,8 +52,17 @@ export default function HyperEVMSimulatorPage() {
   const [blockchainLoading, setBlockchainLoading] = useState(false);
   const [shareableLink, setShareableLink] = useState("");
 
+  // Initialize simulator when network changes
+  useEffect(() => {
+    const newSimulator = new HyperEVMSimulator(network);
+    setSimulator(newSimulator);
+    
+    // Fetch initial blockchain info
+    fetchBlockchainInfo(newSimulator);
+  }, [network]);
+
   // Fetch blockchain information
-  const fetchBlockchainInfo = useCallback(async (sim?: HyperEVMSimulator) => {
+  const fetchBlockchainInfo = async (sim?: HyperEVMSimulator) => {
     const currentSimulator = sim || simulator;
     if (!currentSimulator) return;
     
@@ -73,16 +82,7 @@ export default function HyperEVMSimulatorPage() {
     } finally {
       setBlockchainLoading(false);
     }
-  }, [simulator]);
-
-  // Initialize simulator when network changes
-  useEffect(() => {
-    const newSimulator = new HyperEVMSimulator(network);
-    setSimulator(newSimulator);
-    
-    // Fetch initial blockchain info
-    fetchBlockchainInfo(newSimulator);
-  }, [network, fetchBlockchainInfo]);
+  };
 
     // Predefined scenarios for testing
   const scenarios = [
@@ -553,7 +553,7 @@ export default function HyperEVMSimulatorPage() {
                 <div>
                   <h5 className="font-semibold text-emerald-400">Smart Balance Management</h5>
                   <p className="text-emerald-200 text-sm">
-                    Automatically provides 10,000 HYPE test balance when needed, eliminating &quot;insufficient funds&quot; errors.
+                    Automatically provides 10,000 HYPE test balance when needed, eliminating "insufficient funds" errors.
                   </p>
                 </div>
               </div>
