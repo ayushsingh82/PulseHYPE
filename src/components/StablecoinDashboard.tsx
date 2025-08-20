@@ -135,12 +135,15 @@ export function StablecoinDashboard() {
   const loadStablecoinData = async () => {
     setLoading(true);
     setError(null);
+    setLoadingProgress({ current: 0, total: 7, currentToken: '' });
     
     try {
       console.log("Loading stablecoin data from HyperEVM API...");
       
-      // Fetch real stablecoin data from HyperEVM
-      const stablecoinData = await api.getStablecoinData();
+      // Fetch real stablecoin data from HyperEVM with progress tracking
+      const stablecoinData = await api.getStablecoinData((current, total, currentToken) => {
+        setLoadingProgress({ current, total, currentToken });
+      });
       
       if (stablecoinData.length === 0) {
         setError("No stablecoin data available from HyperEVM API.");
@@ -168,6 +171,9 @@ export function StablecoinDashboard() {
 
       console.log(`Loaded ${transformedStablecoins.length} stablecoins`);
       
+      // Final progress update
+      setLoadingProgress({ current: 7, total: 7, currentToken: 'Complete!' });
+      
       setStablecoins(transformedStablecoins);
       setHistoricalData(generateHistoricalData(transformedStablecoins, selectedTimeframe));
       setProtocols(generateProtocolData(transformedStablecoins));
@@ -181,6 +187,8 @@ export function StablecoinDashboard() {
       setProtocols([]);
     } finally {
       setLoading(false);
+      // Reset progress when finished
+      setLoadingProgress({ current: 0, total: 7, currentToken: '' });
     }
   };
 

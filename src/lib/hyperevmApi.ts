@@ -154,8 +154,8 @@ export class HyperEVMApiService {
         }
     }
 
-    // Get comprehensive stablecoin data from API
-    async getStablecoinData(): Promise<any[]> {
+    // Get comprehensive stablecoin data from API with progress callback
+    async getStablecoinData(onProgress?: (current: number, total: number, currentToken: string) => void): Promise<any[]> {
         const knownStablecoins = this.getKnownStablecoinAddresses();
         const stablecoins = [];
 
@@ -165,9 +165,15 @@ export class HyperEVMApiService {
         const apiWorking = await this.testApiConnection();
         console.log(`API connection test: ${apiWorking ? 'SUCCESS' : 'FAILED'}`);
 
-        for (const stablecoin of knownStablecoins) {
+        for (let i = 0; i < knownStablecoins.length; i++) {
+            const stablecoin = knownStablecoins[i];
             try {
                 console.log(`Fetching data for ${stablecoin.address} (${stablecoin.expectedSymbol})...`);
+                
+                // Update progress
+                if (onProgress) {
+                    onProgress(i + 1, knownStablecoins.length, stablecoin.expectedSymbol || stablecoin.address.slice(0, 8));
+                }
 
                 // Fetch token info and counters in parallel
                 const [tokenInfo, tokenCounters] = await Promise.all([
