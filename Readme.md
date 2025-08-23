@@ -1,6 +1,6 @@
-# HYPE: Universal DeFi Intelligence & Simulation Platform
+# PulseHYPE: Universal DeFi Intelligence & Simulation Platform
 
-**HYPE** is the fastest, smartest way to swap, stake, farm, analyze, and simulate DeFi transactions—powered by advanced route-finding, DeFi intelligence, and analytics for the HyperEVM ecosystem.
+**PulseHYPE** is the fastest, smartest way to swap, stake, farm, analyze, and simulate DeFi transactions—powered by advanced route-finding, DeFi intelligence, and analytics for the HyperEVM ecosystem.
 
 ---
 
@@ -69,7 +69,7 @@
 
 ---
 
-## 🚀 Why HYPE?
+## 🚀 Why PulseHYPE?
 
 - **Universal:** One platform for all your DeFi analytics, simulation, and execution needs.
 - **Fast & Smart:** Advanced route-finding, instant analytics, and real-time data.

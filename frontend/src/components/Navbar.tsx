@@ -13,7 +13,7 @@ export default function Navbar() {
             href="/"
             className="hover:scale-110 transition-all duration-300 neon-text-subtle inline-block"
           >
-            HYPE
+            PulseHYPE
           </Link>
         </div>
         
