@@ -1,71 +1,95 @@
 # PulseHYPE: Universal DeFi Intelligence & Simulation Platform
 
-**PulseHYPE** is the fastest, smartest way to swap, stake, farm, analyze, and simulate DeFi transactions—powered by advanced route-finding, DeFi intelligence, and analytics for the HyperEVM ecosystem.
+**PulseHYPE** combines powerful transaction simulation and stablecoin analytics into a single DeFi platform for HyperEVM.
+
+With the Simulator, you can test transactions, bundles, and advanced strategies before execution—ensuring safety, efficiency, and optimization.
+
+With Stablecoin Tracker, you gain deep insights into supply, holder behavior, and protocol distribution to understand systemic risks and opportunities.
+
+Alongside GlueX, Liquid Labs, and GoldRush, PulseHYPE offers a complete suite for smarter DeFi execution. Its core benefits are:
+✅ Safer transactions through pre-execution simulation
+✅ Smarter stablecoin tracking for risk management
+✅ One-stop dashboard for swapping, analyzing, and simulating
+✅ Faster decision-making with real-time data
 
 ---
 
 ## 🌐 Features Overview
 
-### 1. GlueX
+### 1. Simulator
 
-**GlueX** is your DeFi intelligence dashboard for HyperEVM.
-- **Active Protocols:** Instantly fetch and explore all active DeFi protocols on HyperEVM.
-- **Historical APY:** Analyze historical yield/APY for any pool, LP token, or chain.
-- **Diluted APY:** Simulate how APY changes with different input amounts.
-- **Exchange Rates:** Get real-time cross-chain and cross-token exchange rates.
+**Small Description:**
+Test and debug your DeFi transactions before going on-chain.
 
-> *Use GlueX to make smarter DeFi decisions, optimize yield, and stay ahead of the market.*
+**Full Description:**
+Simulator is a comprehensive transaction simulation engine for HyperEVM. It supports single transaction testing, bundle simulation for advanced strategies, and provides detailed gas and security analysis. With pre-built quick-start scenarios, you can instantly simulate common DeFi flows.
 
----
-
-### 2. Liquid Labs
-
-**Liquid Labs** is your all-in-one DeFi routing and pool analytics suite.
-- **Route API Demo:** Find the best swap routes for any token pair.
-- **Find Pools:** Discover liquidity pools for any token pair.
-- **Token List:** Search and analyze tokens across the ecosystem.
-- **Token Balances:** Instantly fetch token balances for any wallet.
-
-> *Liquid Labs helps you swap, bridge, and earn yield in one seamless flow—no more juggling dApps.*
+**Benefits:**
+- Prevents failed or costly transactions.
+- Helps optimize gas fees before execution.
+- Allows testing of complex DeFi strategies risk-free.
+- Saves time and money by catching errors early.
 
 ---
 
-### 3. Simulator
+### 2. Stablecoin Tracker
 
-**Simulator** is a comprehensive transaction simulation platform for HyperEVM.
-- **Single Transaction Simulation:** Test, debug, and optimize transactions before sending them on-chain.
-- **Bundle Testing:** Simulate bundles of transactions for advanced DeFi strategies.
-- **Advanced Analysis:** Get gas optimization and security analysis for your transactions.
-- **Quick Start Scenarios:** Instantly load and simulate common DeFi and transfer scenarios.
+**Small Description:**
+Comprehensive insights into HyperEVM stablecoin supply, holders, and risks.
 
-> *Simulator ensures your transactions are safe, efficient, and error-free before you execute them.*
+**Full Description:**
+Stablecoin Tracker gives you in-depth analytics for all stablecoins on HyperEVM. Track real-time supply, growth trends, and unique holders per asset. Explore protocol-level stablecoin distribution and monitor rehypothecation rates across DeFi protocols.
 
----
-
-### 4. GoldRush
-
-**GoldRush** is your analytics and data explorer for HyperEVM, powered by Covalent’s GoldRush SDK.
-- **Token Balances:** Fetch and analyze token balances for any wallet.
-- **Historical Portfolio:** View historical portfolio data for any address.
-- **Event Logs:** Explore on-chain event logs by block height.
-- **Block Explorer:** Fetch and analyze block data.
-- **Resolved Address:** Resolve ENS or other address formats.
-- **Pool Spot Prices:** Get real-time spot prices for liquidity pools.
-- **Gas Prices:** Fetch current gas prices for the network.
-
-> *GoldRush gives you deep, real-time analytics and data for the HyperEVM mainnet.*
+**Benefits:**
+- Helps identify stablecoin risks (like overexposure to a single protocol).
+- Provides transparency into adoption trends.
+- Enables better portfolio and risk management.
+- Supports research and strategy building with real-time data.
 
 ---
 
-### 5. Stablecoin Tracker
+### 3. GlueX
 
-**Stablecoin Tracker** provides comprehensive analytics for all stablecoins on HyperEVM.
-- **Supply Tracking:** Real-time total supply and growth trajectories.
-- **Holder Analytics:** Track unique holders per stablecoin.
-- **Protocol Distribution:** See which protocols hold the most stablecoins.
-- **Rehypothecation:** Track rehypothecation rates across protocols.
+**Small Description:**
+DeFi intelligence dashboard for smarter yield decisions.
 
-> *Stay on top of stablecoin trends, risks, and opportunities in the HyperEVM ecosystem.*
+**Full Description:**
+GlueX is your DeFi intelligence dashboard for HyperEVM. It lets you instantly fetch all active DeFi protocols, analyze historical and diluted APYs, and access real-time exchange rates.
+
+**Benefits:**
+- Optimizes yield farming decisions.
+- Simulates how APY changes with different amounts.
+- Keeps you ahead with instant protocol data.
+
+---
+
+### 4. Liquid Labs
+
+**Small Description:**
+Advanced routing and pool analytics for seamless swaps and liquidity discovery.
+
+**Full Description:**
+Liquid Labs is your DeFi routing and liquidity analytics suite. It includes a route API demo to find the best token swap routes, tools to discover pools for any token pair, and instant token/wallet analysis.
+
+**Benefits:**
+- Saves money by finding the best swap routes.
+- Makes liquidity discovery simple and fast.
+- Consolidates swaps, bridging, and liquidity into one flow.
+
+---
+
+### 5. GoldRush
+
+**Small Description:**
+Real-time DeFi analytics powered by Covalent's GoldRush SDK.
+
+**Full Description:**
+GoldRush is your HyperEVM analytics and data explorer. It provides token balance analysis, historical portfolio insights, and event log exploration. You can fetch block data, resolve addresses, and access pool spot prices or live gas metrics.
+
+**Benefits:**
+- Gives deep insights into wallet and token activity.
+- Helps track portfolio performance historically.
+- Provides developer-friendly data for building new dApps.
 
 ---
 
@@ -80,8 +104,8 @@
 
 ## 🧭 Navigation
 
+- **Simulator:** `/simulator`
+- **Stablecoin Tracker:** `/stablecoin-tracker`
 - **GlueX:** `/gluex`
 - **Liquid Labs:** `/liquidlabs`
-- **Simulator:** `/simulator`
 - **GoldRush:** `/goldrush`
-- **Stablecoin Tracker:** `/stablecoin-tracker`
