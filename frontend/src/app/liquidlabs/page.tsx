@@ -134,7 +134,7 @@ export default function LiquidLabsRouteDemo() {
           animate={{ scale: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          LiquidLabs Demo
+          LiquidLabs 
         </motion.h1>
         <motion.p 
           className="text-lg text-[#97FBE4]/80 pixel-font"
@@ -175,7 +175,7 @@ export default function LiquidLabsRouteDemo() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.12, delay: 0.01 }}
             >
-              Route API Demo
+              Route API 
             </motion.h1>
             <motion.form 
               onSubmit={handleSubmit} 

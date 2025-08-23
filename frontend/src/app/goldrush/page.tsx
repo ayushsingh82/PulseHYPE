@@ -174,7 +174,7 @@ export default function GoldRushDemo() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          GoldRush API
+          GoldRush 
         </motion.h1>
         <motion.p
           className="text-base md:text-lg text-[#97FBE4]/80 mb-4"

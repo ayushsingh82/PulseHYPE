@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ethers } from 'ethers';
 
 // HyperEVM Configuration
@@ -220,12 +218,12 @@ export interface PrecompileUsage {
 }
 
 export class HyperEVMSimulator {
-  private provider: ethers.JsonRpcProvider;
+  private provider: ethers.providers.JsonRpcProvider;
   private config: typeof HYPEREVM_CONFIG.MAINNET;
 
   constructor(network: 'mainnet' | 'testnet' = 'mainnet') {
     this.config = network === 'mainnet' ? HYPEREVM_CONFIG.MAINNET : HYPEREVM_CONFIG.TESTNET;
-    this.provider = new ethers.JsonRpcProvider(this.config.rpcUrl);
+    this.provider = new ethers.providers.JsonRpcProvider(this.config.rpcUrl);
   }
 
   /**
@@ -391,7 +389,7 @@ export class HyperEVMSimulator {
       
       // Track if auto-balance was used
       let autoBalanceUsed = false;
-      let originalFrom = request.from;
+      const originalFrom = request.from;
       let whaleFrom = undefined;
       
       // If failed due to insufficient funds, try with auto-balance using whale address
@@ -453,7 +451,7 @@ export class HyperEVMSimulator {
       const blockTag = typeof blockNumber === 'string' ? blockNumber : `0x${blockNumber.toString(16)}`;
       
       // Execute simulation at specific block
-      let gasEstimate: bigint;
+      let gasEstimate: any;
       let callResult: string;
       
       try {
@@ -503,7 +501,7 @@ export class HyperEVMSimulator {
       // Prepare state override parameter
       const stateOverrideParams = Object.entries(stateOverrides).reduce((acc, [address, overrides]) => {
         acc[address] = {
-          balance: overrides.balance ? ethers.parseEther(overrides.balance.toString()).toString() : undefined,
+          balance: overrides.balance ? ethers.utils.parseEther(overrides.balance.toString()).toString() : undefined,
           nonce: overrides.nonce ? parseInt(overrides.nonce.toString()) : undefined,
           code: overrides.code || undefined,
           state: overrides.state || undefined,
@@ -677,7 +675,7 @@ export class HyperEVMSimulator {
     
     const tx: any = {
       data: request.data || '0x',
-      from: request.from ? utils.normalizeAddress(request.from) : ethers.ZeroAddress,
+              from: request.from ? utils.normalizeAddress(request.from) : ethers.constants.AddressZero,
       gasLimit: request.gasLimit || '21000'
     };
 
@@ -693,9 +691,9 @@ export class HyperEVMSimulator {
     if (request.value && request.value !== '0' && request.value !== '0.0') {
       try {
         // Convert to wei
-        const valueInWei = ethers.parseEther(request.value.toString());
+        const valueInWei = ethers.utils.parseEther(request.value.toString());
         tx.value = valueInWei;
-        console.log('✅ Parsed value:', ethers.formatEther(valueInWei), 'ETH');
+        console.log('✅ Parsed value:', ethers.utils.formatEther(valueInWei), 'ETH');
       } catch (valueError) {
         console.warn('⚠️ Failed to parse value, using 0:', valueError);
         tx.value = BigInt(0);
@@ -707,28 +705,28 @@ export class HyperEVMSimulator {
     // Handle gas pricing
     if (request.maxFeePerGas && request.maxPriorityFeePerGas) {
       try {
-        tx.maxFeePerGas = ethers.parseUnits(request.maxFeePerGas.toString(), 'gwei');
-        tx.maxPriorityFeePerGas = ethers.parseUnits(request.maxPriorityFeePerGas.toString(), 'gwei');
+        tx.maxFeePerGas = ethers.utils.parseUnits(request.maxFeePerGas.toString(), 'gwei');
+        tx.maxPriorityFeePerGas = ethers.utils.parseUnits(request.maxPriorityFeePerGas.toString(), 'gwei');
         tx.type = 2;
         console.log('✅ Using EIP-1559 gas pricing');
       } catch (gasError) {
         console.warn('⚠️ Failed to parse EIP-1559 gas values, using legacy:', gasError);
-        tx.gasPrice = ethers.parseUnits('20', 'gwei');
+        tx.gasPrice = ethers.utils.parseUnits('20', 'gwei');
         tx.type = 0;
       }
     } else if (request.gasPrice) {
       try {
-        tx.gasPrice = ethers.parseUnits(request.gasPrice.toString(), 'gwei');
+        tx.gasPrice = ethers.utils.parseUnits(request.gasPrice.toString(), 'gwei');
         tx.type = 0;
         console.log('✅ Using legacy gas pricing');
       } catch (gasError) {
         console.warn('⚠️ Failed to parse gas price, using 20 Gwei:', gasError);
-        tx.gasPrice = ethers.parseUnits('20', 'gwei');
+        tx.gasPrice = ethers.utils.parseUnits('20', 'gwei');
         tx.type = 0;
       }
     } else {
       // Use default 20 Gwei
-      tx.gasPrice = ethers.parseUnits('20', 'gwei');
+      tx.gasPrice = ethers.utils.parseUnits('20', 'gwei');
       tx.type = 0;
       console.log('✅ Using default 20 Gwei gas price');
     }
@@ -749,7 +747,7 @@ export class HyperEVMSimulator {
       });
       
       // If no from address specified, use a whale address with sufficient balance
-      if (!tx.from || tx.from === ethers.ZeroAddress) {
+      if (!tx.from || tx.from === ethers.constants.AddressZero) {
         tx.from = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'; // Vitalik's address as default
         console.log('🐋 Using whale address for simulation:', tx.from);
       }
@@ -1042,10 +1040,10 @@ export class HyperEVMSimulator {
         networkInfo,
         pendingBlock
       ] = await Promise.all([
-        provider.getBlock('latest', true),
+        provider.getBlock('latest'),
         provider.send('eth_gasPrice', []),
         provider.getNetwork(),
-        provider.getBlock('pending', true).catch(() => null)
+        provider.getBlock('pending').catch(() => null)
       ]);
 
       if (!latestBlock) {
@@ -1293,7 +1291,7 @@ export class HyperEVMSimulator {
   private extractRevertReason(error: any): string {
     if (error.data) {
       try {
-        const reason = ethers.toUtf8String('0x' + error.data.slice(138));
+        const reason = ethers.utils.toUtf8String('0x' + error.data.slice(138));
         return reason;
       } catch {
         return error.data;
@@ -1439,8 +1437,8 @@ export class HyperEVMSimulator {
       try {
         // Detect ERC20 Transfer events
         if (log.topics && log.topics[0] === '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
-          const from = ethers.getAddress(`0x${log.topics[1].slice(-40)}`);
-          const to = ethers.getAddress(`0x${log.topics[2].slice(-40)}`);
+                  const from = ethers.utils.getAddress(`0x${log.topics[1].slice(-40)}`);
+        const to = ethers.utils.getAddress(`0x${log.topics[2].slice(-40)}`);
           const value = BigInt(log.data || '0x0');
           
           events.push({
@@ -1638,7 +1636,7 @@ export const utils = {
       }
       
       // Use ethers to validate and normalize
-      return ethers.isAddress(cleanAddress);
+      return ethers.utils.isAddress(cleanAddress);
     } catch (error) {
       console.warn('Address validation error:', error);
       return false;
@@ -1655,8 +1653,8 @@ export const utils = {
       const cleanAddress = address.trim();
       
       // If it's a valid format, normalize it with proper checksum
-      if (ethers.isAddress(cleanAddress)) {
-        return ethers.getAddress(cleanAddress);
+          if (ethers.utils.isAddress(cleanAddress)) {
+      return ethers.utils.getAddress(cleanAddress);
       }
       
       return cleanAddress;

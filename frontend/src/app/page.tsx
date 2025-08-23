@@ -22,20 +22,20 @@ function CompareDemo() {
 
 const faqs = [
   {
-    q: "Do I need a new wallet?",
-    a: "No, you can use your existing wallet. Just connect and start trading.",
+    q: "What is PulseHYPE?",
+    a: "PulseHYPE is a Universal DeFi Intelligence & Simulation Platform built specifically for the HyperEVM ecosystem. It provides comprehensive tools for swapping, staking, farming, analyzing, and simulating DeFi transactions.",
   },
   {
-    q: "How do I earn yield?",
-    a: "Stake, lend, or farm directly from the app. Yield opportunities are integrated and easy to access.",
+    q: "How does the transaction simulator work?",
+    a: "Our HyperEVM Transaction Simulator allows you to test transactions before execution, with auto-balance features and comprehensive analysis. It automatically provides test funds and simulates real-world conditions.",
   },
   {
-    q: "Is it cross-chain?",
-    a: "Yes! Swap and bridge assets across supported chains in one transaction.",
+    q: "What makes PulseHYPE different?",
+    a: "PulseHYPE combines multiple DeFi tools in one platform: GlueX for DeFi intelligence, LiquidLabs for advanced analytics, GoldRush for token discovery, and a powerful simulator for transaction testing.",
   },
   {
-    q: "How do fees work?",
-    a: "You can set your own fee recipient and share in protocol revenue.",
+    q: "Is PulseHYPE secure?",
+    a: "Yes! All transactions are simulated first, and our platform provides comprehensive security analysis. You can test transactions safely before executing them on the mainnet.",
   },
 ];
 
@@ -284,7 +284,7 @@ export default function Home() {
                 transition={{ duration: 0.6, delay: 0.4 }}
                 viewport={{ once: true }}
               >
-                Built for Agents
+                PulseHYPE Platform
               </motion.h2>
               <motion.p
                 className="text-[#97FBE4]/80 mb-8"
@@ -293,7 +293,7 @@ export default function Home() {
                 transition={{ duration: 0.6, delay: 0.6 }}
                 viewport={{ once: true }}
               >
-                Integrate payments in minutes, not months. Simple, powerful APIs that just work without KYC.
+                The fastest, smartest way to swap, stake, farm, analyze, and simulate DeFi transactions on HyperEVM.
               </motion.p>
               <motion.div
                 className="space-y-4"
@@ -303,9 +303,9 @@ export default function Home() {
                 viewport={{ once: true }}
               >
                 {[
-                  { title: "Quick Setup", desc: "No KYC, No AML, No ID" },
-                  { title: "Compliant Privacy", desc: "Hide your revenue from competitors" },
-                  { title: "Instant Payments", desc: "Receive payments in any token from any chain" }
+                  { title: "Universal DeFi", desc: "Access all DeFi protocols from one platform" },
+                  { title: "Smart Intelligence", desc: "AI-powered route finding and yield optimization" },
+                  { title: "HyperEVM Native", desc: "Built specifically for HyperEVM ecosystem" }
                 ].map((item, index) => (
                   <motion.div
                     key={index}

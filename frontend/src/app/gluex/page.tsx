@@ -114,7 +114,7 @@ export default function GluexDemo() {
           animate={{ scale: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          GlueX Demo
+          GlueX 
         </motion.h1>
         <motion.p 
           className="text-lg text-[#97FBE4]/80 pixel-font"
