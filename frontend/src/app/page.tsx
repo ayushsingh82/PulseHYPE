@@ -438,7 +438,7 @@ export default function Home() {
           whileHover={{ scale: 1.1 }}
           transition={{ type: "spring", stiffness: 400, damping: 17 }}
         >
-          HYPE
+          PulseHYPE
         </motion.span>
         <motion.a
           href="https://github.com/"
