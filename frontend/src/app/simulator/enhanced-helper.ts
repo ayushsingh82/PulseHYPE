@@ -1064,7 +1064,7 @@ export class HyperEVMSimulator {
         gasPrice: utils.formatUnits(BigInt(gasPrice), 'gwei') + ' gwei',
         gasLimit: latestBlock.gasLimit.toString(),
         baseFeePerGas: latestBlock.baseFeePerGas ? 
-          utils.formatUnits(latestBlock.baseFeePerGas, 'gwei') + ' gwei' : undefined,
+          utils.formatUnits(latestBlock.baseFeePerGas.toString(), 'gwei') + ' gwei' : undefined,
         pendingTransactions: pendingTxCount,
         networkId: networkInfo.chainId.toString(),
         chainId: networkInfo.chainId.toString(),
@@ -1107,7 +1107,7 @@ export class HyperEVMSimulator {
 
       const gasPriceGwei = utils.formatUnits(BigInt(gasPrice), 'gwei');
       const baseFee = latestBlock?.baseFeePerGas ? 
-        utils.formatUnits(latestBlock.baseFeePerGas, 'gwei') : null;
+        utils.formatUnits(latestBlock.baseFeePerGas.toString(), 'gwei') : null;
 
       return {
         currentGasPrice: gasPriceGwei + ' gwei',
@@ -1142,7 +1142,7 @@ export class HyperEVMSimulator {
   }> {
     try {
       const provider = this.provider;
-      const pendingBlock = await provider.getBlock('pending', true).catch(() => null);
+      const pendingBlock = await provider.getBlock('pending').catch(() => null);
       
       const pendingTxs = pendingBlock?.transactions || [];
       const pendingCount = pendingTxs.length;
