@@ -100,7 +100,6 @@ GoldRush is your HyperEVM analytics and data explorer. It provides token balance
 - **Safe:** Simulate and debug before you transact.
 - **Integrated:** Swap, bridge, stake, and analyze—all in one place.
 
----
 
 ## 🧭 Navigation
 
