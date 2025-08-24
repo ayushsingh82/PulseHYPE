@@ -223,3 +223,37 @@ h1, h2, h3, h4, h5, h6, p, span, a, li, label, input, button, div, section {
 .border-6 {
   border-width: 6px;
 }
+
+/* RainbowKit Modal Fixes */
+[data-rk] {
+  z-index: 9999 !important;
+}
+
+[data-rk] * {
+  color: white !important;
+}
+
+[data-rk] button {
+  color: white !important;
+  background-color: rgba(17, 24, 39, 0.95) !important;
+  border: 1px solid rgba(75, 85, 99, 0.5) !important;
+}
+
+[data-rk] [role="dialog"] {
+  background: rgba(17, 24, 39, 0.98) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(75, 85, 99, 0.5) !important;
+  border-radius: 24px !important;
+}
+
+[data-rk] .iekbcc0 {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+/* Override global color rules for RainbowKit */
+[data-rk] h1, [data-rk] h2, [data-rk] h3, [data-rk] h4, [data-rk] h5, [data-rk] h6,
+[data-rk] p, [data-rk] span, [data-rk] a, [data-rk] li, [data-rk] label, 
+[data-rk] input, [data-rk] button, [data-rk] div, [data-rk] section {
+  color: white !important;
+}
