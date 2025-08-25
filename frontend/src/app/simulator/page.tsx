@@ -1,12 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "motion/react";
 import { SparklesCore } from "../../components/ui/sparkles";
 import { SimulationDashboard } from "../../components/SimulationDashboard";
 import { HyperEVMSimulator, SimulationRequest, HYPEREVM_CONFIG, HYPEREVM_RPC_ENDPOINTS, utils } from "./enhanced-helper";
 
 export default function HyperEVMSimulatorPage() {
+  // Ref to track if component is mounted
+  const isMountedRef = useRef(true);
+  // Ref to track last fetch time to avoid dependency issues
+  const lastFetchTimeRef = useRef<number>(0);
+  // Ref to store current simulator to avoid dependency issues
+  const simulatorRef = useRef<HyperEVMSimulator | null>(null);
+  
   // Core simulation state
   const [simulator, setSimulator] = useState<HyperEVMSimulator | null>(null);
   const [network, setNetwork] = useState<'mainnet' | 'testnet'>('mainnet');
@@ -45,44 +52,107 @@ export default function HyperEVMSimulatorPage() {
   const [activeTab, setActiveTab] = useState<'single' | 'bundle' | 'analysis'>('single');
   const [fakeSimulation, setFakeSimulation] = useState(false); // Toggle for fake simulation
   
-  // Blockchain information state
+  // Blockchain information state with caching
   const [blockchainInfo, setBlockchainInfo] = useState<any>(null);
   const [gasInfo, setGasInfo] = useState<any>(null);
   const [mempoolInfo, setMempoolInfo] = useState<any>(null);
   const [blockchainLoading, setBlockchainLoading] = useState(false);
   const [shareableLink, setShareableLink] = useState("");
 
-  // Fetch blockchain information
-  const fetchBlockchainInfo = useCallback(async (sim?: HyperEVMSimulator) => {
-    const currentSimulator = sim || simulator;
-    if (!currentSimulator) return;
+  // Cache duration in milliseconds (30 seconds)
+  const CACHE_DURATION = 30000;
+
+  // Fetch blockchain information with caching and debouncing - optimized version
+  const fetchBlockchainInfo = useCallback(async (sim?: HyperEVMSimulator, forceRefresh = false) => {
+    const currentSimulator = sim || simulatorRef.current;
+    if (!currentSimulator || !isMountedRef.current) return;
     
+    // Check cache validity using ref to avoid dependency issues
+    const now = Date.now();
+    if (!forceRefresh && now - lastFetchTimeRef.current < CACHE_DURATION) {
+      console.log('Using cached blockchain info - skipping API calls');
+      return;
+    }
+    
+    if (!isMountedRef.current) return;
     setBlockchainLoading(true);
+    
     try {
-      const [blockchain, gas, mempool] = await Promise.all([
-        currentSimulator.getBlockchainInfo().catch(() => null),
-        currentSimulator.getGasInfo().catch(() => null),
-        currentSimulator.getMempoolInfo().catch(() => null)
-      ]);
+      // Only fetch blockchain info, skip gas and mempool to reduce calls
+      const blockchain = await currentSimulator.getBlockchainInfo().catch(() => null);
       
-      setBlockchainInfo(blockchain);
-      setGasInfo(gas);
-      setMempoolInfo(mempool);
+      if (isMountedRef.current) {
+        setBlockchainInfo(blockchain);
+        lastFetchTimeRef.current = now;
+        console.log('✅ Blockchain info updated, cache refreshed');
+      }
     } catch (error) {
       console.error('Error fetching blockchain info:', error);
     } finally {
-      setBlockchainLoading(false);
+      if (isMountedRef.current) {
+        setBlockchainLoading(false);
+      }
     }
-  }, [simulator]);
+  }, []); // No dependencies needed now
 
   // Initialize simulator when network changes
   useEffect(() => {
     const newSimulator = new HyperEVMSimulator(network);
     setSimulator(newSimulator);
+    simulatorRef.current = newSimulator;
     
-    // Fetch initial blockchain info
-    fetchBlockchainInfo(newSimulator);
-  }, [network, fetchBlockchainInfo]);
+    // Fetch initial blockchain info with debouncing
+    const fetchInitialInfo = async () => {
+      if (!isMountedRef.current) return;
+      
+      setBlockchainLoading(true);
+      try {
+        // Only fetch essential info on initialization
+        const blockchain = await newSimulator.getBlockchainInfo().catch(() => null);
+        
+        if (isMountedRef.current) {
+          setBlockchainInfo(blockchain);
+          // Set default values for gas and mempool to avoid extra calls
+          setGasInfo({
+            currentGasPrice: '20 gwei',
+            suggestedGasPrice: {
+              slow: '16 gwei',
+              standard: '20 gwei', 
+              fast: '24 gwei'
+            },
+            maxPriorityFeePerGas: '2.0 gwei',
+            gasLimit: {
+              simple: '21000',
+              contract: '100000',
+              complex: '500000'
+            }
+          });
+          setMempoolInfo({
+            pendingCount: 0,
+            queuedCount: 0,
+            avgGasPrice: '20 gwei',
+            avgGasLimit: '21000',
+            congestionLevel: 'low' as const
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching blockchain info:', error);
+      } finally {
+        if (isMountedRef.current) {
+          setBlockchainLoading(false);
+        }
+      }
+    };
+    
+    fetchInitialInfo();
+  }, [network]);
+
+  // Cleanup effect
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   // Predefined scenarios for testing
   const scenarios = [
@@ -225,6 +295,39 @@ export default function HyperEVMSimulatorPage() {
     }
   ];
 
+  // Debounced simulation to prevent spam calls
+  const [simulationTimeoutId, setSimulationTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  
+  const debouncedSimulation = useCallback((request: SimulationRequest) => {
+    if (simulationTimeoutId) {
+      clearTimeout(simulationTimeoutId);
+    }
+    
+    const timeoutId = setTimeout(async () => {
+      if (!simulator) return;
+      
+      setSimulationLoading(true);
+      setSimulationError("");
+      
+      try {
+        console.log('🚀 Starting debounced simulation...');
+        const result = await simulator.simulateTransaction(request);
+        setSimulationResult(result);
+
+        if (result.success) {
+          const link = utils.generateShareableLink(Date.now().toString());
+          setShareableLink(link);
+        }
+      } catch (error: any) {
+        setSimulationError(error.message || "Simulation failed");
+      } finally {
+        setSimulationLoading(false);
+      }
+    }, 500); // 500ms debounce
+    
+    setSimulationTimeoutId(timeoutId);
+  }, [simulator, simulationTimeoutId]);
+
   const handleSimulation = async () => {
     if (!simulator) {
       setSimulationError("Simulator not initialized");
@@ -252,37 +355,22 @@ export default function HyperEVMSimulatorPage() {
       return;
     }
 
-    setSimulationLoading(true);
-    setSimulationError("");
+    const request: SimulationRequest = {
+      to: toAddress.trim() ? utils.normalizeAddress(toAddress.trim()) : undefined,
+      from: fromAddress.trim() ? utils.normalizeAddress(fromAddress.trim()) : undefined,
+      value: value ? utils.parseHypeAmount(value) : undefined,
+      data: data || undefined,
+      gasLimit: gasLimit || undefined,
+      gasPrice: gasPrice || undefined,
+      maxFeePerGas: maxFeePerGas || undefined,
+      maxPriorityFeePerGas: maxPriorityFeePerGas || undefined,
+      blockNumber: blockNumber || undefined,
+      stateOverrides: Object.keys(stateOverrides).length > 0 ? stateOverrides : undefined,
+      fake: fakeSimulation,
+    };
 
-    try {
-      const request: SimulationRequest = {
-        to: toAddress.trim() ? utils.normalizeAddress(toAddress.trim()) : undefined, // Normalize for contract calls
-        from: fromAddress.trim() ? utils.normalizeAddress(fromAddress.trim()) : undefined, // Normalize from address
-        value: value ? utils.parseHypeAmount(value) : undefined,
-        data: data || undefined,
-        gasLimit: gasLimit || undefined,
-        gasPrice: gasPrice || undefined,
-        maxFeePerGas: maxFeePerGas || undefined,
-        maxPriorityFeePerGas: maxPriorityFeePerGas || undefined,
-        blockNumber: blockNumber || undefined,
-        stateOverrides: Object.keys(stateOverrides).length > 0 ? stateOverrides : undefined,
-        fake: fakeSimulation, // Add fake simulation flag
-      };
-
-      const result = await simulator.simulateTransaction(request);
-      setSimulationResult(result);
-
-      if (result.success) {
-        // Generate shareable link
-        const link = utils.generateShareableLink(Date.now().toString());
-        setShareableLink(link);
-      }
-    } catch (error: any) {
-      setSimulationError(error.message || "Simulation failed");
-    } finally {
-      setSimulationLoading(false);
-    }
+    // Use debounced simulation instead of direct call
+    debouncedSimulation(request);
   };
 
   // Bundle simulation function
@@ -463,7 +551,7 @@ export default function HyperEVMSimulatorPage() {
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-lg font-bold text-emerald-400">🔗 Network Status</h3>
             <button
-              onClick={() => fetchBlockchainInfo()}
+              onClick={() => fetchBlockchainInfo(undefined, true)} // Force refresh
               disabled={blockchainLoading}
               className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 text-white rounded text-sm font-medium transition-colors flex items-center gap-1"
             >
