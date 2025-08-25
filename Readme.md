@@ -51,15 +51,16 @@ Stablecoin Tracker gives you in-depth analytics for all stablecoins on HyperEVM.
 ### 3. GlueX
 
 **Small Description:**
-DeFi intelligence dashboard for smarter yield decisions.
+HyperEVM token swap interface for seamless trading.
 
 **Full Description:**
-GlueX is your DeFi intelligence dashboard for HyperEVM. It lets you instantly fetch all active DeFi protocols, analyze historical and diluted APYs, and access real-time exchange rates.
+GlueX is your HyperEVM token swap interface. It provides a complete trading experience with real-time quotes, slippage protection, and popular token pairs. The interface includes token search, balance checking, and transaction simulation for safe and efficient swaps.
 
 **Benefits:**
-- Optimizes yield farming decisions.
-- Simulates how APY changes with different amounts.
-- Keeps you ahead with instant protocol data.
+- Execute token swaps with best available rates.
+- Real-time price quotes and slippage protection.
+- User-friendly interface with popular token pairs.
+- Secure transactions with pre-execution validation.
 
 ---
 
